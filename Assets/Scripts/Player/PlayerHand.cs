@@ -12,15 +12,33 @@ public class PlayerHand : MonoBehaviour
 
     void Update()
     {
+        HandleInput();
+        
+        if (selectedObject != null)
+        {
+            DragSelectedObject();
+        }
+    }
+
+    private void HandleInput()
+    {
         if (Input.GetMouseButtonDown(0))
         {
             if (selectedObject == null)
             {
-                RaycastHit mouseHit = CastMouseRayFromCamera();
-                if (mouseHit.collider != null
-                    && IsObjectValidForSelection(mouseHit.collider))
+                Collider clickedCollider = CastMouseRayFromCamera().collider;
+
+                if (clickedCollider == null)
+                    return;
+
+                if (clickedCollider.CompareTag(GlobalDefines.draggableObjectTag) // Draggable object.
+                    && IsObjectValidForSelection(clickedCollider))
                 {
-                    GrabSelectedObject(mouseHit.collider.gameObject);
+                    GrabSelectedObject(clickedCollider.gameObject);
+                }
+                else if (clickedCollider.CompareTag(GlobalDefines.resourceNodeTag)) // Clickable resource node.
+                {
+                    clickedCollider.gameObject.GetComponent<ResourceNode>().SpawnResource();
                 }
             }
             else
@@ -28,18 +46,10 @@ public class PlayerHand : MonoBehaviour
                 ReleaseSelectedObject();
             }
         }
-
-        if (selectedObject != null)
-        {
-            DragSelectedObject();
-        }
     }
-
+    
     private bool IsObjectValidForSelection(Collider clickedObject)
     {
-        if (!clickedObject.CompareTag(GlobalDefines.draggableObjectName))
-            return false;
-
         // Rest of code needs these components to work.
         if (clickedObject.gameObject.GetComponent<Renderer>() == null
          || clickedObject.gameObject.GetComponent<Rigidbody>() == null)
