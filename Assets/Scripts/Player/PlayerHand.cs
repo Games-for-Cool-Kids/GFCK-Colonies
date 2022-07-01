@@ -3,6 +3,10 @@ using UnityEngine;
 public class PlayerHand : MonoBehaviour
 {
     public float HoverHeight = 0.25f;
+    public float HandDragForce = 10;
+
+    public float PreGrabRigidBodyDrag; // Before hand grabs object.
+    public float GrabbedRigidBodyDrag = 6; // While grabbed.
 
     private GameObject selectedObject;
 
@@ -14,9 +18,9 @@ public class PlayerHand : MonoBehaviour
             {
                 RaycastHit mouseHit = CastMouseRayFromCamera();
                 if (mouseHit.collider != null
-                    && mouseHit.collider.CompareTag(GlobalDefines.draggableObjectName))
+                    && IsObjectValidForSelection(mouseHit.collider))
                 {
-                    TakeSelectedObject(mouseHit.collider.gameObject);
+                    GrabSelectedObject(mouseHit.collider.gameObject);
                 }
             }
             else
@@ -31,49 +35,76 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
-    private void TakeSelectedObject(GameObject clickedObject)
+    private bool IsObjectValidForSelection(Collider clickedObject)
+    {
+        if (!clickedObject.CompareTag(GlobalDefines.draggableObjectName))
+            return false;
+
+        // Rest of code needs these components to work.
+        if (clickedObject.gameObject.GetComponent<Renderer>() == null
+         || clickedObject.gameObject.GetComponent<Rigidbody>() == null)
+            Debug.LogError("Missing required component");
+
+        return clickedObject.gameObject.GetComponent<Renderer>() != null
+            && clickedObject.gameObject.GetComponent<Rigidbody>() != null;
+    }
+
+    private void GrabSelectedObject(GameObject clickedObject)
     {
         selectedObject = clickedObject;
-        Cursor.visible = false;
+
+        PreGrabRigidBodyDrag = GetSelectedObjectRigidBody().drag;
+
+        //Cursor.visible = false;
+        SetRigidBodyDrag(GrabbedRigidBodyDrag);
         ToggleSelectedObjectGravity(false);
     }
 
     private void ReleaseSelectedObject()
     {
         ToggleSelectedObjectGravity(true);
+        SetRigidBodyDrag(PreGrabRigidBodyDrag);
         Cursor.visible = true;
+
         selectedObject = null;
     }
 
     private void DragSelectedObject()
     {
+        Vector3 currentPosition = selectedObject.transform.position;
+        Vector3 targetPosition = CalculateDragTargetPosition();
+
+        Vector3 force = targetPosition - currentPosition; // Don't normalize force, points closer, smaller force, further larger. 
+        GetSelectedObjectRigidBody().AddForce(force * HandDragForce);
+    }
+
+    private Vector3 CalculateDragTargetPosition()
+    {
         Vector3 position = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.WorldToScreenPoint(selectedObject.transform.position).z);
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(position);
-        selectedObject.transform.position = new Vector3(worldPosition.x, GetSelectedObjectYExtent() + HoverHeight, worldPosition.z);
+
+        return new Vector3(worldPosition.x, GetSelectedObjectYExtent() + HoverHeight, worldPosition.z);
     }
 
     private float GetSelectedObjectYExtent()
     {
         var renderer = selectedObject.GetComponent<Renderer>(); // Renderer gives the bounding box in world space.
-        if (renderer == null)
-        {
-            Debug.LogError("PlayerHand: No Renderer found on selected object.");
-            return 0;
-        }
-
         return renderer.bounds.size.y;
     }
 
     private void ToggleSelectedObjectGravity(bool enabled)
     {
-        var rigidBody = selectedObject.GetComponent<Rigidbody>();
-        if (rigidBody == null)
-        {
-            Debug.LogError("PlayerHand: No Rigidbody found on selected object.");
-            return; 
-        }    
+        GetSelectedObjectRigidBody().useGravity = enabled;
+    }
 
-        rigidBody.useGravity = enabled;
+    private Rigidbody GetSelectedObjectRigidBody()
+    {
+        return selectedObject.GetComponent<Rigidbody>();
+    }
+
+    private void SetRigidBodyDrag(float drag)
+    {
+        GetSelectedObjectRigidBody().drag = drag;
     }
 
     private RaycastHit CastMouseRayFromCamera()
