@@ -8,13 +8,13 @@ public class PlayerHand : MonoBehaviour
     public float PreGrabRigidBodyDrag; // Before hand grabs object.
     public float GrabbedRigidBodyDrag = 6; // While grabbed.
 
-    private GameObject selectedObject;
+    private GameObject _selectedObject;
 
     void Update()
     {
         HandleInput();
         
-        if (selectedObject != null)
+        if (_selectedObject != null)
         {
             DragSelectedObject();
         }
@@ -24,7 +24,7 @@ public class PlayerHand : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (selectedObject == null)
+            if (_selectedObject == null)
             {
                 Collider clickedCollider = CastMouseRayFromCamera().collider;
 
@@ -61,7 +61,7 @@ public class PlayerHand : MonoBehaviour
 
     private void GrabSelectedObject(GameObject clickedObject)
     {
-        selectedObject = clickedObject;
+        _selectedObject = clickedObject;
 
         PreGrabRigidBodyDrag = GetSelectedObjectRigidBody().drag;
 
@@ -76,12 +76,12 @@ public class PlayerHand : MonoBehaviour
         SetRigidBodyDrag(PreGrabRigidBodyDrag);
         Cursor.visible = true;
 
-        selectedObject = null;
+        _selectedObject = null;
     }
 
     private void DragSelectedObject()
     {
-        Vector3 currentPosition = selectedObject.transform.position;
+        Vector3 currentPosition = _selectedObject.transform.position;
         Vector3 targetPosition = CalculateDragTargetPosition();
 
         Vector3 force = targetPosition - currentPosition; // Don't normalize force, points closer, smaller force, further larger. 
@@ -90,7 +90,7 @@ public class PlayerHand : MonoBehaviour
 
     private Vector3 CalculateDragTargetPosition()
     {
-        Vector3 position = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.WorldToScreenPoint(selectedObject.transform.position).z);
+        Vector3 position = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.WorldToScreenPoint(_selectedObject.transform.position).z);
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(position);
 
         return new Vector3(worldPosition.x, GetSelectedObjectYExtent() + HoverHeight, worldPosition.z);
@@ -98,7 +98,7 @@ public class PlayerHand : MonoBehaviour
 
     private float GetSelectedObjectYExtent()
     {
-        var renderer = selectedObject.GetComponent<Renderer>(); // Renderer gives the bounding box in world space.
+        var renderer = _selectedObject.GetComponent<Renderer>(); // Renderer gives the bounding box in world space.
         return renderer.bounds.size.y;
     }
 
@@ -109,7 +109,7 @@ public class PlayerHand : MonoBehaviour
 
     private Rigidbody GetSelectedObjectRigidBody()
     {
-        return selectedObject.GetComponent<Rigidbody>();
+        return _selectedObject.GetComponent<Rigidbody>();
     }
 
     private void SetRigidBodyDrag(float drag)
