@@ -3,12 +3,7 @@ using UnityEngine;
 public class PlayerCamera : MonoBehaviour
 {
     public float MoveSpeed = 1f;
-    private float MoveFactor = 5.0f;
-
-    private void Start()
-    {
-        Application.targetFrameRate = 25;
-    }
+    private float MoveFactor = 20.0f;
 
     void Update()
     {
