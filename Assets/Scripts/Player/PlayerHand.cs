@@ -2,61 +2,72 @@ using UnityEngine;
 
 public class PlayerHand : MonoBehaviour
 {
+    private enum PlayerHandState
+    {
+        HAND_DRAGGING,
+        HAND_IDLE,
+    }
+
     public float HoverHeight = 0.25f;
     public float HandDragForce = 10;
 
     public float PreGrabRigidBodyDrag; // Before hand grabs object.
     public float GrabbedRigidBodyDrag = 6; // While grabbed.
 
+    private PlayerHandState _interactionState = PlayerHandState.HAND_IDLE;
+
     private GameObject _selectedObject;
 
     void Update()
     {
-        HandleInput();
-        
-        if (_selectedObject != null)
-        {
-            DragSelectedObject();
-        }
+        HandleInput();       
     }
 
     private void HandleInput()
     {
-        if (Input.GetMouseButtonDown(0))
+        switch(_interactionState)
         {
-            if (_selectedObject == null)
-            {
-                Collider clickedCollider = CastMouseRayFromCamera().collider;
-
-                if (clickedCollider == null)
-                    return;
-
-                if (clickedCollider.CompareTag(GlobalDefines.draggableObjectTag) // Draggable object.
-                    && IsObjectValidForSelection(clickedCollider))
+            case PlayerHandState.HAND_IDLE:
+                if(Input.GetMouseButtonDown(0))
                 {
-                    GrabSelectedObject(clickedCollider.gameObject);
+                    Debug.Assert(_selectedObject == null);
+
+                    Collider clickedCollider = CastMouseRayFromCamera().collider;
+
+                    if (clickedCollider == null)
+                        return;
+
+                    if (clickedCollider.CompareTag(GlobalDefines.draggableObjectTag))// Draggable object.)
+                    {
+                        Debug.Assert(clickedCollider.gameObject.GetComponent<Renderer>());
+                        Debug.Assert(clickedCollider.gameObject.GetComponent<Rigidbody>());
+
+                        GrabSelectedObject(clickedCollider.gameObject);
+
+                        _interactionState = PlayerHandState.HAND_DRAGGING;
+                    }
+                    else if (clickedCollider.CompareTag(GlobalDefines.resourceNodeTag)) // Clickable resource node.
+                    {
+                        clickedCollider.gameObject.GetComponent<ResourceNode>().SpawnResource();
+                    }
                 }
-                else if (clickedCollider.CompareTag(GlobalDefines.resourceNodeTag)) // Clickable resource node.
+                break;
+
+            case PlayerHandState.HAND_DRAGGING:
+                Debug.Assert(_selectedObject != null);
+
+                DragSelectedObject();
+
+                if (Input.GetMouseButtonUp(0))
                 {
-                    clickedCollider.gameObject.GetComponent<ResourceNode>().SpawnResource();
+                    ReleaseSelectedObject();
+
+                    _interactionState = PlayerHandState.HAND_IDLE;
                 }
-            }
-            else
-            {
-                ReleaseSelectedObject();
-            }
+                break;
+            default:
+                break;
         }
-    }
-    
-    private bool IsObjectValidForSelection(Collider clickedObject)
-    {
-        // Rest of code needs these components to work.
-        if (clickedObject.gameObject.GetComponent<Renderer>() == null
-         || clickedObject.gameObject.GetComponent<Rigidbody>() == null)
-            Debug.LogError("Missing required component");
-
-        return clickedObject.gameObject.GetComponent<Renderer>() != null
-            && clickedObject.gameObject.GetComponent<Rigidbody>() != null;
     }
 
     private void GrabSelectedObject(GameObject clickedObject)
