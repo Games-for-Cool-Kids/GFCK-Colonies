@@ -37,7 +37,7 @@ public class PlayerHand : MonoBehaviour
                     if (clickedCollider == null)
                         return;
 
-                    if (clickedCollider.CompareTag(GlobalDefines.draggableObjectTag))// Draggable object.)
+                    if (clickedCollider.CompareTag(GlobalDefines.draggableObjectTag))// Draggable object.
                     {
                         Debug.Assert(clickedCollider.gameObject.GetComponent<Renderer>());
                         Debug.Assert(clickedCollider.gameObject.GetComponent<Rigidbody>());
