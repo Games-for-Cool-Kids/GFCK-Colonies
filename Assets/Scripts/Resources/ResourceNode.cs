@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ResourceNode : MonoBehaviour
 {
-    public GameObject Resource = null;
+    public ResourceType Type = ResourceType.RESOURCE_INVALID;
 
     public float ResourceRefreshTime = 0.5f; // Seconds
     public float SpawnOffset = 3; // Units that the resource spawns towards the camera.
@@ -22,7 +22,7 @@ public class ResourceNode : MonoBehaviour
             Vector3 offset = Camera.main.transform.position - transform.position;
             offset = offset.normalized * 3;
 
-            GameObject newResource = Instantiate(Resource);
+            GameObject newResource = Instantiate(ResourceUtility.Instance.GetPrefabForResourceType(Type));
             newResource.transform.position = transform.position + offset;
         }
     }

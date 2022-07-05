@@ -129,6 +129,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 448e0c966373b9145961b7274ca51c8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Resource: {fileID: 0}
+  Type: 0
   ResourceRefreshTime: 0.5
   SpawnOffset: 3

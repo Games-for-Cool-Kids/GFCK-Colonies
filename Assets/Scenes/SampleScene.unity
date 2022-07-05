@@ -226,8 +226,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1618370869}
+  - component: {fileID: 1618370870}
+  - component: {fileID: 1618370871}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: Managers
   m_TagString: Untagged
   m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -248,6 +250,35 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1618370870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1618370868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9a8fb60c627ad54cbac61310d8f7f20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1618370871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1618370868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71be16dcc2ac3584da54b7298876d4ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ResourceGameObjectMapping:
+  - ResourceType: 0
+    VisualPrefab: {fileID: 6456415736538556246, guid: 5c3301c55670bf545acfc1a43989f670, type: 3}
+  - ResourceType: 1
+    VisualPrefab: {fileID: 0}
 --- !u!1 &1627357340
 GameObject:
   m_ObjectHideFlags: 0
@@ -398,6 +429,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8866339475164564940, guid: 2509446ec089cbf41893c32892ba0033, type: 3}
+      propertyPath: Type
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -8866339475164564940, guid: 2509446ec089cbf41893c32892ba0033, type: 3}
       propertyPath: Resource
       value: 
