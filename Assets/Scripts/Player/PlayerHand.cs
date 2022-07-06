@@ -11,6 +11,7 @@ public class PlayerHand : MonoBehaviour
     public float HoverHeight = 0.25f;
     public float HandDragForce = 10;
 
+    public int PreGrabLayer;
     public float PreGrabRigidBodyDrag; // Before hand grabs object.
     public float GrabbedRigidBodyDrag = 6; // While grabbed.
 
@@ -64,6 +65,22 @@ public class PlayerHand : MonoBehaviour
 
                 if (Input.GetMouseButtonUp(0))
                 {
+                    var resource = _selectedObject.GetComponent<ResourceDropped>();
+                    if(resource)
+                    {
+                        Collider colliderToDropOn = CastRayDownFromGrabbedObject().collider;
+
+                        if (colliderToDropOn != null)
+                        {
+                            var stockPile = colliderToDropOn.GetComponent<BuildingStockpile>();
+                            if(stockPile)
+                            {
+                                stockPile.DropOffResource(resource);
+                            }
+                        }
+                            
+                    }
+
                     ReleaseSelectedObject();
 
                     _interactionState = PlayerHandState.HAND_IDLE;
@@ -78,17 +95,21 @@ public class PlayerHand : MonoBehaviour
     {
         _selectedObject = clickedObject;
 
+        PreGrabLayer = _selectedObject.layer;
         PreGrabRigidBodyDrag = GetSelectedObjectRigidBody().drag;
 
         //Cursor.visible = false;
+        _selectedObject.layer = 2; // Ignore raycasts. Default built-in layer
         SetRigidBodyDrag(GrabbedRigidBodyDrag);
         ToggleSelectedObjectGravity(false);
     }
 
     private void ReleaseSelectedObject()
-    {
+    { 
         ToggleSelectedObjectGravity(true);
         SetRigidBodyDrag(PreGrabRigidBodyDrag);
+        _selectedObject.layer = PreGrabLayer;
+
         Cursor.visible = true;
 
         _selectedObject = null;
@@ -149,6 +170,21 @@ public class PlayerHand : MonoBehaviour
 
         RaycastHit rayHit;
         Physics.Raycast(worldMousePosNear, worldMousePosFar - worldMousePosNear, out rayHit);
+
+        return rayHit;
+    }
+
+    // Could be cool to do this check when the object actually hits something (after being released), so you can toss things as a player
+    private RaycastHit CastRayDownFromGrabbedObject()
+    {
+        Debug.Assert(_selectedObject);
+
+        // Maybe we should raycast from the hand instead. Check which one feels nicer in game
+        Vector3 startPos = _selectedObject.transform.position;
+        Vector3 dir = Vector3.down;
+
+        RaycastHit rayHit;
+        Physics.Raycast(startPos, dir, out rayHit, 10.0f);
 
         return rayHit;
     }

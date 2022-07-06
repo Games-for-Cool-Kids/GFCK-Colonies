@@ -67,6 +67,8 @@ public class ResourceManager : MonoBehaviour
         {
             RemoveResourceFromContainer(resourceInWorld, _resourcesInWorldUnclaimed);
         }
+
+        Destroy(resourceInWorld.gameObject);
     }
 
     private void MoveResourceBetweenContainers(ResourceDropped resourceInWorld, List<ResourceDropped> from, List<ResourceDropped> to)
@@ -102,6 +104,8 @@ public class ResourceManager : MonoBehaviour
             container[elementToBeRemoved] = container[lastElement];
         }
 
-        container[lastElement] = null;
+        container.RemoveAt(lastElement);
+
+        Debug.Log("Stopped tracking an instantiated resource. Now tracking: " + _resourcesInWorldUnclaimed.Count + " resources in the world.");
     }
 }
