@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ResourceNode : MonoBehaviour
 {
-    public ResourceType Type = ResourceType.RESOURCE_INVALID;
+    public GameObject ResourceToDrop = null;
 
     public float ResourceRefreshTime = 0.5f; // Seconds
     public float SpawnOffset = 3; // Units that the resource spawns towards the camera.
@@ -22,8 +22,14 @@ public class ResourceNode : MonoBehaviour
             Vector3 offset = Camera.main.transform.position - transform.position;
             offset = offset.normalized * 3;
 
-            GameObject newResource = Instantiate(ResourceUtility.Instance.GetPrefabForResourceType(Type));
+            GameObject newResource = Instantiate(ResourceToDrop);
             newResource.transform.position = transform.position + offset;
+
+            var droppedComponent = newResource.GetComponent<ResourceDropped>();
+            Debug.Assert(droppedComponent);
+
+            // TODO Instead of just calling this to track, it might be better if the ResourceManager does the actual spawning too, so the visuals can never be out of sync with the stored data
+            ResourceManager.Instance.AddResourceToWorld(droppedComponent);
         }
     }
 }

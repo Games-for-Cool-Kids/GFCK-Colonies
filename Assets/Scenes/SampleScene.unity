@@ -271,14 +271,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1618370868}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71be16dcc2ac3584da54b7298876d4ab, type: 3}
+  m_Script: {fileID: 11500000, guid: f5b6f3fc82bab424d93a4db7a56d2287, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ResourceGameObjectMapping:
-  - ResourceType: 0
-    VisualPrefab: {fileID: 6456415736538556246, guid: 5c3301c55670bf545acfc1a43989f670, type: 3}
-  - ResourceType: 1
-    VisualPrefab: {fileID: 0}
 --- !u!1 &1627357340
 GameObject:
   m_ObjectHideFlags: 0
@@ -429,14 +424,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -8866339475164564940, guid: 2509446ec089cbf41893c32892ba0033, type: 3}
-      propertyPath: Type
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8866339475164564940, guid: 2509446ec089cbf41893c32892ba0033, type: 3}
-      propertyPath: Resource
-      value: 
-      objectReference: {fileID: 6456415736538556246, guid: 5c3301c55670bf545acfc1a43989f670, type: 3}
     - target: {fileID: 7286569368308802902, guid: 2509446ec089cbf41893c32892ba0033, type: 3}
       propertyPath: m_RootOrder
       value: 1

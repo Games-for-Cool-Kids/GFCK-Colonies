@@ -50,6 +50,10 @@ public class PlayerHand : MonoBehaviour
                     {
                         clickedCollider.gameObject.GetComponent<ResourceNode>().SpawnResource();
                     }
+                    else if (clickedCollider.CompareTag(GlobalDefines.droppedResourceTag)) // Clickable dropped resource.
+                    {
+                        clickedCollider.gameObject.GetComponent<ResourceDropped>().PickUp();
+                    }
                 }
                 break;
 
