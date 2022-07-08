@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class PlayerHand : MonoBehaviour
 {
+    // Quick and dirty fix before we have unit seleciton
+    [SerializeField] GameObject Villager;
+
     private enum PlayerHandState
     {
         HAND_DRAGGING,
@@ -10,6 +13,7 @@ public class PlayerHand : MonoBehaviour
 
     public float HoverHeight = 0.25f;
     public float HandDragForce = 10;
+    public RaycastHit RayHit;
 
     public int PreGrabLayer;
     public float PreGrabRigidBodyDrag; // Before hand grabs object.
@@ -21,7 +25,13 @@ public class PlayerHand : MonoBehaviour
 
     void Update()
     {
-        HandleInput();       
+        HandleInput();
+
+        //Move this to HandeInput
+        if (Input.GetMouseButtonDown(0))
+        {
+            MoveToCursor();
+        }
     }
 
     private void HandleInput()
@@ -187,5 +197,20 @@ public class PlayerHand : MonoBehaviour
         Physics.Raycast(startPos, dir, out rayHit, 10.0f);
 
         return rayHit;
+    }
+
+
+    private void MoveToCursor()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        bool hasHit = Physics.Raycast(ray, out hit);
+
+        if (hasHit)
+        {
+            RayHit = hit;
+            Villager.GetComponent<Mover>().MoveToTarget(hit.point);
+        }
     }
 }
