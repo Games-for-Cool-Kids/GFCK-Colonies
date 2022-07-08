@@ -12,6 +12,8 @@ public class BuildHand : MonoBehaviour
 
     public event EventHandler StructurePlaced;
 
+    public float RotationSpeed = 100;
+
     private void Start()
     {
         if (Terrain == null)
@@ -28,18 +30,21 @@ public class BuildHand : MonoBehaviour
             MoveStructureToMousePos();
 
         if (Input.GetMouseButtonDown(0))
-        {
             PlaceStructure();
-        }
     }
 
     private void MoveStructureToMousePos()
     {
         var terrainMouseRayHit = CastMouseRayFromCamera();
-        if (terrainMouseRayHit.collider == null)
+        if(terrainMouseRayHit.collider == null)
             return;
 
         _selectedStructure.transform.position = terrainMouseRayHit.point;
+
+        if (Input.GetKey(KeyCode.E))
+            _selectedStructure.transform.Rotate(Vector3.up, RotationSpeed * Time.deltaTime);
+        if (Input.GetKey(KeyCode.Q))
+            _selectedStructure.transform.Rotate(Vector3.up, -RotationSpeed * Time.deltaTime);
     }
 
     private void PlaceStructure()
