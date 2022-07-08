@@ -38,7 +38,7 @@ public class PlayerHand : MonoBehaviour
                     if (clickedCollider == null)
                         return;
 
-                    if (clickedCollider.CompareTag(GlobalDefines.draggableObjectTag))// Draggable object.
+                    if (clickedCollider.CompareTag(GlobalDefines.draggableObjectTag)) // Draggable object.
                     {
                         Debug.Assert(clickedCollider.gameObject.GetComponent<Renderer>());
                         Debug.Assert(clickedCollider.gameObject.GetComponent<Rigidbody>());
@@ -155,18 +155,8 @@ public class PlayerHand : MonoBehaviour
 
     private RaycastHit CastMouseRayFromCamera()
     {
-        Vector3 screenMousePosNear = new Vector3(
-            Input.mousePosition.x,
-            Input.mousePosition.y,
-            Camera.main.nearClipPlane);
-
-        Vector3 screenMousePosFar = new Vector3(
-            Input.mousePosition.x,
-            Input.mousePosition.y,
-            Camera.main.farClipPlane);
-
-        Vector3 worldMousePosNear = Camera.main.ScreenToWorldPoint(screenMousePosNear);
-        Vector3 worldMousePosFar = Camera.main.ScreenToWorldPoint(screenMousePosFar);
+        Vector3 worldMousePosNear = CameraUtil.GetWorldPosMouseNear();
+        Vector3 worldMousePosFar = CameraUtil.GetWorldPosMouseFar();
 
         RaycastHit rayHit;
         Physics.Raycast(worldMousePosNear, worldMousePosFar - worldMousePosNear, out rayHit);
