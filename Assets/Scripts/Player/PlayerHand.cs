@@ -11,8 +11,8 @@ public class PlayerHand : MonoBehaviour
     public float HoverHeight = 0.25f;
     public float HandDragForce = 10;
 
-    public int PreGrabLayer;
-    public float PreGrabRigidBodyDrag; // Before hand grabs object.
+    private int _preGrabLayer;
+    private float _preGrabRigidBodyDrag; // Before hand grabs object.
     public float GrabbedRigidBodyDrag = 6; // While grabbed.
 
     private PlayerHandState _interactionState = PlayerHandState.HAND_IDLE;
@@ -95,8 +95,8 @@ public class PlayerHand : MonoBehaviour
     {
         _selectedObject = clickedObject;
 
-        PreGrabLayer = _selectedObject.layer;
-        PreGrabRigidBodyDrag = GetSelectedObjectRigidBody().drag;
+        _preGrabLayer = _selectedObject.layer;
+        _preGrabRigidBodyDrag = GetSelectedObjectRigidBody().drag;
 
         //Cursor.visible = false;
         _selectedObject.layer = 2; // Ignore raycasts. Default built-in layer
@@ -107,8 +107,8 @@ public class PlayerHand : MonoBehaviour
     private void ReleaseSelectedObject()
     { 
         ToggleSelectedObjectGravity(true);
-        SetRigidBodyDrag(PreGrabRigidBodyDrag);
-        _selectedObject.layer = PreGrabLayer;
+        SetRigidBodyDrag(_preGrabRigidBodyDrag);
+        _selectedObject.layer = _preGrabLayer;
 
         Cursor.visible = true;
 
