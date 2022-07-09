@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1486334480539609479}
   - component: {fileID: 8391339657706153526}
   - component: {fileID: 3926903553162688734}
+  - component: {fileID: 1146346939}
   m_Layer: 0
   m_Name: Soldier
   m_TagString: Untagged
@@ -135,7 +136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df2da137705eb424ebb2c5404906e243, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitMovement: {fileID: 0}
+  unitMovement: {fileID: 1146346939}
   onSelected:
     m_PersistentCalls:
       m_Calls:
@@ -166,6 +167,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1146346939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5344794208990623826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2728ff7c75df1874aa4ddc4bb117d829, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agent: {fileID: 8391339657706153526}
 --- !u!1001 &3155089744116548528
 PrefabInstance:
   m_ObjectHideFlags: 0

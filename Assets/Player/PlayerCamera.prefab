@@ -206,3 +206,7 @@ MonoBehaviour:
   HoverHeight: 0.5
   HandDragForce: 10
   GrabbedRigidBodyDrag: 6
+  unitSelectionArea: {fileID: 0}
+  layermask:
+    serializedVersion: 2
+    m_Bits: 1
