@@ -58,5 +58,6 @@ public class HandController : MonoBehaviour
         var buildHand = BuildHand.GetComponent<BuildHand>();
         buildHand.SelectStructure(structure);
         buildHand.StructurePlaced += ActivatePlayerHand;
+        buildHand.BuildCanceled += ActivatePlayerHand;
     }
 }
