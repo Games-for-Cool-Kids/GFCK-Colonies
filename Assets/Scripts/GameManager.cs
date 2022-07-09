@@ -4,6 +4,7 @@ public class GameManager : MonoBehaviour
 {
     public PlayerCamera PlayerCamera { get; private set; }
     public HandController HandController { get; private set; }
+    public Grid Grid { get; private set; }
 
     private static GameManager _instance;
     public static GameManager Instance
@@ -37,10 +38,12 @@ public class GameManager : MonoBehaviour
         Debug.Assert(handController != null);
 
         HandController = handController;
-    }
 
-    void Update()
-    {
-        
+        // Store grid.
+        var gridObject = GameObject.Find(GlobalDefines.gridName);
+        Debug.Assert(gridObject != null);
+        Grid grid = gridObject.GetComponent<Grid>();
+        Debug.Assert(grid != null);
+        Grid = grid;
     }
 }
