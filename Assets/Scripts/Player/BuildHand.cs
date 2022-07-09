@@ -12,8 +12,6 @@ public class BuildHand : MonoBehaviour
 
     public event EventHandler StructurePlaced;
 
-    public float RotationSpeed = 100;
-
     private void Start()
     {
         if (Terrain == null)
@@ -39,12 +37,16 @@ public class BuildHand : MonoBehaviour
         if(terrainMouseRayHit.collider == null)
             return;
 
-        _selectedStructure.transform.position = terrainMouseRayHit.point;
+        // Snap to 1x1 grid.
+        Vector3 newPos = new Vector3(MathF.Round(terrainMouseRayHit.point.x),
+                                     terrainMouseRayHit.point.y,
+                                     MathF.Round(terrainMouseRayHit.point.z));
+        _selectedStructure.transform.position = newPos;
 
-        if (Input.GetKey(KeyCode.E))
-            _selectedStructure.transform.Rotate(Vector3.up, RotationSpeed * Time.deltaTime);
-        if (Input.GetKey(KeyCode.Q))
-            _selectedStructure.transform.Rotate(Vector3.up, -RotationSpeed * Time.deltaTime);
+        if (Input.GetKeyDown(KeyCode.E))
+            _selectedStructure.transform.Rotate(Vector3.up, 90);
+        if (Input.GetKeyDown(KeyCode.Q))
+            _selectedStructure.transform.Rotate(Vector3.up, -90);
     }
 
     private void PlaceStructure()
