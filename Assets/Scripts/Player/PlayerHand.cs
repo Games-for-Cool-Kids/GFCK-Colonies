@@ -3,11 +3,6 @@ using UnityEngine;
 
 public class PlayerHand : MonoBehaviour
 {
-    public List<MilitaryUnit> SelectedUnits { get; } = new List<MilitaryUnit>();
-    
-    [SerializeField] private RectTransform unitSelectionArea = null;
-
-    [SerializeField] LayerMask layermask = new LayerMask();
 
     private enum PlayerHandState
     {
@@ -27,6 +22,10 @@ public class PlayerHand : MonoBehaviour
 
     private GameObject _selectedObject;
 
+    public List<MilitaryUnit> SelectedUnits { get; } = new List<MilitaryUnit>();
+    [SerializeField] private RectTransform unitSelectionArea = null;
+    [SerializeField] LayerMask layermask = new LayerMask();
+
     void Update()
     {
         HandleInput();
@@ -34,48 +33,12 @@ public class PlayerHand : MonoBehaviour
 
     private void HandleInput()
     {
-
         switch (_interactionState)
         {
             case PlayerHandState.HAND_IDLE:
-                if(Input.GetMouseButtonDown(0))
-                {
-                    Debug.Assert(_selectedObject == null);
-
-                    Collider clickedCollider = CastMouseRayFromCamera().collider;
-
-                    if (clickedCollider == null)
-                        return;
-
-                    if (clickedCollider.CompareTag(GlobalDefines.draggableObjectTag)
-                     || clickedCollider.CompareTag(GlobalDefines.resourceTag)) // Draggable objects.
-                    {
-                        Debug.Assert(clickedCollider.gameObject.GetComponent<Renderer>());
-                        Debug.Assert(clickedCollider.gameObject.GetComponent<Rigidbody>());
-
-                        GrabSelectedObject(clickedCollider.gameObject);
-
-                        _interactionState = PlayerHandState.HAND_DRAGGING;
-                    }
-                    else if (clickedCollider.CompareTag(GlobalDefines.resourceNodeTag)) // Clickable resource node.
-                    {
-                        clickedCollider.gameObject.GetComponent<ResourceNode>().SpawnResource();
-                    }
-                    else if (clickedCollider.TryGetComponent<MilitaryUnit>(out MilitaryUnit unit)) 
-                    {
-                        SelectedUnits.Add(unit);
-                        unit.Select();
-                        Debug.Log(unit.ToString());
-                    }
-                    else if (clickedCollider.TryGetComponent<Terrain>(out Terrain terrain))
-                    {
-                        foreach(MilitaryUnit selectedUnit in SelectedUnits)
-                        { selectedUnit.Deselect(); }
-                        SelectedUnits.Clear();
-                        Debug.Log("Cleared list");
-                    }
-                }
-                break;
+                if (Input.GetMouseButtonDown(0))
+                    HandleLeftClick();
+                    break;
 
             case PlayerHandState.HAND_DRAGGING:
                 Debug.Assert(_selectedObject != null);
@@ -84,29 +47,80 @@ public class PlayerHand : MonoBehaviour
 
                 if (Input.GetMouseButtonUp(0))
                 {
-                    var resource = _selectedObject.GetComponent<Resource>();
-                    if(resource)
-                    {
-                        Collider colliderToDropOn = CastRayDownFromGrabbedObject().collider;
-
-                        if (colliderToDropOn != null)
-                        {
-                            var stockPile = colliderToDropOn.GetComponent<BuildingStockpile>();
-                            if(stockPile)
-                            {
-                                stockPile.DropOffResource(resource);
-                            }
-                        }
-                            
-                    }
+                    DropOffResourceIfAble();
 
                     ReleaseSelectedObject();
-
-                    _interactionState = PlayerHandState.HAND_IDLE;
                 }
                 break;
+
             default:
                 break;
+        }
+    }
+
+    void DropOffResourceIfAble()
+    {
+        var resource = _selectedObject.GetComponent<Resource>();
+        if (resource)
+        {
+            Collider colliderToDropOn = CastRayDownFromGrabbedObject().collider;
+
+            if (colliderToDropOn != null)
+            {
+                var stockPile = colliderToDropOn.GetComponent<BuildingStockpile>();
+                if (stockPile)
+                {
+                    stockPile.DropOffResource(resource);
+                }
+            }
+        }
+    }
+
+    private void HandleLeftClick()
+    {
+        Debug.Assert(_selectedObject == null); // No object should be selected
+
+        Collider clickedCollider = CastMouseRayFromCamera().collider;
+        if (clickedCollider == null)
+            return;
+
+
+        if (clickedCollider.CompareTag(GlobalDefines.draggableObjectTag)
+         || clickedCollider.CompareTag(GlobalDefines.resourceTag)) // Draggable objects.
+        {
+            Debug.Assert(clickedCollider.gameObject.GetComponent<Renderer>());
+            Debug.Assert(clickedCollider.gameObject.GetComponent<Rigidbody>());
+
+            GrabSelectedObject(clickedCollider.gameObject);
+
+            return;
+        }
+        
+        if (clickedCollider.CompareTag(GlobalDefines.resourceNodeTag)) // Clickable resource node.
+        {
+            Debug.Assert(clickedCollider.gameObject.GetComponent<ResourceNode>());
+
+            clickedCollider.gameObject.GetComponent<ResourceNode>().SpawnResource();
+
+            return;
+        }
+
+        HandleUnitSelection(clickedCollider);
+    }
+
+    void HandleUnitSelection(Collider clickedCollider)
+    {
+        if (clickedCollider.TryGetComponent<MilitaryUnit>(out MilitaryUnit unit)) // Military unit selection.
+        {
+            SelectedUnits.Add(unit);
+            unit.Select();
+            Debug.Log(unit.ToString());
+        }
+        else if (clickedCollider.TryGetComponent<Terrain>(out Terrain terrain)) // Military unit deselection.
+        {
+            foreach (MilitaryUnit selectedUnit in SelectedUnits)
+            { selectedUnit.Deselect(); }
+            SelectedUnits.Clear();
         }
     }
 
@@ -121,6 +135,8 @@ public class PlayerHand : MonoBehaviour
         _selectedObject.layer = 2; // Ignore raycasts. Default built-in layer
         SetRigidBodyDrag(GrabbedRigidBodyDrag);
         ToggleSelectedObjectGravity(false);
+
+        _interactionState = PlayerHandState.HAND_DRAGGING;
     }
 
     private void ReleaseSelectedObject()
@@ -132,6 +148,8 @@ public class PlayerHand : MonoBehaviour
         Cursor.visible = true;
 
         _selectedObject = null;
+
+        _interactionState = PlayerHandState.HAND_IDLE;
     }
 
     private void DragSelectedObject()
