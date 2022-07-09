@@ -17,11 +17,13 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         _instance = this;
+
+        Initialize();
     }
 
-    void Start()
+    private void Initialize()
     {
-        GameObject mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        GameObject mainCamera = GameObject.FindGameObjectWithTag(GlobalDefines.mainCameraTag);
         Debug.Assert(mainCamera != null);
 
         // Store player camera.
