@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7950199765566341100
+--- !u!1 &4041936937562725235
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,48 +8,47 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7286569368308802902}
-  - component: {fileID: 5958477438890994419}
-  - component: {fileID: 8454440539865357881}
-  - component: {fileID: 7103761289737175743}
-  - component: {fileID: -8866339475164564940}
+  - component: {fileID: 4035963711149044177}
+  - component: {fileID: 4065565639868866685}
+  - component: {fileID: 4053785053548738525}
+  - component: {fileID: 7899755188433764167}
   m_Layer: 0
-  m_Name: Tree
-  m_TagString: ResourceNode
+  m_Name: Well
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7286569368308802902
+--- !u!4 &4035963711149044177
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7950199765566341100}
-  m_LocalRotation: {x: -0.7069834, y: 0, z: 0, w: 0.7072302}
-  m_LocalPosition: {x: 4.39, y: 2.25, z: 2.96}
-  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_GameObject: {fileID: 4041936937562725235}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.552167, y: 0.35432172, z: 11.397362}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -89.98, y: 0, z: 0}
---- !u!33 &5958477438890994419
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &4065565639868866685
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7950199765566341100}
-  m_Mesh: {fileID: 2494185979427425891, guid: 652c908a5e1d2f045aeed62ba5b27a37, type: 3}
---- !u!23 &8454440539865357881
+  m_GameObject: {fileID: 4041936937562725235}
+  m_Mesh: {fileID: 4300000, guid: 1abb9f46eeda6e24b8ea3cd9d812bfa6, type: 3}
+--- !u!23 &4053785053548738525
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7950199765566341100}
+  m_GameObject: {fileID: 4041936937562725235}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -63,8 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 413c2e3de5400ee44beb8717d1245b70, type: 2}
-  - {fileID: 2100000, guid: bd362da590fb201469fc3be8ced5bd81, type: 2}
+  - {fileID: 2100000, guid: edb3130a1ebb40d4ab78082b0aa98920, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -76,7 +74,7 @@ MeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -86,32 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &7103761289737175743
+--- !u!136 &7899755188433764167
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7950199765566341100}
+  m_GameObject: {fileID: 4041936937562725235}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.01
-  m_Height: 0.05
-  m_Direction: 2
-  m_Center: {x: 0.000042195898, y: 0.00042372794, z: 0.006592915}
---- !u!114 &-8866339475164564940
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7950199765566341100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 448e0c966373b9145961b7274ca51c8f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ResourceToDrop: {fileID: 6456415736538556246, guid: 5c3301c55670bf545acfc1a43989f670, type: 3}
-  ResourceRefreshTime: 0.5
-  SpawnOffset: 3
+  m_Radius: 1.2168856
+  m_Height: 4.03
+  m_Direction: 1
+  m_Center: {x: 0.000000059604645, y: 0.98, z: -0.000000059604645}
