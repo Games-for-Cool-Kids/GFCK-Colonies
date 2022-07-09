@@ -3,11 +3,10 @@ using UnityEngine;
 
 public class HandController : MonoBehaviour
 {
-    private GameObject _playerHand;
-    private GameObject _buildHand;
+    public PlayerHand PlayerHand { get; private set; }
+    public BuildHand BuildHand { get; private set; }
 
-    private GameObject _currentHand;
-    private GameObject _selectedBuilding;
+    private GameObject _currentHandObject;
 
     private enum ActiveHand
     {
@@ -18,42 +17,37 @@ public class HandController : MonoBehaviour
 
     void Start()
     {
-        _playerHand = GameObject.Find(GlobalDefines.playerHandName);
-        _buildHand = GameObject.Find(GlobalDefines.buildHandName);
+        PlayerHand = GameObject.Find(GlobalDefines.playerHandName).GetComponent<PlayerHand>();
+        BuildHand = GameObject.Find(GlobalDefines.buildHandName).GetComponent<BuildHand>();
 
-        Debug.Assert(_playerHand != null);
-        Debug.Assert(_buildHand != null);
+        Debug.Assert(PlayerHand != null);
+        Debug.Assert(BuildHand != null);
 
         ActivateHand(ActiveHand.PLAYER_HAND);
     }
 
-    private void Update()
-    {
-        
-    }
-
     private void ActivateHand(ActiveHand hand)
     {
-        _playerHand.SetActive(false);
-        _buildHand.SetActive(false);
+        PlayerHand.gameObject.SetActive(false);
+        BuildHand.gameObject.SetActive(false);
 
         switch(hand)
         {
             case ActiveHand.PLAYER_HAND:
-                _currentHand = _playerHand;
+                _currentHandObject = PlayerHand.gameObject;
                 break;
             case ActiveHand.BUILD_HAND:
-                _currentHand = _buildHand;
+                _currentHandObject = BuildHand.gameObject;
                 break;
         }
 
-        _currentHand.SetActive(true);
+        _currentHandObject.gameObject.SetActive(true);
     }
 
     private void ActivatePlayerHand(object sender, EventArgs e)
     {
         ActivateHand(ActiveHand.PLAYER_HAND);
-        var buildHand = _buildHand.GetComponent<BuildHand>();
+        var buildHand = BuildHand.GetComponent<BuildHand>();
         buildHand.StructurePlaced -= ActivatePlayerHand;
     }
 
@@ -61,7 +55,7 @@ public class HandController : MonoBehaviour
     {
         ActivateHand(ActiveHand.BUILD_HAND);
 
-        var buildHand = _buildHand.GetComponent<BuildHand>();
+        var buildHand = BuildHand.GetComponent<BuildHand>();
         buildHand.SelectStructure(structure);
         buildHand.StructurePlaced += ActivatePlayerHand;
     }
