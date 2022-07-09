@@ -1,14 +1,18 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerHand : MonoBehaviour
 {
-    // Quick and dirty fix before we have unit seleciton
-    [SerializeField] GameObject Villager;
+    public List<MilitaryUnit> SelectedUnits { get; } = new List<MilitaryUnit>();
+    
+    [SerializeField] private RectTransform unitSelectionArea = null;
+
+    [SerializeField] LayerMask layermask = new LayerMask();
 
     private enum PlayerHandState
     {
         HAND_DRAGGING,
-        HAND_IDLE,
+        HAND_IDLE
     }
 
     public float HoverHeight = 0.25f;
@@ -26,17 +30,12 @@ public class PlayerHand : MonoBehaviour
     void Update()
     {
         HandleInput();
-
-        //Move this to HandeInput
-        if (Input.GetMouseButtonDown(0))
-        {
-            MoveToCursor();
-        }
     }
 
     private void HandleInput()
     {
-        switch(_interactionState)
+
+        switch (_interactionState)
         {
             case PlayerHandState.HAND_IDLE:
                 if(Input.GetMouseButtonDown(0))
@@ -61,6 +60,19 @@ public class PlayerHand : MonoBehaviour
                     else if (clickedCollider.CompareTag(GlobalDefines.resourceNodeTag)) // Clickable resource node.
                     {
                         clickedCollider.gameObject.GetComponent<ResourceNode>().SpawnResource();
+                    }
+                    else if (clickedCollider.TryGetComponent<MilitaryUnit>(out MilitaryUnit unit)) 
+                    {
+                        SelectedUnits.Add(unit);
+                        unit.Select();
+                        Debug.Log(unit.ToString());
+                    }
+                    else if (clickedCollider.TryGetComponent<Terrain>(out Terrain terrain))
+                    {
+                        foreach(MilitaryUnit selectedUnit in SelectedUnits)
+                        { selectedUnit.Deselect(); }
+                        SelectedUnits.Clear();
+                        Debug.Log("Cleared list");
                     }
                 }
                 break;
@@ -184,20 +196,5 @@ public class PlayerHand : MonoBehaviour
         Physics.Raycast(startPos, dir, out rayHit, 10.0f);
 
         return rayHit;
-    }
-
-
-    private void MoveToCursor()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        bool hasHit = Physics.Raycast(ray, out hit);
-
-        if (hasHit)
-        {
-            RayHit = hit;
-            Villager.GetComponent<Mover>().MoveToTarget(hit.point);
-        }
     }
 }
