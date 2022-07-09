@@ -22,19 +22,19 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
-    private List<ResourceDropped> _resourcesInWorldUnclaimed = new List<ResourceDropped>();
-    private List<ResourceDropped> _resourcesInWorldClaimed = new List<ResourceDropped>();
+    private List<Resource> _resourcesInWorldUnclaimed = new List<Resource>();
+    private List<Resource> _resourcesInWorldClaimed = new List<Resource>();
 
     // TODO This works, but is currently not necessary. Bring back if needed, and decide if it should hold claimed/unclaimed/both resources
     // An "inverse" Dictionary, where we can efficiently find a dropped resource in the world based on a given resource type
-    //private Dictionary<ResourceType, List<ResourceDropped>> _ResourcesInWorldPerTypeUnclaimed = new Dictionary<ResourceType, List<ResourceDropped>>();
+    //private Dictionary<ResourceType, List<Resource>> _ResourcesInWorldPerTypeUnclaimed = new Dictionary<ResourceType, List<Resource>>();
 
     private void Awake()
     {
         _instance = this;
     }
 
-    public void AddResourceToWorld(ResourceDropped resourceInWorld)
+    public void AddResourceToWorld(Resource resourceInWorld)
     {
         //ResourceType type = resourceInWorld.ResourceType;
 
@@ -46,18 +46,18 @@ public class ResourceManager : MonoBehaviour
     }
 
     // Marks a resource as claimed, so it can't be picked up by someone else any more
-    public void ClaimResource(ResourceDropped resourceInWorld)
+    public void ClaimResource(Resource resourceInWorld)
     {
         MoveResourceBetweenContainers(resourceInWorld, _resourcesInWorldUnclaimed, _resourcesInWorldClaimed);
     }
 
     // Makes a resource, which was previously claimed, available to the world again so it can be claimed by others
-    public void UnclaimResource(ResourceDropped resourceInWorld)
+    public void UnclaimResource(Resource resourceInWorld)
     {
         MoveResourceBetweenContainers(resourceInWorld, _resourcesInWorldClaimed, _resourcesInWorldUnclaimed);
     }
 
-    public void RemoveResourceFromWorld(ResourceDropped resourceInWorld)
+    public void RemoveResourceFromWorld(Resource resourceInWorld)
     {
         if(_resourcesInWorldClaimed.Contains(resourceInWorld))
         {
@@ -71,7 +71,7 @@ public class ResourceManager : MonoBehaviour
         Destroy(resourceInWorld.gameObject);
     }
 
-    private void MoveResourceBetweenContainers(ResourceDropped resourceInWorld, List<ResourceDropped> from, List<ResourceDropped> to)
+    private void MoveResourceBetweenContainers(Resource resourceInWorld, List<Resource> from, List<Resource> to)
     {
         Debug.Assert(from.Contains(resourceInWorld));
         Debug.Assert(!to.Contains(resourceInWorld));
@@ -84,14 +84,14 @@ public class ResourceManager : MonoBehaviour
         Debug.Assert(to.Contains(resourceInWorld));
     }
 
-    private void AddResourceToContainer(ResourceDropped resourceInWorld, List<ResourceDropped> container)
+    private void AddResourceToContainer(Resource resourceInWorld, List<Resource> container)
     {
         Debug.Assert(!container.Contains(resourceInWorld));
 
         container.Add(resourceInWorld);
     }
 
-    private void RemoveResourceFromContainer(ResourceDropped resourceInWorld, List<ResourceDropped> container)
+    private void RemoveResourceFromContainer(Resource resourceInWorld, List<Resource> container)
     {
         Debug.Assert(container.Contains(resourceInWorld));
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ResourceDropped : MonoBehaviour
+public class Resource : MonoBehaviour
 {
     public ResourceType ResourceType;
 

@@ -25,7 +25,7 @@ public class ResourceNode : MonoBehaviour
             GameObject newResource = Instantiate(ResourceToDrop);
             newResource.transform.position = transform.position + offset;
 
-            var droppedComponent = newResource.GetComponent<ResourceDropped>();
+            var droppedComponent = newResource.GetComponent<Resource>();
             Debug.Assert(droppedComponent);
 
             // TODO Instead of just calling this to track, it might be better if the ResourceManager does the actual spawning too, so the visuals can never be out of sync with the stored data

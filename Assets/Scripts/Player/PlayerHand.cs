@@ -48,7 +48,8 @@ public class PlayerHand : MonoBehaviour
                     if (clickedCollider == null)
                         return;
 
-                    if (clickedCollider.CompareTag(GlobalDefines.draggableObjectTag)) // Draggable object.
+                    if (clickedCollider.CompareTag(GlobalDefines.draggableObjectTag)
+                     || clickedCollider.CompareTag(GlobalDefines.resourceTag)) // Draggable objects.
                     {
                         Debug.Assert(clickedCollider.gameObject.GetComponent<Renderer>());
                         Debug.Assert(clickedCollider.gameObject.GetComponent<Rigidbody>());
@@ -61,10 +62,6 @@ public class PlayerHand : MonoBehaviour
                     {
                         clickedCollider.gameObject.GetComponent<ResourceNode>().SpawnResource();
                     }
-                    //else if (clickedCollider.CompareTag(GlobalDefines.droppedResourceTag)) // Clickable dropped resource.
-                    //{
-                    //    clickedCollider.gameObject.GetComponent<ResourceDropped>().PickUp();
-                    //}
                 }
                 break;
 
@@ -75,7 +72,7 @@ public class PlayerHand : MonoBehaviour
 
                 if (Input.GetMouseButtonUp(0))
                 {
-                    var resource = _selectedObject.GetComponent<ResourceDropped>();
+                    var resource = _selectedObject.GetComponent<Resource>();
                     if(resource)
                     {
                         Collider colliderToDropOn = CastRayDownFromGrabbedObject().collider;
