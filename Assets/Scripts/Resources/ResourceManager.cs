@@ -1,13 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ResourceType
-{
-    RESOURCE_WOOD,
-    RESOURCE_STONE,
-    RESOURCE_INVALID
-}
-
 public class ResourceManager : MonoBehaviour
 {
     // TODO We miiiiight not want a singleton 
@@ -27,7 +20,7 @@ public class ResourceManager : MonoBehaviour
 
     // TODO This works, but is currently not necessary. Bring back if needed, and decide if it should hold claimed/unclaimed/both resources
     // An "inverse" Dictionary, where we can efficiently find a dropped resource in the world based on a given resource type
-    //private Dictionary<ResourceType, List<Resource>> _ResourcesInWorldPerTypeUnclaimed = new Dictionary<ResourceType, List<Resource>>();
+    //private Dictionary<Type, List<Resource>> _ResourcesInWorldPerTypeUnclaimed = new Dictionary<Type, List<Resource>>();
 
     private void Awake()
     {
@@ -36,7 +29,7 @@ public class ResourceManager : MonoBehaviour
 
     public void AddResourceToWorld(Resource resourceInWorld)
     {
-        //ResourceType type = resourceInWorld.ResourceType;
+        //Type type = resourceInWorld.Type;
 
         AddResourceToContainer(resourceInWorld, _resourcesInWorldUnclaimed);
 
