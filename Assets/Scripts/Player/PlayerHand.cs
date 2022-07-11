@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerHand : MonoBehaviour
 {
@@ -21,10 +23,19 @@ public class PlayerHand : MonoBehaviour
     private PlayerHandState _interactionState = PlayerHandState.HAND_IDLE;
 
     private GameObject _selectedObject;
+    private Camera mainCamera;
+    private Vector2 startPosition;
+
 
     public List<MilitaryUnit> SelectedUnits { get; } = new List<MilitaryUnit>();
     [SerializeField] private RectTransform unitSelectionArea = null;
     [SerializeField] LayerMask layermask = new LayerMask();
+    [SerializeField] PlayerInfo playerInfo;
+
+    private void Start()
+    {
+        mainCamera = Camera.main;
+    }
 
     void Update()
     {
@@ -37,8 +48,19 @@ public class PlayerHand : MonoBehaviour
         {
             case PlayerHandState.HAND_IDLE:
                 if (Input.GetMouseButtonDown(0))
+                {
                     HandleLeftClick();
-                    break;
+                }
+                else if (Mouse.current.leftButton.isPressed)
+                {
+                    UpdateSelectionArea();
+                }
+                else if (Mouse.current.leftButton.wasReleasedThisFrame)
+                {
+                    ClearSelectedUnits();
+                    ClearSelectionArea();
+                }
+                break;
 
             case PlayerHandState.HAND_DRAGGING:
                 Debug.Assert(_selectedObject != null);
@@ -104,7 +126,7 @@ public class PlayerHand : MonoBehaviour
 
             return;
         }
-
+        StartSelectionArea();
         HandleUnitSelection(clickedCollider);
     }
 
@@ -124,6 +146,33 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
+    private void StartSelectionArea()
+    {
+        foreach (MilitaryUnit SelectedUnit in SelectedUnits)
+        {
+            SelectedUnit.Deselect();
+        }
+        SelectedUnits.Clear();
+
+        unitSelectionArea.gameObject.SetActive(true);
+
+        startPosition = Mouse.current.position.ReadValue();
+
+        UpdateSelectionArea();
+    }
+
+    private void UpdateSelectionArea()
+    {
+        Vector2 mousePosition = Mouse.current.position.ReadValue();
+
+        float areaWidth = mousePosition.x - startPosition.x;
+        float areaHeight = mousePosition.y - startPosition.y;
+
+        unitSelectionArea.sizeDelta = new Vector2(MathF.Abs(areaWidth), MathF.Abs(areaHeight));
+        unitSelectionArea.anchoredPosition = startPosition +
+            new Vector2(areaWidth / 2, areaHeight / 2);
+    }
+
     private void GrabSelectedObject(GameObject clickedObject)
     {
         _selectedObject = clickedObject;
@@ -137,6 +186,53 @@ public class PlayerHand : MonoBehaviour
         ToggleSelectedObjectGravity(false);
 
         _interactionState = PlayerHandState.HAND_DRAGGING;
+    }
+
+    private void ClearSelectedUnits()
+    {
+        foreach (MilitaryUnit selectedUnit in SelectedUnits)
+        {
+            selectedUnit.Deselect();
+        }
+        SelectedUnits.Clear();
+    }
+
+    private void ClearSelectionArea()
+    {
+        unitSelectionArea.gameObject.SetActive(false);
+
+        if (unitSelectionArea.sizeDelta.magnitude == 0)
+        {
+            Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+            if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layermask)) { return; }
+
+            if (!hit.collider.TryGetComponent<MilitaryUnit>(out MilitaryUnit unit)) { return; }
+
+            SelectedUnits.Add(unit);
+
+            foreach (MilitaryUnit selectedUnit in SelectedUnits)
+            {
+                selectedUnit.Select();
+            }
+            return;
+        }
+
+        Vector2 min = unitSelectionArea.anchoredPosition - (unitSelectionArea.sizeDelta / 2);
+        Vector2 max = unitSelectionArea.anchoredPosition + (unitSelectionArea.sizeDelta / 2);
+
+        foreach (MilitaryUnit unit in playerInfo.GetMyMilitaryUnits())
+        {
+            Vector3 screenPosition = mainCamera.WorldToScreenPoint(unit.transform.position);
+            if (screenPosition.x > min.x &&
+                screenPosition.x < max.x &&
+                screenPosition.y > min.y &&
+                screenPosition.y < max.y)
+            {
+                SelectedUnits.Add(unit);
+                unit.Select();
+            }
+        }
+
     }
 
     private void ReleaseSelectedObject()
