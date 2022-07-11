@@ -117,7 +117,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3054282851085057923, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
       propertyPath: m_Name
-      value: Stockpile
+      value: BuildingVariant_Stockpile
       objectReference: {fileID: 0}
     - target: {fileID: 6081768947073097855, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
       propertyPath: m_AnchorMax.y
@@ -266,3 +266,15 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2803196613403723295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8076877368628994775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72adc16427f7c1c48aac91015f5347e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
