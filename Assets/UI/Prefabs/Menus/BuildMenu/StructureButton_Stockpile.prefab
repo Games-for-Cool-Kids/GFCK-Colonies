@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: -2074497701218525380, guid: 64ada2fc3551f464ea5a19f11864b609, type: 3}
       propertyPath: Structure
       value: 
-      objectReference: {fileID: 7587695356412159309, guid: 2ffe647ebe881434186516bc826ba622, type: 3}
+      objectReference: {fileID: 8076877368628994775, guid: ce76bc049505d7549b71fc66de8202b6, type: 3}
     - target: {fileID: 277460506429960961, guid: 64ada2fc3551f464ea5a19f11864b609, type: 3}
       propertyPath: m_text
       value: Stockpile
