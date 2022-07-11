@@ -11,6 +11,7 @@ public class BuildHand : MonoBehaviour
     private Material _selectedStructureOldMaterial;
 
     public event EventHandler StructurePlaced;
+    public event EventHandler BuildCanceled;
 
     private void Start()
     {
@@ -29,6 +30,9 @@ public class BuildHand : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
             PlaceStructure();
+
+        if (Input.GetMouseButtonDown(1))
+            CancelBuilding();
     }
 
     private void MoveStructureToMousePos()
@@ -74,4 +78,11 @@ public class BuildHand : MonoBehaviour
         return rayHit;
     }
 
+    private void CancelBuilding()
+    {
+        GameObject.Destroy(_selectedStructure);
+        _selectedStructure = null;
+
+        BuildCanceled.Invoke(this, null);
+    }
 }

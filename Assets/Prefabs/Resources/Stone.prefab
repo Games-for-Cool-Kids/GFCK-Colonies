@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1391043265532728, guid: 3a0a30c4014e71342ae79edf0a0e737a, type: 3}
       propertyPath: m_Name
-      value: Rock
+      value: Stone
       objectReference: {fileID: 0}
     - target: {fileID: 1391043265532728, guid: 3a0a30c4014e71342ae79edf0a0e737a, type: 3}
       propertyPath: m_TagString
@@ -119,4 +119,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bde1b50e8785d67458e159fa874dce37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ResourceType: 1
+  Type: 1
