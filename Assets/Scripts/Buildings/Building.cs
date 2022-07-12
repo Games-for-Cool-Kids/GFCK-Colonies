@@ -6,20 +6,43 @@ public class Building : MonoBehaviour
 {
     public Dictionary<ResourceType, int> StoredResources = new Dictionary<ResourceType, int>();
 
+    public event EventHandler<ResourceType> ResourceAdded;
+
     private void Start()
     {
         foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
         {
             StoredResources.Add(type, 0);
         }
+
+        ShowResourceDisplay(false);
     }
 
     // Can be done by player-hand, or by villager
     public void DropOffResource(Resource resource)
     {
-        StoredResources[resource.Type] += 1;
-        Debug.Log(StoredResources[resource.Type]);
+        ShowResourceDisplay(true);
 
-        ResourceManager.Instance.RemoveResourceFromWorld(resource);
+        StoredResources[resource.Type] += 1;
+
+        ResourceAdded.Invoke(this, resource.Type);
+
+        ResourceManager.Instance.RemoveResourceFromWorld(resource); // Call last since it also destroys the object.
+    }
+
+    public bool HasResources()
+    {
+        foreach(int storedAmount in StoredResources.Values)
+        {
+            if (storedAmount > 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    private void ShowResourceDisplay(bool show)
+    {
+        gameObject.GetComponentInChildren<Canvas>().enabled = show; // First child canvas component can be used to show/hide display.
     }
 }

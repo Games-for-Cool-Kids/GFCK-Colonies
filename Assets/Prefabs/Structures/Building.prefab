@@ -52,6 +52,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1383665135878517463}
     m_Modifications:
+    - target: {fileID: 757919993473524482, guid: 3dfbaca123cbcbe4ab3bf6ff16820f09, type: 3}
+      propertyPath: HeightOffset
+      value: 2.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1226869207458515527, guid: 3dfbaca123cbcbe4ab3bf6ff16820f09, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -188,9 +192,17 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6129512389570387776, guid: 3dfbaca123cbcbe4ab3bf6ff16820f09, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6129512389570387790, guid: 3dfbaca123cbcbe4ab3bf6ff16820f09, type: 3}
       propertyPath: m_Name
       value: Resource Display
+      objectReference: {fileID: 0}
+    - target: {fileID: 6129512389570387790, guid: 3dfbaca123cbcbe4ab3bf6ff16820f09, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6129512389570387791, guid: 3dfbaca123cbcbe4ab3bf6ff16820f09, type: 3}
       propertyPath: m_Pivot.x

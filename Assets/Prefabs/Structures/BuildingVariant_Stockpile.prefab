@@ -77,7 +77,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1383665135878517463, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1383665135878517463, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
       propertyPath: m_LocalPosition.y
@@ -85,7 +85,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1383665135878517463, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1383665135878517463, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
       propertyPath: m_LocalRotation.w
@@ -157,7 +157,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6081768947226523441, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 37.91
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6081768947226523441, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -184,16 +184,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6081768947872012276, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6081768947872012276, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 24.91
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6081768947872012276, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6081768948219164480, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
-      propertyPath: m_AdditionalShaderChannelsFlag
-      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7568739438462069967, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
