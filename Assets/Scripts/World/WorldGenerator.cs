@@ -54,7 +54,8 @@ public class WorldGenerator
 
                 // Noise is applied in y-axis only.
                 int height = 0;
-                if (ChunkStats.noisePatterns != null)
+                if (ChunkStats.noisePatterns != null
+                && ChunkStats.noisePatterns.Length > 0)
                 {
                     for (int i = 0; i < ChunkStats.noisePatterns.Length; i++)
                     {

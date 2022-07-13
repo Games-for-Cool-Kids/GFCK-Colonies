@@ -662,5 +662,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8949228526120178119, guid: 2dfd28f84b6e2f64392f293d51cf5ddb, type: 3}
+      propertyPath: noisePatterns.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8949228526120178119, guid: 2dfd28f84b6e2f64392f293d51cf5ddb, type: 3}
+      propertyPath: noisePatterns.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: ca8851569ba6ac04083bc99220e0b0a5, type: 2}
+    - target: {fileID: 8949228526120178119, guid: 2dfd28f84b6e2f64392f293d51cf5ddb, type: 3}
+      propertyPath: noisePatterns.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: ca8851569ba6ac04083bc99220e0b0a5, type: 2}
+    - target: {fileID: 8949228526120178119, guid: 2dfd28f84b6e2f64392f293d51cf5ddb, type: 3}
+      propertyPath: noisePatterns.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: f4c59de6448f31b44b282c4645b97792, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2dfd28f84b6e2f64392f293d51cf5ddb, type: 3}
