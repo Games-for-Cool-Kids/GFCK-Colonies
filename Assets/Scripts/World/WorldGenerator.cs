@@ -39,14 +39,14 @@ public class WorldGenerator
 
     private WorldMeshData CreateWorldData()
     {
-        GeneratedGrid = new BlockGrid(ChunkStats.MaxX, ChunkStats.MaxY, ChunkStats.MaxZ);
+        GeneratedGrid = new BlockGrid(ChunkStats.maxX, ChunkStats.maxY, ChunkStats.maxZ);
 
         WorldMeshData worldData = new WorldMeshData();
-        for (int x = 0; x < ChunkStats.MaxX; x++)
+        for (int x = 0; x < ChunkStats.maxX; x++)
         {
-            for (int z = 0; z < ChunkStats.MaxZ; z++)
+            for (int z = 0; z < ChunkStats.maxZ; z++)
             {
-                float height = GetNoise(x, 0, z, ChunkStats.Frequency, ChunkStats.MaxY);
+                float height = GetNoise(x, 0, z, ChunkStats.frequency, ChunkStats.maxY);
 
                 Block newBlock = new Block()
                 {

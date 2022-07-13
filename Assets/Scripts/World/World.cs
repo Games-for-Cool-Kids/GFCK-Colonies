@@ -4,19 +4,19 @@ using System.Threading;
 
 public class World : MonoBehaviour
 {
-    public int MaxX = 16;
-    public int MaxY = 16;
-    public int MaxZ = 16;
+    public int maxX = 16;
+    public int maxY = 16;
+    public int maxZ = 16;
 
-    public float BaseNoise = 0.02f;
-    public float BaseNoiseHeight = 4;
-    public float Frequency = 0.005f;
+    public float baseNoise = 0.02f;
+    public float baseNoiseHeight = 4;
+    public float frequency = 0.005f;
 
-    public BlockGrid BlockGrid;
+    public BlockGrid blockGrid;
 
-    public int MaxWorkers = 4;
-    List<WorldGenerator> ToDoWorkers = new List<WorldGenerator>();
-    List<WorldGenerator> CurrentWorkers = new List<WorldGenerator>();
+    public int maxWorkers = 4;
+    List<WorldGenerator> toDoWorkers = new List<WorldGenerator>();
+    List<WorldGenerator> currentWorkers = new List<WorldGenerator>();
 
     private void Start()
     {
@@ -31,12 +31,12 @@ public class World : MonoBehaviour
         }
 
         int i = 0;
-        while(i < CurrentWorkers.Count)
+        while(i < currentWorkers.Count)
         {
-            if(CurrentWorkers[i].GenerationCompleted)
+            if(currentWorkers[i].GenerationCompleted)
             {
-                CurrentWorkers[i].NotifyCompleted();
-                CurrentWorkers.RemoveAt(i);
+                currentWorkers[i].NotifyCompleted();
+                currentWorkers.RemoveAt(i);
             }
             else
             {
@@ -44,12 +44,12 @@ public class World : MonoBehaviour
             }
         }
 
-        if(ToDoWorkers.Count > 0
-        && CurrentWorkers.Count < MaxWorkers)
+        if(toDoWorkers.Count > 0
+        && currentWorkers.Count < maxWorkers)
         {
-            WorldGenerator generator = ToDoWorkers[0];
-            ToDoWorkers.RemoveAt(0);
-            CurrentWorkers.Add(generator);
+            WorldGenerator generator = toDoWorkers[0];
+            toDoWorkers.RemoveAt(0);
+            currentWorkers.Add(generator);
 
             Thread workerThread = new Thread(generator.GenerateWorld);
             workerThread.Start();
@@ -59,12 +59,12 @@ public class World : MonoBehaviour
     public void RequestWorldGeneration()
     {
         WorldGenerator generator = new(GetChunkStats(), LoadData);
-        ToDoWorkers.Add(generator);
+        toDoWorkers.Add(generator);
     }
 
     private void LoadData(BlockGrid grid, WorldMeshData data)
     {
-        BlockGrid = grid;
+        blockGrid = grid;
         LoadMeshData(data);
     }
 
@@ -86,12 +86,12 @@ public class World : MonoBehaviour
     {
         return new WorldChunkStats
         {
-            MaxX = MaxX,
-            MaxY = MaxY,
-            MaxZ = MaxZ,
-            BaseNoise = BaseNoise,
-            BaseNoiseHeight = BaseNoiseHeight,
-            Frequency = Frequency,
+            maxX = maxX,
+            maxY = maxY,
+            maxZ = maxZ,
+            baseNoise = baseNoise,
+            baseNoiseHeight = baseNoiseHeight,
+            frequency = frequency,
         };
     }
 }
