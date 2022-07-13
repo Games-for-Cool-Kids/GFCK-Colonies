@@ -221,7 +221,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92455fc2529c73841be4461a2b2d1f7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Terrain: {fileID: 0}
   SelectedBuildingMaterial: {fileID: 2100000, guid: b61cbbdfd37e46b4188cf30c1a3f504b, type: 2}
 --- !u!1 &5025203997568979134
 GameObject:
@@ -251,8 +250,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5025203997568979134}
-  m_LocalRotation: {x: 0.42791796, y: 0, z: 0, w: 0.9038176}
-  m_LocalPosition: {x: 0, y: 6.83, z: -8.79}
+  m_LocalRotation: {x: 0.44724265, y: 0.33485457, z: -0.18525396, w: 0.80841047}
+  m_LocalPosition: {x: -2, y: 18, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -260,7 +259,7 @@ Transform:
   - {fileID: 7953979423124183733}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 50.671, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 57.906, y: 45, z: 0}
 --- !u!20 &5025203997568979132
 Camera:
   m_ObjectHideFlags: 0
