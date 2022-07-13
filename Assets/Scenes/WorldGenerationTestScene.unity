@@ -338,6 +338,7 @@ MonoBehaviour:
   BaseNoise: 0.02
   BaseNoiseHeight: 4
   Frequency: 0.02
+  MaxWorkers: 4
 --- !u!23 &1562947405
 MeshRenderer:
   m_ObjectHideFlags: 0
