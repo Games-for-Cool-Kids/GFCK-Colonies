@@ -15,6 +15,8 @@ public class World : MonoBehaviour
     public float baseNoiseHeight = 4;
     public float frequency = 0.005f;
 
+    public NoiseBase[] noisePatterns;
+
     public int maxWorkers = 4;
     List<WorldGenerator> toDoWorkers = new List<WorldGenerator>();
     List<WorldGenerator> currentWorkers = new List<WorldGenerator>();
@@ -125,6 +127,7 @@ public class World : MonoBehaviour
             baseNoiseHeight = this.baseNoiseHeight,
             frequency = this.frequency,
             origin = position,
+            noisePatterns = this.noisePatterns,
         };
     }
 

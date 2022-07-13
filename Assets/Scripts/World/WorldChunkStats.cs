@@ -10,4 +10,6 @@ public class WorldChunkStats
     public float frequency = 0.005f;
 
     public Vector3 origin;
+
+    public NoiseBase[] noisePatterns;
 }

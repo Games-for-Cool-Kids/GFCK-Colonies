@@ -32,7 +32,7 @@ public class WorldGenerator
         finishCallback(GeneratedGrid, WorldMeshData);
     }
 
-    private int GetNoise(int x, int y, int z, float scale, int max)
+    private int GetNoise(float x, float y, float z, float scale, int max)
     {
         return Mathf.FloorToInt((Noise.Generate(x * scale, y * scale, z * scale) + 1) * (max / 2.0f));
     }
@@ -48,12 +48,29 @@ public class WorldGenerator
         {
             for (int z = 0; z < ChunkStats.chunkSize; z++)
             {
-                float height = GetNoise(x, 0, z, ChunkStats.frequency, ChunkStats.maxY);
+                Vector3 noisePosition = ChunkStats.origin;
+                noisePosition.x += x;
+                noisePosition.z += z;
+
+                // Noise is applied in y-axis only.
+                int height = 0;
+                if (ChunkStats.noisePatterns != null)
+                {
+                    for (int i = 0; i < ChunkStats.noisePatterns.Length; i++)
+                    {
+                        var noisePattern = ChunkStats.noisePatterns[i];
+                        height += noisePattern.Calculate(ChunkStats, noisePosition);
+                    }
+
+                    // Clamp/Normalize height
+                    height /= ChunkStats.noisePatterns.Length;
+                    height = Mathf.Clamp(height, 0, ChunkStats.maxY - 1);
+                }
 
                 Block newBlock = new Block()
                 {
                     x = x,
-                    y = Mathf.FloorToInt(height),
+                    y = height,
                     z = z,
                     filled = true,
                 };
