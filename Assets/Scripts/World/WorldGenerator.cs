@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using UnityEngine;
+using SimplexNoise;
 
 public class WorldGenerator : MonoBehaviour
 {
@@ -8,6 +8,12 @@ public class WorldGenerator : MonoBehaviour
     public int maxX = 16;
     public int maxZ = 16;
 
+    public float BaseNoise = 0.02f;
+    public float BaseHeight = -5f;
+    public float BaseNoiseHeight = 4;
+    public int Elevation = 15;
+    public float Frequency = 0.005f;
+
     void Start()
     {
         _meshFilter = GetComponent<MeshFilter>();
@@ -15,6 +21,11 @@ public class WorldGenerator : MonoBehaviour
         WorldMeshData meshData = new WorldMeshData();
 
         LoadMeshData(CreateWorld());
+    }
+
+    int GetNoise(int x, int y, int z, float scale, int max)
+    {
+        return Mathf.FloorToInt((Noise.Generate(x * scale, y * scale, z * scale) + 1) * (max / 2.0f));
     }
 
     WorldMeshData CreateWorld()
@@ -26,8 +37,11 @@ public class WorldGenerator : MonoBehaviour
             {
                 Vector3 blockPos = Vector3.zero;
                 blockPos.x = x;
-                blockPos.y = Random.Range(0, 3);
                 blockPos.z = z;
+
+                float height = BaseHeight;
+                height += GetNoise(x, 0, z, Frequency, Elevation);
+                blockPos.y = height;
 
                 WorldMeshUtilities.CreateFaceUp(worldData, blockPos);
             }
