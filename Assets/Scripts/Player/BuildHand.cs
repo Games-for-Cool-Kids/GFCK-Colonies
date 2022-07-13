@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class BuildHand : MonoBehaviour
 {
-    public GameObject Terrain;
-
     private GameObject _selectedStructure;
 
     public Material SelectedBuildingMaterial;
@@ -15,12 +13,7 @@ public class BuildHand : MonoBehaviour
 
     private void Start()
     {
-        if (Terrain == null)
-        {
-            Terrain = GameObject.Find("Terrain"); // Look for terrain at startup, good enough for now.
-            Debug.Assert(Terrain != null);
-            Debug.Assert(Terrain.GetComponent<TerrainCollider>() != null);
-        }
+
     }
 
     void Update()
@@ -73,7 +66,7 @@ public class BuildHand : MonoBehaviour
     private RaycastHit CastMouseRayFromCamera()
     {
         RaycastHit rayHit;
-        Terrain.GetComponent<TerrainCollider>().Raycast(CameraUtil.GetRayFromCameraToMouse(), out rayHit, 1000);
+        GameManager.Instance.TerrainCollider.Raycast(CameraUtil.GetRayFromCameraToMouse(), out rayHit, 1000);
 
         return rayHit;
     }

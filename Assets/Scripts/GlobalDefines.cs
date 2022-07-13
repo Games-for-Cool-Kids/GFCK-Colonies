@@ -10,4 +10,5 @@ public class GlobalDefines
     static public string playerHandName = "PlayerHand";
     static public string buildHandName = "BuildHand";
     static public string gridName = "Grid";
+    static public string terrainName = "Terrain";
 }
