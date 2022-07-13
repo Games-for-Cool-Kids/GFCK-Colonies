@@ -1,42 +1,25 @@
 using UnityEngine;
 using SimplexNoise;
 
-public class WorldGenerator : MonoBehaviour
+public class WorldGenerator
 {
-    private MeshFilter _meshFilter;
+    public BlockGrid Grid;
+    public WorldChunkStats ChunkStats;
 
-    public int MaxX = 16;
-    public int MaxY = 16;
-    public int MaxZ = 16;
+    public delegate void WorldGenerationCallback(BlockGrid grid, WorldMeshData data);
+    WorldGenerationCallback finishCallback;
 
-    public float BaseNoise = 0.02f;
-    public float BaseNoiseHeight = 4;
-    public float Frequency = 0.005f;
-
-    BlockGrid Grid;
-
-    void Start()
+    public void GenerateWorld(WorldChunkStats stats, WorldGenerationCallback generationCallback)
     {
-        _meshFilter = GetComponent<MeshFilter>();
-
-        Generate();
-    }
+        ChunkStats = stats;
+        finishCallback = generationCallback;
 
 
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            Generate();
-        }
-    }
-    private void Generate()
-    {
-        GameObject.Destroy(_meshFilter.mesh); // Delete old mesh
+        WorldMeshData worldData = CreateWorldData();
+        CreateBlockMeshes(worldData);
 
-        WorldMeshData worldData = CreateWorld();
-        LoadFilledBlocks(worldData);
-        LoadMeshData(worldData);
+
+        finishCallback(Grid, worldData);
     }
 
     private int GetNoise(int x, int y, int z, float scale, int max)
@@ -44,16 +27,16 @@ public class WorldGenerator : MonoBehaviour
         return Mathf.FloorToInt((Noise.Generate(x * scale, y * scale, z * scale) + 1) * (max / 2.0f));
     }
 
-    private WorldMeshData CreateWorld()
+    private WorldMeshData CreateWorldData()
     {
-        Grid = new BlockGrid(MaxX, MaxY, MaxZ);
+        Grid = new BlockGrid(ChunkStats.MaxX, ChunkStats.MaxY, ChunkStats.MaxZ);
 
         WorldMeshData worldData = new WorldMeshData();
-        for(int x = 0; x < MaxX; x++)
+        for (int x = 0; x < ChunkStats.MaxX; x++)
         {
-            for (int z = 0; z < MaxZ; z++)
+            for (int z = 0; z < ChunkStats.MaxZ; z++)
             {
-                float height = GetNoise(x, 0, z, Frequency, MaxY);
+                float height = GetNoise(x, 0, z, ChunkStats.Frequency, ChunkStats.MaxY);
 
                 Block newBlock = new Block()
                 {
@@ -69,25 +52,11 @@ public class WorldGenerator : MonoBehaviour
         return worldData;
     }
 
-    private void LoadFilledBlocks(WorldMeshData data)
+    private void CreateBlockMeshes(WorldMeshData data)
     {
         foreach (Block filledBlock in Grid.GetFilledBlocks())
         {
-            filledBlock.Load(data, Grid);
+            filledBlock.CreateMesh(data, Grid);
         }
-    }
-
-    public void LoadMeshData(WorldMeshData data)
-    {
-        Mesh mesh = new Mesh()
-        {
-            vertices = data.vertices.ToArray(),
-            uv = data.uv.ToArray(),
-            triangles = data.triangles.ToArray()
-        };
-
-        mesh.RecalculateNormals();
-
-        _meshFilter.mesh = mesh;
     }
 }

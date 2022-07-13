@@ -314,7 +314,7 @@ GameObject:
   - component: {fileID: 1562947405}
   - component: {fileID: 1562947404}
   m_Layer: 0
-  m_Name: World Generator
+  m_Name: World
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

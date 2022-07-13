@@ -11,7 +11,7 @@ public class Block
         return new Vector3(x, y, z);
     }
 
-    public virtual void Load(WorldMeshData worldData, BlockGrid grid)
+    public virtual void CreateMesh(WorldMeshData worldData, BlockGrid grid)
     {
         Vector3 blockPos = GetPosition();
 
