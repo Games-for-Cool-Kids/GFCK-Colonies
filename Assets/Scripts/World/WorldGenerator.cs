@@ -3,23 +3,33 @@ using SimplexNoise;
 
 public class WorldGenerator
 {
-    public BlockGrid Grid;
-    public WorldChunkStats ChunkStats;
+    private WorldChunkStats ChunkStats;
+    private WorldMeshData WorldMeshData;
+
+    private BlockGrid GeneratedGrid = null;
+
+    public volatile bool GenerationCompleted;
 
     public delegate void WorldGenerationCallback(BlockGrid grid, WorldMeshData data);
     WorldGenerationCallback finishCallback;
 
-    public void GenerateWorld(WorldChunkStats stats, WorldGenerationCallback generationCallback)
+    public WorldGenerator(WorldChunkStats stats, WorldGenerationCallback generationCallback)
     {
         ChunkStats = stats;
         finishCallback = generationCallback;
+    }
 
+    public void GenerateWorld()
+    {
+        WorldMeshData = CreateWorldData();
+        CreateBlockMeshes();
 
-        WorldMeshData worldData = CreateWorldData();
-        CreateBlockMeshes(worldData);
+        GenerationCompleted = true;
+    }
 
-
-        finishCallback(Grid, worldData);
+    public void NotifyCompleted()
+    {
+        finishCallback(GeneratedGrid, WorldMeshData);
     }
 
     private int GetNoise(int x, int y, int z, float scale, int max)
@@ -29,7 +39,7 @@ public class WorldGenerator
 
     private WorldMeshData CreateWorldData()
     {
-        Grid = new BlockGrid(ChunkStats.MaxX, ChunkStats.MaxY, ChunkStats.MaxZ);
+        GeneratedGrid = new BlockGrid(ChunkStats.MaxX, ChunkStats.MaxY, ChunkStats.MaxZ);
 
         WorldMeshData worldData = new WorldMeshData();
         for (int x = 0; x < ChunkStats.MaxX; x++)
@@ -41,22 +51,22 @@ public class WorldGenerator
                 Block newBlock = new Block()
                 {
                     x = x,
-                    y = Mathf.RoundToInt(height),
+                    y = Mathf.FloorToInt(height),
                     z = z,
                     filled = true,
                 };
-                Grid.SetBlock(newBlock.x, newBlock.y, newBlock.z, newBlock);
+                GeneratedGrid.SetBlock(newBlock.x, newBlock.y, newBlock.z, newBlock);
             }
         }
 
         return worldData;
     }
 
-    private void CreateBlockMeshes(WorldMeshData data)
+    private void CreateBlockMeshes()
     {
-        foreach (Block filledBlock in Grid.GetFilledBlocks())
+        foreach (Block filledBlock in GeneratedGrid.GetFilledBlocks())
         {
-            filledBlock.CreateMesh(data, Grid);
+            filledBlock.CreateMesh(WorldMeshData, GeneratedGrid);
         }
     }
 }

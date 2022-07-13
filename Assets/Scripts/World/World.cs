@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 using System.Threading;
 
 public class World : MonoBehaviour
@@ -13,24 +14,52 @@ public class World : MonoBehaviour
 
     public BlockGrid BlockGrid;
 
-    void Start()
-    {
-        Generate();
-    }
+    public int MaxWorkers = 4;
+    List<WorldGenerator> ToDoWorkers = new List<WorldGenerator>();
+    List<WorldGenerator> CurrentWorkers = new List<WorldGenerator>();
 
+    private void Start()
+    {
+        RequestWorldGeneration();
+    }
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            Generate();
+            RequestWorldGeneration();
+        }
+
+        int i = 0;
+        while(i < CurrentWorkers.Count)
+        {
+            if(CurrentWorkers[i].GenerationCompleted)
+            {
+                CurrentWorkers[i].NotifyCompleted();
+                CurrentWorkers.RemoveAt(i);
+            }
+            else
+            {
+                i++;
+            }
+        }
+
+        if(ToDoWorkers.Count > 0
+        && CurrentWorkers.Count < MaxWorkers)
+        {
+            WorldGenerator generator = ToDoWorkers[0];
+            ToDoWorkers.RemoveAt(0);
+            CurrentWorkers.Add(generator);
+
+            Thread workerThread = new Thread(generator.GenerateWorld);
+            workerThread.Start();
         }
     }
 
-    private void Generate()
+    public void RequestWorldGeneration()
     {
-        WorldGenerator generator = new();
-        generator.GenerateWorld(GetChunkStats(), LoadData);
+        WorldGenerator generator = new(GetChunkStats(), LoadData);
+        ToDoWorkers.Add(generator);
     }
 
     private void LoadData(BlockGrid grid, WorldMeshData data)
