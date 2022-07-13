@@ -18,17 +18,32 @@ public class WorldGenerator : MonoBehaviour
     {
         _meshFilter = GetComponent<MeshFilter>();
 
+        Generate();
+    }
+
+
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            Generate();
+        }
+    }
+    private void Generate()
+    {
+        GameObject.Destroy(_meshFilter.mesh);
+
         WorldMeshData meshData = new WorldMeshData();
 
         LoadMeshData(CreateWorld());
     }
 
-    int GetNoise(int x, int y, int z, float scale, int max)
+    private int GetNoise(int x, int y, int z, float scale, int max)
     {
         return Mathf.FloorToInt((Noise.Generate(x * scale, y * scale, z * scale) + 1) * (max / 2.0f));
     }
 
-    WorldMeshData CreateWorld()
+    private WorldMeshData CreateWorld()
     {
         WorldMeshData worldData = new WorldMeshData();
         for(int x = 0; x < maxX; x++)
@@ -44,6 +59,10 @@ public class WorldGenerator : MonoBehaviour
                 blockPos.y = height;
 
                 WorldMeshUtilities.CreateFaceUp(worldData, blockPos);
+                WorldMeshUtilities.CreateFaceRight(worldData, blockPos);
+                WorldMeshUtilities.CreateFaceLeft(worldData, blockPos);
+                WorldMeshUtilities.CreateFaceForward(worldData, blockPos);
+                WorldMeshUtilities.CreateFaceBackward(worldData, blockPos);
             }
         }
 
@@ -58,6 +77,9 @@ public class WorldGenerator : MonoBehaviour
             uv = data.uv.ToArray(),
             triangles = data.triangles.ToArray()
         };
+
+        mesh.RecalculateNormals();
+
         _meshFilter.mesh = mesh;
     }
 }
