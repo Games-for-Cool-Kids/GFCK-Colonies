@@ -5,14 +5,15 @@ public class WorldGenerator : MonoBehaviour
 {
     private MeshFilter _meshFilter;
 
-    public int maxX = 16;
-    public int maxZ = 16;
+    public int MaxX = 16;
+    public int MaxY = 16;
+    public int MaxZ = 16;
 
     public float BaseNoise = 0.02f;
-    public float BaseHeight = -5f;
     public float BaseNoiseHeight = 4;
-    public int Elevation = 15;
     public float Frequency = 0.005f;
+
+    BlockGrid Grid;
 
     void Start()
     {
@@ -31,11 +32,11 @@ public class WorldGenerator : MonoBehaviour
     }
     private void Generate()
     {
-        GameObject.Destroy(_meshFilter.mesh);
+        GameObject.Destroy(_meshFilter.mesh); // Delete old mesh
 
-        WorldMeshData meshData = new WorldMeshData();
-
-        LoadMeshData(CreateWorld());
+        WorldMeshData worldData = CreateWorld();
+        LoadFilledBlocks(worldData);
+        LoadMeshData(worldData);
     }
 
     private int GetNoise(int x, int y, int z, float scale, int max)
@@ -45,28 +46,35 @@ public class WorldGenerator : MonoBehaviour
 
     private WorldMeshData CreateWorld()
     {
+        Grid = new BlockGrid(MaxX, MaxY, MaxZ);
+
         WorldMeshData worldData = new WorldMeshData();
-        for(int x = 0; x < maxX; x++)
+        for(int x = 0; x < MaxX; x++)
         {
-            for (int z = 0; z < maxZ; z++)
+            for (int z = 0; z < MaxZ; z++)
             {
-                Vector3 blockPos = Vector3.zero;
-                blockPos.x = x;
-                blockPos.z = z;
+                float height = GetNoise(x, 0, z, Frequency, MaxY);
 
-                float height = BaseHeight;
-                height += GetNoise(x, 0, z, Frequency, Elevation);
-                blockPos.y = height;
-
-                WorldMeshUtilities.CreateFaceUp(worldData, blockPos);
-                WorldMeshUtilities.CreateFaceRight(worldData, blockPos);
-                WorldMeshUtilities.CreateFaceLeft(worldData, blockPos);
-                WorldMeshUtilities.CreateFaceForward(worldData, blockPos);
-                WorldMeshUtilities.CreateFaceBackward(worldData, blockPos);
+                Block newBlock = new Block()
+                {
+                    x = x,
+                    y = Mathf.RoundToInt(height),
+                    z = z,
+                    filled = true,
+                };
+                Grid.SetBlock(newBlock.x, newBlock.y, newBlock.z, newBlock);
             }
         }
 
         return worldData;
+    }
+
+    private void LoadFilledBlocks(WorldMeshData data)
+    {
+        foreach (Block filledBlock in Grid.GetFilledBlocks())
+        {
+            filledBlock.Load(data, Grid);
+        }
     }
 
     public void LoadMeshData(WorldMeshData data)

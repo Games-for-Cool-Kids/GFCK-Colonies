@@ -200,7 +200,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 171576678}
   m_LocalRotation: {x: 0.28792122, y: 0.18367565, z: -0.050116584, w: 0.9385377}
-  m_LocalPosition: {x: 4.023802, y: 35.681534, z: -16.68726}
+  m_LocalPosition: {x: 9.51, y: 42.85, z: -16.68726}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -332,12 +332,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05183713e9a9f3940a0dac72dbdf053e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxX: 50
-  maxZ: 50
+  MaxX: 64
+  MaxY: 16
+  MaxZ: 64
   BaseNoise: 0.02
-  BaseHeight: -5
   BaseNoiseHeight: 4
-  Elevation: 15
   Frequency: 0.02
 --- !u!23 &1562947405
 MeshRenderer:
