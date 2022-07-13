@@ -2,9 +2,8 @@
 
 public class WorldChunkStats
 {
-    public int maxX = 16;
+    public int chunkSize = 16;
     public int maxY = 16;
-    public int maxZ = 16;
 
     public float baseNoise = 0.02f;
     public float baseNoiseHeight = 4;

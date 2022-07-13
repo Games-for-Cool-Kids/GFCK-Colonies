@@ -333,11 +333,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxX: 64
-  MaxY: 16
+  MaxY: 12
   MaxZ: 64
   BaseNoise: 0.02
   BaseNoiseHeight: 4
-  Frequency: 0.02
+  Frequency: 0.03
   MaxWorkers: 4
 --- !u!23 &1562947405
 MeshRenderer:

@@ -21,7 +21,7 @@ public class WorldGenerator
 
     public void GenerateWorld()
     {
-        WorldMeshData = CreateWorldData();
+        WorldMeshData = CreateWorldChunk();
         CreateBlockMeshes();
 
         GenerationCompleted = true;
@@ -37,14 +37,16 @@ public class WorldGenerator
         return Mathf.FloorToInt((Noise.Generate(x * scale, y * scale, z * scale) + 1) * (max / 2.0f));
     }
 
-    private WorldMeshData CreateWorldData()
+    private WorldMeshData CreateWorldChunk()
     {
-        GeneratedGrid = new BlockGrid(ChunkStats.maxX, ChunkStats.maxY, ChunkStats.maxZ);
+        GeneratedGrid = new BlockGrid(ChunkStats.chunkSize, ChunkStats.maxY, ChunkStats.chunkSize);
 
         WorldMeshData worldData = new WorldMeshData();
-        for (int x = 0; x < ChunkStats.maxX; x++)
+        worldData.origin = ChunkStats.origin;
+
+        for (int x = 0; x < ChunkStats.chunkSize; x++)
         {
-            for (int z = 0; z < ChunkStats.maxZ; z++)
+            for (int z = 0; z < ChunkStats.chunkSize; z++)
             {
                 float height = GetNoise(x, 0, z, ChunkStats.frequency, ChunkStats.maxY);
 
