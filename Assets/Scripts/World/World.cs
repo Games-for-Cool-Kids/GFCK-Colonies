@@ -23,6 +23,8 @@ public class World : MonoBehaviour
 
     public Material material;
 
+    public Chunk[,] chunks;
+
     private void Start()
     {
         CreateWorld();
@@ -61,7 +63,7 @@ public class World : MonoBehaviour
             toDoWorkers.RemoveAt(0);
             currentWorkers.Add(generator);
 
-            Thread workerThread = new Thread(generator.GenerateWorld);
+            Thread workerThread = new Thread(generator.Generate);
             workerThread.Start();
         }
     }
@@ -90,31 +92,26 @@ public class World : MonoBehaviour
 
     public void RequestWorldChunkGeneration(Vector3 position)
     {
-        ChunkGenerator generator = new(CreateChunkStats(position), LoadChunkData);
+        ChunkGenerator generator = new(CreateChunkStats(position), LoadChunk);
         toDoWorkers.Add(generator);
     }
 
-    private void LoadChunkData(BlockGrid grid, ChunkMeshData data)
-    {
-        LoadChunkMeshData(data);
-    }
-
-    public void LoadChunkMeshData(ChunkMeshData data)
+    public void LoadChunk(Chunk chunk)
     {
         Mesh chunkMesh = new Mesh()
         {
-            vertices = data.vertices.ToArray(),
-            uv = data.uv.ToArray(),
-            triangles = data.triangles.ToArray()
+            vertices = chunk.meshData.vertices.ToArray(),
+            uv = chunk.meshData.uv.ToArray(),
+            triangles = chunk.meshData.triangles.ToArray()
         };
 
         chunkMesh.RecalculateNormals();
 
         // Create new chunk object
-        GameObject newChunkObject = new GameObject("Chunk" + data.origin.ToString());
+        GameObject newChunkObject = new GameObject("Chunk" + chunk.position.ToString());
         newChunkObject.isStatic = true;
         newChunkObject.transform.parent = transform;
-        newChunkObject.transform.position = data.origin;
+        newChunkObject.transform.position = chunk.position;
 
         MeshFilter meshFilter = newChunkObject.AddComponent<MeshFilter>();
         meshFilter.mesh = chunkMesh;
@@ -125,9 +122,9 @@ public class World : MonoBehaviour
         newChunkObject.AddComponent<MeshCollider>();
     }
 
-    private ChunkStats CreateChunkStats(Vector3 position)
+    private ChunkGeneratorStats CreateChunkStats(Vector3 position)
     {
-        return new ChunkStats
+        return new ChunkGeneratorStats
         {
             chunkSize = this.chunkSize,
             maxY = this.maxY,

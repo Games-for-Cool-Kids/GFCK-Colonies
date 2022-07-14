@@ -3,25 +3,24 @@ using SimplexNoise;
 
 public class ChunkGenerator
 {
-    private ChunkStats _chunkStats;
-    private ChunkMeshData _chunkMeshData;
+    private ChunkGeneratorStats _chunkStats;
 
-    private BlockGrid GeneratedGrid = null;
+    private Chunk _generatedChunk = null;
 
     public volatile bool GenerationCompleted;
 
-    public delegate void WorldGenerationCallback(BlockGrid grid, ChunkMeshData data);
-    WorldGenerationCallback finishCallback;
+    public delegate void ChunkGenerationCallback(Chunk chunk);
+    ChunkGenerationCallback finishCallback;
 
-    public ChunkGenerator(ChunkStats stats, WorldGenerationCallback generationCallback)
+    public ChunkGenerator(ChunkGeneratorStats stats, ChunkGenerationCallback generationCallback)
     {
         _chunkStats = stats;
         finishCallback = generationCallback;
     }
 
-    public void GenerateWorld()
+    public void Generate()
     {
-        _chunkMeshData = CreateWorldChunk();
+        GenerateWorldChunk();
         CreateBlockMeshes();
 
         GenerationCompleted = true;
@@ -29,7 +28,7 @@ public class ChunkGenerator
 
     public void NotifyCompleted()
     {
-        finishCallback(GeneratedGrid, _chunkMeshData);
+        finishCallback(_generatedChunk);
     }
 
     private int GetNoise(float x, float y, float z, float scale, int max)
@@ -37,12 +36,9 @@ public class ChunkGenerator
         return Mathf.FloorToInt((Noise.Generate(x * scale, y * scale, z * scale) + 1) * (max / 2.0f));
     }
 
-    private ChunkMeshData CreateWorldChunk()
+    private Chunk GenerateWorldChunk()
     {
-        GeneratedGrid = new BlockGrid(_chunkStats.chunkSize, _chunkStats.maxY, _chunkStats.chunkSize);
-
-        ChunkMeshData worldData = new ChunkMeshData();
-        worldData.origin = _chunkStats.origin;
+        _generatedChunk = new Chunk(_chunkStats.origin, _chunkStats.chunkSize, _chunkStats.maxY);
 
         for (int x = 0; x < _chunkStats.chunkSize; x++)
         {
@@ -75,18 +71,18 @@ public class ChunkGenerator
                     z = z,
                     filled = true,
                 };
-                GeneratedGrid.SetBlock(newBlock.x, newBlock.y, newBlock.z, newBlock);
+                _generatedChunk.grid.SetBlock(newBlock.x, newBlock.y, newBlock.z, newBlock);
             }
         }
 
-        return worldData;
+        return _generatedChunk;
     }
 
     private void CreateBlockMeshes()
     {
-        foreach (Block filledBlock in GeneratedGrid.GetFilledBlocks())
+        foreach (Block filledBlock in _generatedChunk.grid.GetFilledBlocks())
         {
-            filledBlock.CreateMesh(_chunkMeshData, GeneratedGrid);
+            filledBlock.CreateMesh(_generatedChunk.meshData, _generatedChunk.grid);
         }
     }
 }

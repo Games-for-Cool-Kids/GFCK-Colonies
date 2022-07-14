@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class ChunkStats
+public class ChunkGeneratorStats
 {
     public int chunkSize = 16;
     public int maxY = 16;

@@ -3,7 +3,7 @@ using SimplexNoise;
 
 public abstract class NoiseBase : ScriptableObject
 {
-    public abstract int Calculate(ChunkStats stats, Vector3 noisePosition);
+    public abstract int Calculate(ChunkGeneratorStats stats, Vector3 noisePosition);
 
     public int GetNoise(float x, float y, float z, float scale, int max)
     {
