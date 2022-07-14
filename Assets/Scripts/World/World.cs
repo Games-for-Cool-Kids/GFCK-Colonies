@@ -6,7 +6,6 @@ public class World : MonoBehaviour
 {
     public int worldChunksX = 4;
     public int worldChunksZ = 4;
-    public Vector3 worldOrigin = Vector3.zero;
 
     public int chunkSize = 16;
     public int maxY = 16;
@@ -83,7 +82,7 @@ public class World : MonoBehaviour
         {
             for (int z = 0; z < worldChunksZ; z++)
             {
-                Vector3 chunkPos = worldOrigin;
+                Vector3 chunkPos = transform.position;
                 chunkPos.x += x * chunkSize;
                 chunkPos.z += z * chunkSize;
 
