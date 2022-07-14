@@ -35,10 +35,15 @@ public class World : MonoBehaviour
             CreateWorld();
         }
 
+        UpdateGeneratorThreads();
+    }
+
+    private void UpdateGeneratorThreads()
+    {
         int i = 0;
-        while(i < currentWorkers.Count)
+        while (i < currentWorkers.Count)
         {
-            if(currentWorkers[i].GenerationCompleted)
+            if (currentWorkers[i].GenerationCompleted)
             {
                 currentWorkers[i].NotifyCompleted();
                 currentWorkers.RemoveAt(i);
@@ -49,7 +54,7 @@ public class World : MonoBehaviour
             }
         }
 
-        if(toDoWorkers.Count > 0
+        if (toDoWorkers.Count > 0
         && currentWorkers.Count < maxWorkers)
         {
             WorldGenerator generator = toDoWorkers[0];
@@ -107,6 +112,7 @@ public class World : MonoBehaviour
 
         // Create new chunk object
         GameObject newChunkObject = new GameObject("Chunk" + data.origin.ToString());
+        newChunkObject.isStatic = true;
         newChunkObject.transform.parent = transform;
         newChunkObject.transform.position = data.origin;
 
@@ -115,6 +121,8 @@ public class World : MonoBehaviour
 
         MeshRenderer renderer = newChunkObject.AddComponent<MeshRenderer>();
         renderer.material = material;
+
+        newChunkObject.AddComponent<MeshCollider>();
     }
 
     private WorldChunkStats CreateChunkStats(Vector3 position)
