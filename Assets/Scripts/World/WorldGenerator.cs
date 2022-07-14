@@ -3,25 +3,25 @@ using SimplexNoise;
 
 public class WorldGenerator
 {
-    private WorldChunkStats ChunkStats;
-    private WorldMeshData WorldMeshData;
+    private WorldChunkStats _chunkStats;
+    private ChunkMeshData _chunkMeshData;
 
     private BlockGrid GeneratedGrid = null;
 
     public volatile bool GenerationCompleted;
 
-    public delegate void WorldGenerationCallback(BlockGrid grid, WorldMeshData data);
+    public delegate void WorldGenerationCallback(BlockGrid grid, ChunkMeshData data);
     WorldGenerationCallback finishCallback;
 
     public WorldGenerator(WorldChunkStats stats, WorldGenerationCallback generationCallback)
     {
-        ChunkStats = stats;
+        _chunkStats = stats;
         finishCallback = generationCallback;
     }
 
     public void GenerateWorld()
     {
-        WorldMeshData = CreateWorldChunk();
+        _chunkMeshData = CreateWorldChunk();
         CreateBlockMeshes();
 
         GenerationCompleted = true;
@@ -29,7 +29,7 @@ public class WorldGenerator
 
     public void NotifyCompleted()
     {
-        finishCallback(GeneratedGrid, WorldMeshData);
+        finishCallback(GeneratedGrid, _chunkMeshData);
     }
 
     private int GetNoise(float x, float y, float z, float scale, int max)
@@ -37,35 +37,35 @@ public class WorldGenerator
         return Mathf.FloorToInt((Noise.Generate(x * scale, y * scale, z * scale) + 1) * (max / 2.0f));
     }
 
-    private WorldMeshData CreateWorldChunk()
+    private ChunkMeshData CreateWorldChunk()
     {
-        GeneratedGrid = new BlockGrid(ChunkStats.chunkSize, ChunkStats.maxY, ChunkStats.chunkSize);
+        GeneratedGrid = new BlockGrid(_chunkStats.chunkSize, _chunkStats.maxY, _chunkStats.chunkSize);
 
-        WorldMeshData worldData = new WorldMeshData();
-        worldData.origin = ChunkStats.origin;
+        ChunkMeshData worldData = new ChunkMeshData();
+        worldData.origin = _chunkStats.origin;
 
-        for (int x = 0; x < ChunkStats.chunkSize; x++)
+        for (int x = 0; x < _chunkStats.chunkSize; x++)
         {
-            for (int z = 0; z < ChunkStats.chunkSize; z++)
+            for (int z = 0; z < _chunkStats.chunkSize; z++)
             {
-                Vector3 noisePosition = ChunkStats.origin;
+                Vector3 noisePosition = _chunkStats.origin;
                 noisePosition.x += x;
                 noisePosition.z += z;
 
                 // Noise is applied in y-axis only.
                 int height = 0;
-                if (ChunkStats.noisePatterns != null
-                && ChunkStats.noisePatterns.Length > 0)
+                if (_chunkStats.noisePatterns != null
+                && _chunkStats.noisePatterns.Length > 0)
                 {
-                    for (int i = 0; i < ChunkStats.noisePatterns.Length; i++)
+                    for (int i = 0; i < _chunkStats.noisePatterns.Length; i++)
                     {
-                        var noisePattern = ChunkStats.noisePatterns[i];
-                        height += noisePattern.Calculate(ChunkStats, noisePosition);
+                        var noisePattern = _chunkStats.noisePatterns[i];
+                        height += noisePattern.Calculate(_chunkStats, noisePosition);
                     }
 
                     // Clamp/Normalize height
-                    height /= ChunkStats.noisePatterns.Length;
-                    height = Mathf.Clamp(height, 0, ChunkStats.maxY - 1);
+                    height /= _chunkStats.noisePatterns.Length;
+                    height = Mathf.Clamp(height, 0, _chunkStats.maxY - 1);
                 }
 
                 Block newBlock = new Block()
@@ -86,7 +86,7 @@ public class WorldGenerator
     {
         foreach (Block filledBlock in GeneratedGrid.GetFilledBlocks())
         {
-            filledBlock.CreateMesh(WorldMeshData, GeneratedGrid);
+            filledBlock.CreateMesh(_chunkMeshData, GeneratedGrid);
         }
     }
 }

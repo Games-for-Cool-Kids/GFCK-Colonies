@@ -89,12 +89,12 @@ public class World : MonoBehaviour
         toDoWorkers.Add(generator);
     }
 
-    private void LoadChunkData(BlockGrid grid, WorldMeshData data)
+    private void LoadChunkData(BlockGrid grid, ChunkMeshData data)
     {
         LoadChunkMeshData(data);
     }
 
-    public void LoadChunkMeshData(WorldMeshData data)
+    public void LoadChunkMeshData(ChunkMeshData data)
     {
         Mesh chunkMesh = new Mesh()
         {

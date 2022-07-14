@@ -1,17 +1,19 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public static class WorldMeshUtilities
+public static class ChunkMeshUtilities
 {
-    public static void CreateFace(Vector3[] faceVertices, WorldMeshData data)
+    private static float _faceTexScale = 0.25f; // Texture is subdivided in 4x4 faces
+
+    public static void CreateFace(Vector3[] faceVertices, ChunkMeshData data, BlockFace face)
     {
         data.vertices.AddRange(faceVertices);
 
         AddFaceTriangles(data, faceVertices);
-        AddUVs(data);
+        AddUVs(data, face);
     }
 
-    public static void CreateFaceUp(WorldMeshData data, Vector3 origin)
+    public static void CreateFaceUp(ChunkMeshData data, Vector3 origin)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(-0.5f, 0.5f, 0.5f);
@@ -19,10 +21,10 @@ public static class WorldMeshUtilities
         verts[2] = origin + new Vector3(0.5f, 0.5f, -0.5f);
         verts[3] = origin + new Vector3(-0.5f, 0.5f, -0.5f);
 
-        CreateFace(verts, data);
+        CreateFace(verts, data, CreateBlockFace(BlockFace.DIRECTION.TOP));
     }
 
-    public static void CreateFaceDown(WorldMeshData data, Vector3 origin)
+    public static void CreateFaceDown(ChunkMeshData data, Vector3 origin)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(-0.5f, -0.5f, -0.5f);
@@ -30,10 +32,10 @@ public static class WorldMeshUtilities
         verts[2] = origin + new Vector3(0.5f, -0.5f, 0.5f);
         verts[3] = origin + new Vector3(-0.5f, -0.5f, 0.5f);
 
-        CreateFace(verts, data);
+        CreateFace(verts, data, CreateBlockFace());
     }
 
-    public static void CreateFaceLeft(WorldMeshData data, Vector3 origin)
+    public static void CreateFaceLeft(ChunkMeshData data, Vector3 origin)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(-0.5f, -0.5f, -0.5f);
@@ -41,10 +43,10 @@ public static class WorldMeshUtilities
         verts[2] = origin + new Vector3(-0.5f, 0.5f, 0.5f);
         verts[3] = origin + new Vector3(-0.5f, 0.5f, -0.5f);
 
-        CreateFace(verts, data);
+        CreateFace(verts, data, CreateBlockFace());
     }
 
-    public static void CreateFaceRight(WorldMeshData data, Vector3 origin)
+    public static void CreateFaceRight(ChunkMeshData data, Vector3 origin)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(0.5f, 0.5f, -0.5f);
@@ -52,10 +54,10 @@ public static class WorldMeshUtilities
         verts[2] = origin + new Vector3(0.5f, -0.5f, 0.5f);
         verts[3] = origin + new Vector3(0.5f, -0.5f, -0.5f);
 
-        CreateFace(verts, data);
+        CreateFace(verts, data, CreateBlockFace());
     }
 
-    public static void CreateFaceForward(WorldMeshData data, Vector3 origin)
+    public static void CreateFaceForward(ChunkMeshData data, Vector3 origin)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(-0.5f, -0.5f, 0.5f);
@@ -63,10 +65,10 @@ public static class WorldMeshUtilities
         verts[2] = origin + new Vector3(0.5f, 0.5f, 0.5f);
         verts[3] = origin + new Vector3(-0.5f, 0.5f, 0.5f);
 
-        CreateFace(verts, data);
+        CreateFace(verts, data, CreateBlockFace());
     }
 
-    public static void CreateFaceBackward(WorldMeshData data, Vector3 origin)
+    public static void CreateFaceBackward(ChunkMeshData data, Vector3 origin)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(-0.5f, 0.5f, -0.5f);
@@ -74,10 +76,10 @@ public static class WorldMeshUtilities
         verts[2] = origin + new Vector3(0.5f, -0.5f, -0.5f);
         verts[3] = origin + new Vector3(-0.5f, -0.5f, -0.5f);
 
-        CreateFace(verts, data);
+        CreateFace(verts, data, CreateBlockFace());
     }
 
-    public static void AddFaceTriangles(WorldMeshData data, Vector3[] vertices)
+    public static void AddFaceTriangles(ChunkMeshData data, Vector3[] vertices)
     {
         int offset = data.vertices.Count - vertices.Length;
 
@@ -93,16 +95,39 @@ public static class WorldMeshUtilities
         data.triangles.AddRange(tris);
     }
 
-    public static void AddUVs(WorldMeshData data)
+    public static void AddUVs(ChunkMeshData data, BlockFace face)
     {
         Vector2[] uvs = new Vector2[4];
 
-        uvs[0] = new Vector2(0, 0);
-        uvs[1] = new Vector2(0, 1);
-        uvs[2] = new Vector2(1, 1);
-        uvs[3] = new Vector2(1, 0);
+        Rect uvRect = new Rect();
+        uvRect.x = face.x * _faceTexScale;
+        uvRect.y = face.y * _faceTexScale;
+        uvRect.width = _faceTexScale;
+        uvRect.height = _faceTexScale;
+
+        // Fix issue with block face UV edge bleeding. HACK
+        Vector2 pixelErrorOffset = new Vector2(0.01f, 0.01f);
+        uvRect.min += pixelErrorOffset;
+        uvRect.max -= pixelErrorOffset;
+
+        uvs[0] = uvRect.min;
+        uvs[1] = new Vector2(uvRect.xMax, uvRect.yMin);
+        uvs[2] = uvRect.max;
+        uvs[3] = new Vector2(uvRect.xMin, uvRect.yMax);
 
         data.uv.AddRange(uvs);
+    }
+
+    public static BlockFace CreateBlockFace(BlockFace.DIRECTION direction = BlockFace.DIRECTION.SIDE)
+    {
+        switch(direction)
+        {
+            case BlockFace.DIRECTION.TOP:
+                return new BlockFace() { x = 0, y = 2, direction = direction };
+            case BlockFace.DIRECTION.SIDE:
+            default:
+                return new BlockFace() { x = 1, y = 2, direction = direction };
+        }
     }
 }
 
