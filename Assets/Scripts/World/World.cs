@@ -24,9 +24,15 @@ public class World : MonoBehaviour
 
     public Chunk[,] chunks;
 
+
+    private GameObject _testCube;
+
     private void Start()
     {
         CreateWorld();
+
+        _testCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        Destroy(_testCube.GetComponent<BoxCollider>());
     }
 
     void Update()
@@ -37,6 +43,25 @@ public class World : MonoBehaviour
         }
 
         UpdateGeneratorThreads();
+
+        ShowHoveredBlock();
+    }
+
+    void ShowHoveredBlock()
+    {
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 1000))
+        {
+            var block = GetBlockFromRayHit(hit);
+            if (block != null)
+            {
+                _testCube.transform.position = block.worldPosition + Vector3.up / 4;
+                _testCube.SetActive(true);
+            }
+            else
+                _testCube.SetActive(false);
+        }
     }
 
     private void UpdateGeneratorThreads()
