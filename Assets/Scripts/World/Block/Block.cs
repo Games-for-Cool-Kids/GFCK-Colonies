@@ -6,6 +6,17 @@ public class Block
 
     public bool filled = false;
 
+    public Vector3 worldPosition;
+
+    public Block(int x, int y, int z, bool filled, Vector3 worldPosition)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.filled = filled;
+        this.worldPosition = worldPosition;
+    }
+
     public Vector3 GetPosition()
     {
         return new Vector3(x, y, z);

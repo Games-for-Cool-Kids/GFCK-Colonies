@@ -64,13 +64,8 @@ public class ChunkGenerator
                     height = Mathf.Clamp(height, 0, _chunkStats.maxY - 1);
                 }
 
-                Block newBlock = new Block()
-                {
-                    x = x,
-                    y = height,
-                    z = z,
-                    filled = true,
-                };
+                Vector3 blockWorldPos = _chunkStats.origin + new Vector3(x, height, z);
+                Block newBlock = new Block(x, height, z, true, blockWorldPos);
                 _generatedChunk.grid.SetBlock(newBlock.x, newBlock.y, newBlock.z, newBlock);
             }
         }
