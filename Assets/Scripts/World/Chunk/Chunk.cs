@@ -2,14 +2,18 @@ using UnityEngine;
 
 public class Chunk
 {
-    public Vector3 position;
+    public int x;
+    public int z;
+    public Vector3 origin;
     public BlockGrid grid;
 
     public ChunkMeshData meshData;
 
-    public Chunk(Vector3 position, int size, int maxY)
+    public Chunk(int x, int z, Vector3 position, int size, int maxY)
     {
-        this.position = position;
+        this.x = x;
+        this.z = z;
+        this.origin = position;
         this.grid = new BlockGrid(size, maxY, size);
         this.meshData = new ChunkMeshData();
     }

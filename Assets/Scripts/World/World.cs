@@ -77,6 +77,8 @@ public class World : MonoBehaviour
 
     private void CreateChunks()
     {
+        chunks = new Chunk[worldChunksX, worldChunksZ];
+
         for (int x = 0; x < worldChunksX; x++)
         {
             for (int z = 0; z < worldChunksZ; z++)
@@ -85,18 +87,41 @@ public class World : MonoBehaviour
                 chunkPos.x += x * chunkSize;
                 chunkPos.z += z * chunkSize;
 
-                RequestWorldChunkGeneration(chunkPos);
+                RequestWorldChunkGeneration(x, z, chunkPos);
             }
         }
     }
 
-    public void RequestWorldChunkGeneration(Vector3 position)
+    public void RequestWorldChunkGeneration(int x, int z, Vector3 position)
     {
-        ChunkGenerator generator = new(CreateChunkStats(position), LoadChunk);
+        ChunkGenerator generator = new(x, z, CreateChunkStats(position), AddGeneratedChunk);
         toDoWorkers.Add(generator);
     }
 
-    public void LoadChunk(Chunk chunk)
+    private void AddGeneratedChunk(Chunk chunk)
+    {
+        chunks[chunk.x, chunk.z] = chunk; // Store chunk
+
+        CreateChunkObject(chunk);
+    }
+
+    private void CreateChunkObject(Chunk chunk)
+    {
+        GameObject newChunkObject = new GameObject("Chunk" + chunk.origin.ToString());
+        newChunkObject.isStatic = true;
+        newChunkObject.transform.parent = transform;
+        newChunkObject.transform.position = chunk.origin;
+
+        MeshFilter meshFilter = newChunkObject.AddComponent<MeshFilter>();
+        meshFilter.mesh = LoadChunkMesh(chunk);
+
+        MeshRenderer renderer = newChunkObject.AddComponent<MeshRenderer>();
+        renderer.material = material;
+
+        newChunkObject.AddComponent<MeshCollider>();
+    }
+
+    private Mesh LoadChunkMesh(Chunk chunk)
     {
         Mesh chunkMesh = new Mesh()
         {
@@ -107,19 +132,7 @@ public class World : MonoBehaviour
 
         chunkMesh.RecalculateNormals();
 
-        // Create new chunk object
-        GameObject newChunkObject = new GameObject("Chunk" + chunk.position.ToString());
-        newChunkObject.isStatic = true;
-        newChunkObject.transform.parent = transform;
-        newChunkObject.transform.position = chunk.position;
-
-        MeshFilter meshFilter = newChunkObject.AddComponent<MeshFilter>();
-        meshFilter.mesh = chunkMesh;
-
-        MeshRenderer renderer = newChunkObject.AddComponent<MeshRenderer>();
-        renderer.material = material;
-
-        newChunkObject.AddComponent<MeshCollider>();
+        return chunkMesh;
     }
 
     private ChunkGeneratorStats CreateChunkStats(Vector3 position)

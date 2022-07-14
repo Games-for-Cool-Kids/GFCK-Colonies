@@ -12,9 +12,11 @@ public class ChunkGenerator
     public delegate void ChunkGenerationCallback(Chunk chunk);
     ChunkGenerationCallback finishCallback;
 
-    public ChunkGenerator(ChunkGeneratorStats stats, ChunkGenerationCallback generationCallback)
+    public ChunkGenerator(int x, int z, ChunkGeneratorStats stats, ChunkGenerationCallback generationCallback)
     {
         _chunkStats = stats;
+        _generatedChunk = new Chunk(x, z, stats.origin, stats.chunkSize, stats.maxY);
+
         finishCallback = generationCallback;
     }
 
@@ -36,10 +38,8 @@ public class ChunkGenerator
         return Mathf.FloorToInt((Noise.Generate(x * scale, y * scale, z * scale) + 1) * (max / 2.0f));
     }
 
-    private Chunk GenerateWorldChunk()
+    private void GenerateWorldChunk()
     {
-        _generatedChunk = new Chunk(_chunkStats.origin, _chunkStats.chunkSize, _chunkStats.maxY);
-
         for (int x = 0; x < _chunkStats.chunkSize; x++)
         {
             for (int z = 0; z < _chunkStats.chunkSize; z++)
@@ -74,8 +74,6 @@ public class ChunkGenerator
                 _generatedChunk.grid.SetBlock(newBlock.x, newBlock.y, newBlock.z, newBlock);
             }
         }
-
-        return _generatedChunk;
     }
 
     private void CreateBlockMeshes()
