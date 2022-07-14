@@ -18,8 +18,8 @@ public class World : MonoBehaviour
     public NoiseBase[] noisePatterns;
 
     public int maxWorkers = 4;
-    List<WorldGenerator> toDoWorkers = new List<WorldGenerator>();
-    List<WorldGenerator> currentWorkers = new List<WorldGenerator>();
+    List<ChunkGenerator> toDoWorkers = new List<ChunkGenerator>();
+    List<ChunkGenerator> currentWorkers = new List<ChunkGenerator>();
 
     public Material material;
 
@@ -57,7 +57,7 @@ public class World : MonoBehaviour
         if (toDoWorkers.Count > 0
         && currentWorkers.Count < maxWorkers)
         {
-            WorldGenerator generator = toDoWorkers[0];
+            ChunkGenerator generator = toDoWorkers[0];
             toDoWorkers.RemoveAt(0);
             currentWorkers.Add(generator);
 
@@ -90,7 +90,7 @@ public class World : MonoBehaviour
 
     public void RequestWorldChunkGeneration(Vector3 position)
     {
-        WorldGenerator generator = new(CreateChunkStats(position), LoadChunkData);
+        ChunkGenerator generator = new(CreateChunkStats(position), LoadChunkData);
         toDoWorkers.Add(generator);
     }
 
@@ -125,9 +125,9 @@ public class World : MonoBehaviour
         newChunkObject.AddComponent<MeshCollider>();
     }
 
-    private WorldChunkStats CreateChunkStats(Vector3 position)
+    private ChunkStats CreateChunkStats(Vector3 position)
     {
-        return new WorldChunkStats
+        return new ChunkStats
         {
             chunkSize = this.chunkSize,
             maxY = this.maxY,

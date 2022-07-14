@@ -1,9 +1,9 @@
 using UnityEngine;
 using SimplexNoise;
 
-public class WorldGenerator
+public class ChunkGenerator
 {
-    private WorldChunkStats _chunkStats;
+    private ChunkStats _chunkStats;
     private ChunkMeshData _chunkMeshData;
 
     private BlockGrid GeneratedGrid = null;
@@ -13,7 +13,7 @@ public class WorldGenerator
     public delegate void WorldGenerationCallback(BlockGrid grid, ChunkMeshData data);
     WorldGenerationCallback finishCallback;
 
-    public WorldGenerator(WorldChunkStats stats, WorldGenerationCallback generationCallback)
+    public ChunkGenerator(ChunkStats stats, WorldGenerationCallback generationCallback)
     {
         _chunkStats = stats;
         finishCallback = generationCallback;
