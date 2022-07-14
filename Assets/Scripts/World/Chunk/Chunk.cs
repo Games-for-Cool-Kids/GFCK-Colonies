@@ -17,4 +17,15 @@ public class Chunk
         this.grid = new BlockGrid(size, maxY, size);
         this.meshData = new ChunkMeshData();
     }
+
+    public Block GetBlockAt(Vector3 worldPos)
+    {
+        worldPos -= origin; // Make relative to chunk.
+
+        int blockX = Mathf.RoundToInt(worldPos.x);
+        int blockY = Mathf.RoundToInt(worldPos.y);
+        int blockZ = Mathf.RoundToInt(worldPos.z);
+
+        return grid.GetBlock(blockX, blockY, blockZ);
+    }
 }

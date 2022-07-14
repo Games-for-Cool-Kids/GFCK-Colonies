@@ -155,4 +155,43 @@ public class World : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
     }
+
+    public Block GetBlockFromRayHit(RaycastHit hit)
+    {
+        // Rays intersect with surface. Because the surface is touching, but not inside the box, we need to use the normal to check the position inside the block.
+        return GetBlockAt(hit.point - hit.normal / 2);
+    }
+
+    // Expects a position inside of the block.
+    public Block GetBlockAt(Vector3 worldPos)
+    {
+        var chunk = GetChunkAt(worldPos);
+        if (chunk == null)
+        {
+            Debug.Log("no chunk");
+            return null;
+        }
+
+        return chunk.GetBlockAt(worldPos);
+    }
+
+    public Chunk GetChunkAt(Vector3 worldPos)
+    {
+        Vector3 relativePos = worldPos - transform.position;
+        relativePos += new Vector3(0.5f, 0.5f, 0.5f); // We need offset of half a block. Origin is middle of first block.
+
+        int chunkX = Mathf.FloorToInt(relativePos.x / this.chunkSize);
+        int chunkZ = Mathf.FloorToInt(relativePos.z / this.chunkSize);
+
+        return GetChunk(chunkX, chunkZ);
+    }
+
+    public Chunk GetChunk(int x, int z)
+    {
+        if(x < 0 || x >= worldChunksX
+        || z < 0 || z >= worldChunksZ)
+            return null;
+
+        return chunks[x, z];
+    }
 }
