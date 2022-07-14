@@ -9,6 +9,5 @@ public class GlobalDefines
     // Object Names
     static public string playerHandName = "PlayerHand";
     static public string buildHandName = "BuildHand";
-    static public string gridName = "GeneratedGrid";
     static public string terrainName = "Terrain";
 }
