@@ -10,6 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8949228526120178116}
   - component: {fileID: 8949228526120178119}
+  - component: {fileID: 1920009736}
+  - component: {fileID: 1920009739}
+  - component: {fileID: 1920009740}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -46,11 +49,51 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   worldChunksX: 4
   worldChunksZ: 4
-  worldOrigin: {x: 0, y: 0, z: 0}
   chunkSize: 64
   maxY: 16
   baseNoise: 0.02
   baseNoiseHeight: 4
   frequency: 0.025
+  noisePatterns:
+  - {fileID: 11400000, guid: ca8851569ba6ac04083bc99220e0b0a5, type: 2}
+  - {fileID: 11400000, guid: ca8851569ba6ac04083bc99220e0b0a5, type: 2}
+  - {fileID: 11400000, guid: f4c59de6448f31b44b282c4645b97792, type: 2}
   maxWorkers: 4
   material: {fileID: 2100000, guid: cfa4251079c9db54eb415deae520b548, type: 2}
+--- !u!114 &1920009736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8949228526120178112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc56a312ab425b740afde328dde37447, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxJobs: 3
+--- !u!114 &1920009739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8949228526120178112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a95917bda7dfe4343b4e53ac828c7808, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1920009740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8949228526120178112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8155813e450f604ca11cb6940d81532, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

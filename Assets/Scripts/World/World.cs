@@ -25,84 +25,14 @@ public class World : MonoBehaviour
     public Chunk[,] chunks;
     public BlockGrid worldGrid;
 
-    private GameObject _testCube;
-
-    private Block _pathStartBlock = null;
-    private Block _pathEndBlock = null;
-
     private void Start()
     {
         CreateWorld();
-
-        _testCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        Destroy(_testCube.GetComponent<BoxCollider>());
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            CreateWorld();
-        }
-
-        if(Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-            {
-                Block hitBlock = GetBlockFromRayHit(hit);
-                if (_pathStartBlock == null)
-                    _pathStartBlock = hitBlock;
-                else if (_pathEndBlock == null)
-                    _pathEndBlock = hitBlock;
-
-                if (_pathStartBlock != null && _pathEndBlock != null)
-                {
-                    Pathfinding.PathfindMaster.GetInstance().RequestPathfind(this, _pathStartBlock, _pathEndBlock, ShowPath);
-                    _pathStartBlock = null;
-                    _pathEndBlock = null;
-                }
-            }
-        }
-
         UpdateGeneratorThreads();
-
-        ShowHoveredBlock();
-    }
-
-    void ShowHoveredBlock()
-    {
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 1000))
-        {
-            var block = GetBlockFromRayHit(hit);
-            if (block != null)
-            {
-                _testCube.transform.position = block.worldPosition + Vector3.up / 4;
-                _testCube.SetActive(true);
-            }
-            else
-                _testCube.SetActive(false);
-        }
-    }
-    void ShowPath(List<Block> path)
-    {
-        if (path.Count == 0)
-        {
-            Debug.Log("No path could be found.");
-            return;
-        }
-
-        var line = new GameObject();
-        line.transform.parent = transform;
-
-        var lineRenderer = line.AddComponent<LineRenderer>();
-        lineRenderer.positionCount = path.Count;
-        for(int i = 0; i < path.Count; i++)
-        {
-            lineRenderer.SetPosition(i, path[i].worldPosition + Vector3.up);
-        }
     }
 
     private void UpdateGeneratorThreads()
