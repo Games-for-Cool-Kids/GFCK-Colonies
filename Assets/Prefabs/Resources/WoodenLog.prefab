@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6456415736538556248}
   - component: {fileID: 6456415736538556247}
   - component: {fileID: 4123883670569800836}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: WoodenLog
   m_TagString: Resource
   m_Icon: {fileID: 0}
@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bde1b50e8785d67458e159fa874dce37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ResourceType: 0
+  Type: 0
 --- !u!33 &6456415736538556250
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -142,4 +142,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bde1b50e8785d67458e159fa874dce37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ResourceType: 0
+  Type: 0

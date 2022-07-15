@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7451310457498796326}
   - component: {fileID: 7451310457498796325}
   - component: {fileID: 7451310457498796321}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: InteractableSphere
   m_TagString: DraggableObject
   m_Icon: {fileID: 0}
