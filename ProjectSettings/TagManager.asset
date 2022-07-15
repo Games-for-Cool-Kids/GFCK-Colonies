@@ -7,6 +7,7 @@ TagManager:
   - DraggableObject
   - ResourceNode
   - Resource
+  - Building
   layers:
   - Default
   - TransparentFX

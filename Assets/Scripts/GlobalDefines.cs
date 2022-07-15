@@ -5,6 +5,7 @@ public class GlobalDefines
     static public string resourceNodeTag = "ResourceNode";
     static public string resourceTag = "Resource";
     static public string mainCameraTag = "MainCamera";
+    static public string buildingTag = "Building";
 
     // Object Names
     static public string playerHandName = "PlayerHand";
