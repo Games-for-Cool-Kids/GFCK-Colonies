@@ -30,15 +30,9 @@ public class BuildHand : MonoBehaviour
 
     private void MoveStructureToMousePos()
     {
-        var terrainMouseRayHit = CastMouseRayFromCamera();
-        if(terrainMouseRayHit.collider == null)
-            return;
-
-        // Snap to 1x1 grid.
-        Vector3 newPos = new Vector3(MathF.Round(terrainMouseRayHit.point.x),
-                                     terrainMouseRayHit.point.y,
-                                     MathF.Round(terrainMouseRayHit.point.z));
-        _selectedStructure.transform.position = newPos;
+        var hovered_block = GameManager.Instance.World.GetBlockUnderMouse();
+        if (hovered_block != null)
+            _selectedStructure.transform.position = hovered_block.worldPosition;
 
         if (Input.GetKeyDown(KeyCode.E))
             _selectedStructure.transform.Rotate(Vector3.up, 90);
@@ -61,14 +55,6 @@ public class BuildHand : MonoBehaviour
         // Set temporary material.
         _selectedStructureOldMaterial = _selectedStructure.GetComponent<MeshRenderer>().material;
         _selectedStructure.GetComponent<MeshRenderer>().material = SelectedBuildingMaterial;
-    }
-
-    private RaycastHit CastMouseRayFromCamera()
-    {
-        RaycastHit rayHit;
-        GameManager.Instance.TerrainCollider.Raycast(CameraUtil.GetRayFromCameraToMouse(), out rayHit, 1000);
-
-        return rayHit;
     }
 
     private void CancelBuilding()

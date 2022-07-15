@@ -104,6 +104,7 @@ public class World : MonoBehaviour
     {
         GameObject newChunkObject = new GameObject("Chunk" + chunk.origin.ToString());
         newChunkObject.isStatic = true;
+        newChunkObject.layer = LayerMask.NameToLayer(GlobalDefines.worldLayerName);
         newChunkObject.transform.parent = transform;
         newChunkObject.transform.position = chunk.origin;
 
@@ -188,5 +189,16 @@ public class World : MonoBehaviour
             return null;
 
         return chunks[x, z];
+    }
+
+    public Block GetBlockUnderMouse()
+    {
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 1000, ~LayerMask.NameToLayer(GlobalDefines.worldLayerName)))
+            return GetBlockFromRayHit(hit);
+
+        return null;
     }
 }

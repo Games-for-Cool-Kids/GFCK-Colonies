@@ -5,7 +5,7 @@ public class GameManager : MonoBehaviour
     public PlayerCamera PlayerCamera { get; private set; }
     public HandController HandController { get; private set; }
 
-    public TerrainCollider TerrainCollider { get; private set; }
+    public World World { get; private set; }
 
     private static GameManager _instance;
     public static GameManager Instance
@@ -40,10 +40,10 @@ public class GameManager : MonoBehaviour
 
         HandController = handController;
 
-        // Store terrain collider.
-        var terrainObject = GameObject.Find(GlobalDefines.terrainName);
-        Debug.Assert(terrainObject != null);
-        TerrainCollider = terrainObject.GetComponent<TerrainCollider>();
-        Debug.Assert(TerrainCollider != null);
+        // Store world.
+        var worldObject = GameObject.Find(GlobalDefines.worldName);
+        Debug.Assert(worldObject != null);
+        World = worldObject.GetComponent<World>();
+        Debug.Assert(World != null);
     }
 }

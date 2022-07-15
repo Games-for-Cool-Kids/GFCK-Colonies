@@ -11,24 +11,21 @@ public class ShowHoveredBlock : MonoBehaviour
         _world = GetComponent<World>();
 
         _testCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        _testCube.name = "HoveredBlock";
         Destroy(_testCube.GetComponent<BoxCollider>());
     }
 
     // Update is called once per frame
     void Update()
     {
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 1000))
+        var block = _world.GetBlockUnderMouse();
+
+        if (block != null)
         {
-            var block = _world.GetBlockFromRayHit(hit);
-            if (block != null)
-            {
-                _testCube.transform.position = block.worldPosition + Vector3.up / 4;
-                _testCube.SetActive(true);
-            }
-            else
-                _testCube.SetActive(false);
+            _testCube.transform.position = block.worldPosition + Vector3.up / 4;
+            _testCube.SetActive(true);
         }
+        else
+            _testCube.SetActive(false);
     }
 }
