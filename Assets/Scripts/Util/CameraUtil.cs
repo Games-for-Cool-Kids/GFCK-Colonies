@@ -21,10 +21,21 @@ public class CameraUtil
         return Camera.main.ScreenToWorldPoint(screenMousePos);
     }
 
-    static public Ray GetRayFromCameraToMouse()
+    static public Ray GetMouseRay()
     {
         Vector3 near = GetWorldPosMouseNear();
         Vector3 far = GetWorldPosMouseFar();
         return new Ray(near, far - near);
+    }
+
+    public static RaycastHit CastMouseRayFromCamera()
+    {
+        Vector3 worldMousePosNear = CameraUtil.GetWorldPosMouseNear();
+        Vector3 worldMousePosFar = CameraUtil.GetWorldPosMouseFar();
+
+        RaycastHit rayHit;
+        Physics.Raycast(worldMousePosNear, worldMousePosFar - worldMousePosNear, out rayHit);
+
+        return rayHit;
     }
 }

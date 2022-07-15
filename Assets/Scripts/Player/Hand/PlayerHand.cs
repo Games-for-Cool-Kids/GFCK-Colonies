@@ -102,7 +102,7 @@ public class PlayerHand : MonoBehaviour
     {
         Debug.Assert(_selectedObject == null); // No object should be selected
 
-        Collider clickedCollider = CastMouseRayFromCamera().collider;
+        Collider clickedCollider = CameraUtil.CastMouseRayFromCamera().collider;
         if (clickedCollider == null)
             return;
 
@@ -284,17 +284,6 @@ public class PlayerHand : MonoBehaviour
     private void SetRigidBodyDrag(float drag)
     {
         GetSelectedObjectRigidBody().drag = drag;
-    }
-
-    private RaycastHit CastMouseRayFromCamera()
-    {
-        Vector3 worldMousePosNear = CameraUtil.GetWorldPosMouseNear();
-        Vector3 worldMousePosFar = CameraUtil.GetWorldPosMouseFar();
-
-        RaycastHit rayHit;
-        Physics.Raycast(worldMousePosNear, worldMousePosFar - worldMousePosNear, out rayHit);
-
-        return rayHit;
     }
 
     // Could be cool to do this check when the object actually hits something (after being released), so you can toss things as a player
