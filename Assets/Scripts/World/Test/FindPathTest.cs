@@ -17,21 +17,20 @@ public class FindPathTest : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            RaycastHit hit;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-            {
-                Block hitBlock = _world.GetBlockFromRayHit(hit);
-                if (_pathStartBlock == null)
-                    _pathStartBlock = hitBlock;
-                else if (_pathEndBlock == null)
-                    _pathEndBlock = hitBlock;
+            var block = _world.GetBlockUnderMouse();
+            if (block == null)
+                return;
 
-                if (_pathStartBlock != null && _pathEndBlock != null)
-                {
-                    Pathfinding.PathfindMaster.GetInstance().RequestPathfind(_world, _pathStartBlock, _pathEndBlock, ShowPath);
-                    _pathStartBlock = null;
-                    _pathEndBlock = null;
-                }
+            if (_pathStartBlock == null)
+                _pathStartBlock = block;
+            else if (_pathEndBlock == null)
+                _pathEndBlock = block;
+
+            if (_pathStartBlock != null && _pathEndBlock != null)
+            {
+                Pathfinding.PathfindMaster.GetInstance().RequestPathfind(_world, _pathStartBlock, _pathEndBlock, ShowPath);
+                _pathStartBlock = null;
+                _pathEndBlock = null;
             }
         }
     }
