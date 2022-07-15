@@ -12,6 +12,9 @@ public class GlobalDefines
     static public string worldName = "World";
 
     // Layers
+    static public string ignoreRayCastLayerName = "Ignore Raycast";
     static public string worldLayerName = "World";
+    static public string characterLayerName = "Character";
+    static public string previewLayerName = "Preview";
 
 }

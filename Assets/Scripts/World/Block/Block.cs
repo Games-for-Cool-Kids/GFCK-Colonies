@@ -47,4 +47,9 @@ public class Block
     {
         return filled;
     }
+
+    public Vector3 GetWorldPositionOnTop()
+    {
+        return worldPosition + Vector3.up / 2;
+    }
 }

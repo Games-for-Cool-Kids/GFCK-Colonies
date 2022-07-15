@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -191,12 +192,16 @@ public class World : MonoBehaviour
         return chunks[x, z];
     }
 
-    public Block GetBlockUnderMouse()
+    public Block GetBlockUnderMouse(bool ignoreOtherLayers = false)
     {
+        if (UIUtil.IsMouseOverUI()) // Always ignore UI
+            return null;
+
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
+        int layerMask = ignoreOtherLayers ? ~LayerMask.NameToLayer(GlobalDefines.worldLayerName) : ~0;
 
-        if (Physics.Raycast(ray, out hit, 1000, ~LayerMask.NameToLayer(GlobalDefines.worldLayerName)))
+        if (Physics.Raycast(ray, out hit, 1000, layerMask))
             return GetBlockFromRayHit(hit);
 
         return null;
