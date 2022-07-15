@@ -16,7 +16,7 @@ public class StructureButton : MonoBehaviour
     {
         GameManager.Instance.HandController.Build(Structure);
 
-        // Close popupmenu
+        // Close popup-menu
         transform.root.gameObject.SetActive(false);
     }
 }
