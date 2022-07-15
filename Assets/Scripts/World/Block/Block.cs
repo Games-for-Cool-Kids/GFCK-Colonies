@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Block
 {
-    public int x, y, z;
+    public int x, y, z; // Position in chunk. !Not world!
 
     public bool filled = false;
 
@@ -17,14 +17,9 @@ public class Block
         this.worldPosition = worldPosition;
     }
 
-    public Vector3 GetPosition()
-    {
-        return new Vector3(x, y, z);
-    }
-
     public virtual void CreateMesh(ChunkMeshData worldData, BlockGrid grid)
     {
-        Vector3 blockPos = GetPosition();
+        Vector3 blockPos = new Vector3(x, y, z);
 
         ChunkMeshUtilities.CreateFaceUp(worldData, blockPos); // Always create up.
 
@@ -45,5 +40,11 @@ public class Block
             ChunkMeshUtilities.CreateFaceRight(worldData, blockPos);
 
         // We don't create a bottom face.
+    }
+
+    // Determines if it can be used for pathfinding.
+    public bool IsWalkable()
+    {
+        return filled;
     }
 }

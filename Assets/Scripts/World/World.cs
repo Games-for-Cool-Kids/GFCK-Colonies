@@ -23,9 +23,12 @@ public class World : MonoBehaviour
     public Material material;
 
     public Chunk[,] chunks;
-
+    public BlockGrid worldGrid;
 
     private GameObject _testCube;
+
+    private Block _pathStartBlock = null;
+    private Block _pathEndBlock = null;
 
     private void Start()
     {
@@ -40,6 +43,26 @@ public class World : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             CreateWorld();
+        }
+
+        if(Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+            {
+                Block hitBlock = GetBlockFromRayHit(hit);
+                if (_pathStartBlock == null)
+                    _pathStartBlock = hitBlock;
+                else if (_pathEndBlock == null)
+                    _pathEndBlock = hitBlock;
+
+                if (_pathStartBlock != null && _pathEndBlock != null)
+                {
+                    Pathfinding.PathfindMaster.GetInstance().RequestPathfind(this, _pathStartBlock, _pathEndBlock, ShowPath);
+                    _pathStartBlock = null;
+                    _pathEndBlock = null;
+                }
+            }
         }
 
         UpdateGeneratorThreads();
@@ -61,6 +84,24 @@ public class World : MonoBehaviour
             }
             else
                 _testCube.SetActive(false);
+        }
+    }
+    void ShowPath(List<Block> path)
+    {
+        if (path.Count == 0)
+        {
+            Debug.Log("No path could be found.");
+            return;
+        }
+
+        var line = new GameObject();
+        line.transform.parent = transform;
+
+        var lineRenderer = line.AddComponent<LineRenderer>();
+        lineRenderer.positionCount = path.Count;
+        for(int i = 0; i < path.Count; i++)
+        {
+            lineRenderer.SetPosition(i, path[i].worldPosition + Vector3.up);
         }
     }
 
@@ -193,7 +234,6 @@ public class World : MonoBehaviour
         var chunk = GetChunkAt(worldPos);
         if (chunk == null)
         {
-            Debug.Log("no chunk");
             return null;
         }
 

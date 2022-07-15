@@ -42,7 +42,7 @@ public class BlockGrid
         return _blocks[x, y, z];
     }
 
-    public Block GetAdjacentBlock(Block sourceBlock, Adjacency adjacency)
+    public Block GetAdjacentBlock(Block sourceBlock, Adjacency adjacency, bool checkVertically = false)
     {
         int x = sourceBlock.x;
         int y = sourceBlock.y;
@@ -64,7 +64,24 @@ public class BlockGrid
                 y = y - 1; break;
         }
 
-        return GetBlock(x, y, z);
+        Block adjacentBlock = GetBlock(x, y, z);
+        if (adjacentBlock != null)
+            return adjacentBlock;
+
+        if (checkVertically) // Check vertically if not found on same level.
+        {
+            // Check one above
+            adjacentBlock = GetBlock(x, y + 1, z);
+            if (adjacentBlock != null)
+                return adjacentBlock;
+
+            // Check one below
+            adjacentBlock = GetBlock(x, y - 1, z);
+            if (adjacentBlock != null)
+                return adjacentBlock;
+        }
+
+        return null;
     }
 
     public List<Block> GetFilledBlocks()
@@ -86,5 +103,15 @@ public class BlockGrid
         }
 
         return filledBlocks;
+    }
+
+    public Block[,,] GetData()
+    {
+        return _blocks;
+    }
+
+    public void setData(Block[,,] data)
+    {
+        _blocks = data;
     }
 }
