@@ -1,39 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInfo : MonoBehaviour
+public class PlayerInfo : MonoBehaviourSingleton<PlayerInfo>
 {
-    public List<MilitaryUnit> militaryUnits = new List<MilitaryUnit>();
+    public Faction playerFaction = new Faction(); // Later on this might be a list of factions. For now there's just one.
 
-    private static PlayerInfo _instance;
-    public static PlayerInfo Instance
-    {
-        get
-        {
-            Debug.Assert(_instance != null);
-            return _instance;
-        }
-    }
-    private void Awake()
-    {
-        _instance = this;
-    }
-
-    // Start is called before the first frame update
     void Start()
     {
-        MilitaryUnit.OnUnitSpawned += HandleUnitSpawned;
-        MilitaryUnit.OnUnitDespawned += HandleUnitDespawned;
+        MilitaryUnit.OnUnitSpawned += AddUnit;
+        MilitaryUnit.OnUnitDespawned += RemoveUnit;
     }
 
-    private void HandleUnitSpawned(MilitaryUnit unit)
+    private void AddUnit(GameObject unit)
     {
-        militaryUnits.Add(unit);
+        playerFaction.MilitaryUnits.Add(unit);
     }
-    private void HandleUnitDespawned(MilitaryUnit unit)
+    private void RemoveUnit(GameObject unit)
     {
-        militaryUnits.Remove(unit);
+        playerFaction.MilitaryUnits.Remove(unit);
     }
 
 }
