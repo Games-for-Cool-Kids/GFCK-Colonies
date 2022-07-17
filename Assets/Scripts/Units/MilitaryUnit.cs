@@ -1,14 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class MilitaryUnit : MonoBehaviour
+public class MilitaryUnit : Unit
 {
-    [SerializeField] private UnitMovement unitMovement = null;
     [SerializeField] private UnityEvent onSelected = null;
-    [SerializeField] private UnityEvent onDeSelected = null;
+    [SerializeField] private UnityEvent onDeselected = null;
 
     public static event Action<MilitaryUnit> OnUnitSpawned;
     public static event Action<MilitaryUnit> OnUnitDespawned;
@@ -40,10 +37,6 @@ public class MilitaryUnit : MonoBehaviour
 
     public void Deselect()
     {
-        onDeSelected?.Invoke();
-    }
-    public UnitMovement GetUnitMovement()
-    {
-        return unitMovement;
+        onDeselected?.Invoke();
     }
 }

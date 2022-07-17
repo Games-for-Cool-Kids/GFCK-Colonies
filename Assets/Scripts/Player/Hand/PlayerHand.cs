@@ -5,11 +5,11 @@ using UnityEngine.InputSystem;
 
 public class PlayerHand : MonoBehaviour
 {
-
-    private enum PlayerHandState
+    public enum PlayerHandState
     {
-        HAND_DRAGGING,
-        HAND_IDLE
+        GRABBING,
+        IDLE,
+        SELECTION,
     }
 
     public float HoverHeight = 0.25f;
@@ -20,21 +20,14 @@ public class PlayerHand : MonoBehaviour
     private float _preGrabRigidBodyDrag; // Before hand grabs object.
     public float GrabbedRigidBodyDrag = 6; // While grabbed.
 
-    private PlayerHandState _interactionState = PlayerHandState.HAND_IDLE;
+    public PlayerHandState currentState = PlayerHandState.IDLE;
 
     private GameObject _selectedObject;
-    private Camera mainCamera;
-    private Vector2 startPosition;
 
-
-    public List<MilitaryUnit> SelectedUnits { get; } = new List<MilitaryUnit>();
-    [SerializeField] private RectTransform unitSelectionArea = null;
-    [SerializeField] LayerMask layermask = new LayerMask();
-    [SerializeField] PlayerInfo playerInfo;
 
     private void Start()
     {
-        mainCamera = Camera.main;
+
     }
 
     void Update()
@@ -44,25 +37,16 @@ public class PlayerHand : MonoBehaviour
 
     private void HandleInput()
     {
-        switch (_interactionState)
+        switch (currentState)
         {
-            case PlayerHandState.HAND_IDLE:
+            case PlayerHandState.IDLE:
                 if (Input.GetMouseButtonDown(0))
                 {
-                    HandleLeftClick();
-                }
-                else if (Mouse.current.leftButton.isPressed)
-                {
-                    UpdateSelectionArea();
-                }
-                else if (Mouse.current.leftButton.wasReleasedThisFrame)
-                {
-                    ClearSelectedUnits();
-                    ClearSelectionArea();
+                    HandleObjectClick();
                 }
                 break;
 
-            case PlayerHandState.HAND_DRAGGING:
+            case PlayerHandState.GRABBING:
                 Debug.Assert(_selectedObject != null);
 
                 DragSelectedObject();
@@ -98,7 +82,7 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
-    private void HandleLeftClick()
+    private void HandleObjectClick()
     {
         Debug.Assert(_selectedObject == null); // No object should be selected
 
@@ -126,51 +110,6 @@ public class PlayerHand : MonoBehaviour
 
             return;
         }
-        StartSelectionArea();
-        HandleUnitSelection(clickedCollider);
-    }
-
-    void HandleUnitSelection(Collider clickedCollider)
-    {
-        if (clickedCollider.TryGetComponent<MilitaryUnit>(out MilitaryUnit unit)) // Military unit selection.
-        {
-            SelectedUnits.Add(unit);
-            unit.Select();
-            Debug.Log(unit.ToString());
-        }
-        else if (clickedCollider.TryGetComponent<Terrain>(out Terrain terrain)) // Military unit deselection.
-        {
-            foreach (MilitaryUnit selectedUnit in SelectedUnits)
-            { selectedUnit.Deselect(); }
-            SelectedUnits.Clear();
-        }
-    }
-
-    private void StartSelectionArea()
-    {
-        foreach (MilitaryUnit SelectedUnit in SelectedUnits)
-        {
-            SelectedUnit.Deselect();
-        }
-        SelectedUnits.Clear();
-
-        unitSelectionArea.gameObject.SetActive(true);
-
-        startPosition = Mouse.current.position.ReadValue();
-
-        UpdateSelectionArea();
-    }
-
-    private void UpdateSelectionArea()
-    {
-        Vector2 mousePosition = Mouse.current.position.ReadValue();
-
-        float areaWidth = mousePosition.x - startPosition.x;
-        float areaHeight = mousePosition.y - startPosition.y;
-
-        unitSelectionArea.sizeDelta = new Vector2(MathF.Abs(areaWidth), MathF.Abs(areaHeight));
-        unitSelectionArea.anchoredPosition = startPosition +
-            new Vector2(areaWidth / 2, areaHeight / 2);
     }
 
     private void GrabSelectedObject(GameObject clickedObject)
@@ -182,70 +121,23 @@ public class PlayerHand : MonoBehaviour
 
         //Cursor.visible = false;
         _selectedObject.layer = 2; // Ignore raycasts. Default built-in layer
-        SetRigidBodyDrag(GrabbedRigidBodyDrag);
+        GetSelectedObjectRigidBody().drag = GrabbedRigidBodyDrag;
         ToggleSelectedObjectGravity(false);
 
-        _interactionState = PlayerHandState.HAND_DRAGGING;
-    }
-
-    private void ClearSelectedUnits()
-    {
-        foreach (MilitaryUnit selectedUnit in SelectedUnits)
-        {
-            selectedUnit.Deselect();
-        }
-        SelectedUnits.Clear();
-    }
-
-    private void ClearSelectionArea()
-    {
-        unitSelectionArea.gameObject.SetActive(false);
-
-        if (unitSelectionArea.sizeDelta.magnitude == 0)
-        {
-            Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-            if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layermask)) { return; }
-
-            if (!hit.collider.TryGetComponent<MilitaryUnit>(out MilitaryUnit unit)) { return; }
-
-            SelectedUnits.Add(unit);
-
-            foreach (MilitaryUnit selectedUnit in SelectedUnits)
-            {
-                selectedUnit.Select();
-            }
-            return;
-        }
-
-        Vector2 min = unitSelectionArea.anchoredPosition - (unitSelectionArea.sizeDelta / 2);
-        Vector2 max = unitSelectionArea.anchoredPosition + (unitSelectionArea.sizeDelta / 2);
-
-        foreach (MilitaryUnit unit in playerInfo.GetMyMilitaryUnits())
-        {
-            Vector3 screenPosition = mainCamera.WorldToScreenPoint(unit.transform.position);
-            if (screenPosition.x > min.x &&
-                screenPosition.x < max.x &&
-                screenPosition.y > min.y &&
-                screenPosition.y < max.y)
-            {
-                SelectedUnits.Add(unit);
-                unit.Select();
-            }
-        }
-
+        currentState = PlayerHandState.GRABBING;
     }
 
     private void ReleaseSelectedObject()
     { 
         ToggleSelectedObjectGravity(true);
-        SetRigidBodyDrag(_preGrabRigidBodyDrag);
+        GetSelectedObjectRigidBody().drag = _preGrabRigidBodyDrag;
         _selectedObject.layer = _preGrabLayer;
 
         Cursor.visible = true;
 
         _selectedObject = null;
 
-        _interactionState = PlayerHandState.HAND_IDLE;
+        currentState = PlayerHandState.IDLE;
     }
 
     private void DragSelectedObject()
@@ -279,11 +171,6 @@ public class PlayerHand : MonoBehaviour
     private Rigidbody GetSelectedObjectRigidBody()
     {
         return _selectedObject.GetComponent<Rigidbody>();
-    }
-
-    private void SetRigidBodyDrag(float drag)
-    {
-        GetSelectedObjectRigidBody().drag = drag;
     }
 
     // Could be cool to do this check when the object actually hits something (after being released), so you can toss things as a player

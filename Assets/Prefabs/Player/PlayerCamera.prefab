@@ -187,6 +187,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7953979423124183733}
   - component: {fileID: 2139792547265628570}
+  - component: {fileID: 572039483}
   m_Layer: 0
   m_Name: BuildHand
   m_TagString: Untagged
@@ -222,6 +223,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PreviewMaterial: {fileID: 2100000, guid: b61cbbdfd37e46b4188cf30c1a3f504b, type: 2}
+--- !u!114 &572039483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4892327058461442135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4c63550f04901b4cb56fdd57f11230c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5025203997568979134
 GameObject:
   m_ObjectHideFlags: 0

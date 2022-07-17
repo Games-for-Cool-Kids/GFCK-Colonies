@@ -4,11 +4,20 @@ using UnityEngine;
 
 public class PlayerInfo : MonoBehaviour
 {
-    [SerializeField] private List<MilitaryUnit> myUnits = new List<MilitaryUnit>();
+    public List<MilitaryUnit> militaryUnits = new List<MilitaryUnit>();
 
-    public List<MilitaryUnit> GetMyMilitaryUnits()
+    private static PlayerInfo _instance;
+    public static PlayerInfo Instance
     {
-        return myUnits;
+        get
+        {
+            Debug.Assert(_instance != null);
+            return _instance;
+        }
+    }
+    private void Awake()
+    {
+        _instance = this;
     }
 
     // Start is called before the first frame update
@@ -18,19 +27,13 @@ public class PlayerInfo : MonoBehaviour
         MilitaryUnit.OnUnitDespawned += HandleUnitDespawned;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void HandleUnitSpawned(MilitaryUnit unit)
     {
-        myUnits.Add(unit);
+        militaryUnits.Add(unit);
     }
     private void HandleUnitDespawned(MilitaryUnit unit)
     {
-        myUnits.Remove(unit);
+        militaryUnits.Remove(unit);
     }
 
 }
