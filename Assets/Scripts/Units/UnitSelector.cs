@@ -32,6 +32,10 @@ public class UnitSelector : MonoBehaviour
             _unitSelectionArea.gameObject.SetActive(false);
         }
     }
+    void OnDisable()
+    {
+        _unitSelectionArea.gameObject.SetActive(false);
+    }
 
     private void HandleLeftClick()
     {

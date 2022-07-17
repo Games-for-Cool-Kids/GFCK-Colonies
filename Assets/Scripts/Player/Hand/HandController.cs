@@ -64,7 +64,6 @@ public class HandController : MonoBehaviour
     private void ActivatePlayerHand(object sender, EventArgs e)
     {
         ActivateHand(HandOption.PLAYER);
-        var buildHand = BuildHand.GetComponent<BuildHand>();
     }
     public void ActivateRemoveBuildingHand()
     {
