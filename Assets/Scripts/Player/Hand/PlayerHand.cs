@@ -25,11 +25,6 @@ public class PlayerHand : MonoBehaviour
     private GameObject _selectedObject;
 
 
-    private void Start()
-    {
-
-    }
-
     void Update()
     {
         HandleInput();

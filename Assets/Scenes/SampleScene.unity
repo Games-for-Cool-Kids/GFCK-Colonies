@@ -429,24 +429,6 @@ MonoBehaviour:
   m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
---- !u!1 &1743589622 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5400302763265424026, guid: 4dd10e7200f5b0e4fb69360aa3191c1e, type: 3}
-  m_PrefabInstance: {fileID: 792129444}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1743589625
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1743589622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 523b9fe87e3d328499f63eb36686d054, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _unitSelectionArea: {fileID: 1215031685}
 --- !u!1001 &652615226608237011
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -454,6 +436,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 599160889, guid: 47b2d255f4620f241aa6daf4dd73eb27, type: 3}
+      propertyPath: _unitSelectionArea
+      value: 
+      objectReference: {fileID: 1215031685}
     - target: {fileID: 652615226063640806, guid: 47b2d255f4620f241aa6daf4dd73eb27, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -501,10 +487,6 @@ PrefabInstance:
     - target: {fileID: 652615226063640807, guid: 47b2d255f4620f241aa6daf4dd73eb27, type: 3}
       propertyPath: m_Name
       value: Managers
-      objectReference: {fileID: 0}
-    - target: {fileID: 2326176545422374132, guid: 47b2d255f4620f241aa6daf4dd73eb27, type: 3}
-      propertyPath: layermask.m_Bits
-      value: 128
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47b2d255f4620f241aa6daf4dd73eb27, type: 3}

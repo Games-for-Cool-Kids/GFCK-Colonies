@@ -7,19 +7,21 @@ public class MilitaryUnit : Unit
     [SerializeField] private UnityEvent onSelected = null;
     [SerializeField] private UnityEvent onDeselected = null;
 
-    public static event Action<MilitaryUnit> OnUnitSpawned;
-    public static event Action<MilitaryUnit> OnUnitDespawned;
+    public static event Action<GameObject> OnUnitSpawned;
+    public static event Action<GameObject> OnUnitDespawned;
 
     private bool invoked = false;
 
 
-    private void Update()
+    protected new void Update()
     {
         if (!invoked)
         {
-            OnUnitSpawned?.Invoke(this);
+            OnUnitSpawned?.Invoke(gameObject);
             invoked = true;
         }
+
+        base.Update();
     }
 
     public void Select()
@@ -29,7 +31,7 @@ public class MilitaryUnit : Unit
 
     void OnDestroy()
     {
-        OnUnitDespawned?.Invoke(this);
+        OnUnitDespawned?.Invoke(gameObject);
     }
 
     public void Deselect()

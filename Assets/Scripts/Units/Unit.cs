@@ -11,31 +11,21 @@ public class Unit : MonoBehaviour
     public float speed = 5;
 
 
-    void Update()
+    protected void Update()
     {
-        Move();
+        FollowPath();
     }
 
-    private void Move()
+    private void FollowPath()
     {
         if (path == null
          || path.Count == 0)
             return;
 
-        if (pingPong)
-            PingPongPath();
-        else
-            FollowPath();
-    }
-
-    private void FollowPath()
-    {
-        if (pathIndex == path.Count) // We reached end of path
-            ClearPath();
-
         Block targetBlock = path[pathIndex + 1];
 
-        Vector3 characterToTarget = targetBlock.worldPosition - transform.position;
+        Vector3 targetPos = targetBlock.worldPosition + GameObjectUtil.GetPivotToMeshMinOffset(gameObject) + Vector3.up / 2;
+        Vector3 characterToTarget = targetPos - transform.position;
         Vector3 direction = characterToTarget.normalized;
         Vector3 move = direction * speed * Time.deltaTime;
 
@@ -44,16 +34,15 @@ public class Unit : MonoBehaviour
         float distanceToTarget = characterToTarget.magnitude;
         if (distanceToTarget < 0.1f) // If distance to center of target block is this small, we're good.
             pathIndex++;
-    }
 
-    private void PingPongPath()
-    {
-        int targetPathIndex = pathIndex + 1;
-        if (pathIndex == path.Count) // We reached end of path
+        if (pathIndex == path.Count - 1) // We reached end of path
         {
-            if (pingPong)
-                targetPathIndex = pathIndex - 1;
+            pathIndex = 0;
 
+            if (pingPong)
+                path.Reverse();
+            else
+                ClearPath();
         }
     }
 
@@ -65,6 +54,23 @@ public class Unit : MonoBehaviour
     public void ClearPath()
     {
         pathIndex = 0;
-        path.Clear();
+        if(path != null)
+        {
+            path.Clear();
+            path = null;
+        }
+    }
+
+    public Block GetCurrentBlock()
+    {
+        Vector3 posUnderBlock = transform.position - GameObjectUtil.GetPivotToMeshMinOffset(gameObject) - Vector3.up / 2; // Offset with half a block.
+        return GameManager.Instance.World.GetBlockAt(posUnderBlock);
+    }
+
+    public void MoveTo(Block targetBlock)
+    {
+        ClearPath();
+
+        Pathfinding.PathfindMaster.GetInstance().RequestPathfind(GetCurrentBlock(), targetBlock, SetPath);
     }
 }

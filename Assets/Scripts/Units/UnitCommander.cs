@@ -1,13 +1,20 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System;
-using System.Collections.Generic;
 
 public class UnitCommander : MonoBehaviour
 {
     void Update()
     {
-
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            var target_block = GameManager.Instance.World.GetBlockUnderMouse(true);
+            if (target_block != null)
+            {
+                foreach (var unit in UnitSelector.Instance.SelectedUnits)
+                {
+                    unit.MoveTo(target_block);
+                }
+            }
+        }
     }
-
 }
