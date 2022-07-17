@@ -67,9 +67,9 @@ namespace Pathfinding
             }
         }
 
-        public void RequestPathfind(World world, Block start, Block target, PathFindingJobComplete completeCallback)
+        public void RequestPathfind(Block start, Block target, PathFindingJobComplete completeCallback)
         {
-            Pathfinder newJob = new Pathfinder(world, start, target, completeCallback);
+            Pathfinder newJob = new Pathfinder(GameManager.Instance.World, start, target, completeCallback);
             todoJobs.Add(newJob);
         }
     }
