@@ -28,13 +28,13 @@ public class CameraUtil
         return new Ray(near, far - near);
     }
 
-    public static RaycastHit CastMouseRayFromCamera()
+    public static RaycastHit CastMouseRayFromCamera(int layerMask = 0)
     {
         Vector3 worldMousePosNear = CameraUtil.GetWorldPosMouseNear();
         Vector3 worldMousePosFar = CameraUtil.GetWorldPosMouseFar();
 
         RaycastHit rayHit;
-        Physics.Raycast(worldMousePosNear, worldMousePosFar - worldMousePosNear, out rayHit);
+        Physics.Raycast(worldMousePosNear, worldMousePosFar - worldMousePosNear, out rayHit, layerMask);
 
         return rayHit;
     }
