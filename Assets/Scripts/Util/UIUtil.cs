@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UIUtil : MonoBehaviour
+public class UIUtil
 {
     public static bool IsMouseOverUI()
     {
