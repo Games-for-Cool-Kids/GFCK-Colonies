@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class UnitSelector : MonoBehaviour
+public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
 {
     public List<MilitaryUnit> SelectedUnits { get; } = new List<MilitaryUnit>();
     public RectTransform _unitSelectionArea = null;
@@ -34,7 +34,8 @@ public class UnitSelector : MonoBehaviour
     }
     void OnDisable()
     {
-        _unitSelectionArea.gameObject.SetActive(false);
+        if(_unitSelectionArea != null) // Can be called at game quit, when component is destroyed.
+            _unitSelectionArea.gameObject.SetActive(false);
     }
 
     private void HandleLeftClick()
@@ -101,7 +102,7 @@ public class UnitSelector : MonoBehaviour
 
             SelectedUnits.Add(unit);
 
-            foreach (MilitaryUnit selectedUnit in SelectedUnits)
+            foreach (var selectedUnit in SelectedUnits)
                 selectedUnit.Select();
 
             return;
@@ -110,7 +111,7 @@ public class UnitSelector : MonoBehaviour
         Vector2 min = _unitSelectionArea.anchoredPosition - (_unitSelectionArea.sizeDelta / 2);
         Vector2 max = _unitSelectionArea.anchoredPosition + (_unitSelectionArea.sizeDelta / 2);
 
-        foreach (MilitaryUnit unit in PlayerInfo.Instance.militaryUnits)
+        foreach (var unit in PlayerInfo.Instance.playerFaction.MilitaryUnits)
         {
             Vector3 screenPosition = Camera.main.WorldToScreenPoint(unit.transform.position);
             if (screenPosition.x > min.x &&
@@ -118,8 +119,9 @@ public class UnitSelector : MonoBehaviour
                 screenPosition.y > min.y &&
                 screenPosition.y < max.y)
             {
-                SelectedUnits.Add(unit);
-                unit.Select();
+                MilitaryUnit milUnit = unit.GetComponent<MilitaryUnit>();
+                SelectedUnits.Add(milUnit);
+                milUnit.Select();
             }
         }
     }
