@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class BuildHand : MonoBehaviour
 {
@@ -34,7 +35,8 @@ public class BuildHand : MonoBehaviour
         if (hovered_block != null)
             _selectedStructure.transform.position = hovered_block.GetWorldPositionOnTop();
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E)
+         || Mouse.current.middleButton.wasPressedThisFrame)
             _selectedStructure.transform.Rotate(Vector3.up, 90);
         if (Input.GetKeyDown(KeyCode.Q))
             _selectedStructure.transform.Rotate(Vector3.up, -90);

@@ -11,10 +11,7 @@ public class MilitaryUnit : Unit
     public static event Action<MilitaryUnit> OnUnitDespawned;
 
     private bool invoked = false;
-   
-    private void Start()
-    {
-    }
+
 
     private void Update()
     {
