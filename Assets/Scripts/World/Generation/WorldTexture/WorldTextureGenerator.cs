@@ -130,11 +130,11 @@ public class WorldTextureGenerator : MonoBehaviour
 
     public void Load3DWorld()
     {
-        SceneManager.LoadScene("WorldGenerationTestScene");
+        SceneManager.LoadScene("WorldGen3D");
     }
 
     public void LoadGame()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("GameScene");
     }
 }
