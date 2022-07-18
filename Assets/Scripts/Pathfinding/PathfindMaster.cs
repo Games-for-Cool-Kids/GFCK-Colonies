@@ -5,19 +5,8 @@ using System.Threading;
 namespace Pathfinding
 {
     //This class controls the pathfinding threads
-    public class PathfindMaster : MonoBehaviour
+    public class PathfindMaster : MonoBehaviourSingleton<PathfindMaster>
     {
-        //Singleton
-        private static PathfindMaster instance;
-        void Awake()
-        {
-            instance = this;
-        }
-        public static PathfindMaster GetInstance()
-        {
-            return instance;
-        }
-
         //The maximum simultaneous threads we allow to open
         public int MaxJobs = 3;
 

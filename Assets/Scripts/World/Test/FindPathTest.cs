@@ -28,7 +28,7 @@ public class FindPathTest : MonoBehaviour
 
             if (_pathStartBlock != null && _pathEndBlock != null)
             {
-                Pathfinding.PathfindMaster.GetInstance().RequestPathfind(_pathStartBlock, _pathEndBlock, ShowPath);
+                Pathfinding.PathfindMaster.Instance.RequestPathfind(_pathStartBlock, _pathEndBlock, ShowPath);
                 _pathStartBlock = null;
                 _pathEndBlock = null;
             }

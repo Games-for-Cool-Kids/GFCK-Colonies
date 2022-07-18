@@ -71,6 +71,6 @@ public class Unit : MonoBehaviour
     {
         ClearPath();
 
-        Pathfinding.PathfindMaster.GetInstance().RequestPathfind(GetCurrentBlock(), targetBlock, SetPath);
+        Pathfinding.PathfindMaster.Instance.RequestPathfind(GetCurrentBlock(), targetBlock, SetPath);
     }
 }

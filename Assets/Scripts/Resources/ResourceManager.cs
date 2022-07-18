@@ -1,31 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ResourceManager : MonoBehaviour
+public class ResourceManager : MonoBehaviourSingleton<ResourceManager>
 {
-    // TODO We miiiiight not want a singleton 
-    private static ResourceManager _instance;
-    public static ResourceManager Instance
-    {
-        get
-        {
-            Debug.Assert(_instance != null);
-
-            return _instance;
-        }
-    }
-
     private List<Resource> _resourcesInWorldUnclaimed = new List<Resource>();
     private List<Resource> _resourcesInWorldClaimed = new List<Resource>();
 
     // TODO This works, but is currently not necessary. Bring back if needed, and decide if it should hold claimed/unclaimed/both resources
     // An "inverse" Dictionary, where we can efficiently find a dropped resource in the world based on a given resource type
     //private Dictionary<Type, List<Resource>> _ResourcesInWorldPerTypeUnclaimed = new Dictionary<Type, List<Resource>>();
-
-    private void Awake()
-    {
-        _instance = this;
-    }
 
     public void AddResourceToWorld(Resource resourceInWorld)
     {

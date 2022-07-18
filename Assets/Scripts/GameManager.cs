@@ -1,30 +1,18 @@
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourSingleton<GameManager>
 {
     public PlayerCamera PlayerCamera { get; private set; }
     public HandController HandController { get; private set; }
 
     public World World { get; private set; }
 
-    private static GameManager _instance;
-    public static GameManager Instance
-    {
-        get
-        {
-            Debug.Assert(_instance != null);
-            return _instance;
-        }
-    }
-    private void Awake()
-    {
-        _instance = this;
 
-        Initialize();
-    }
-
-    private void Initialize()
+    private new void Awake()
     {
+        base.Awake();
+
+
         GameObject mainCamera = GameObject.FindGameObjectWithTag(GlobalDefines.mainCameraTag);
         Debug.Assert(mainCamera != null);
 
