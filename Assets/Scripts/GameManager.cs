@@ -14,24 +14,27 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 
 
         GameObject mainCamera = GameObject.FindGameObjectWithTag(GlobalDefines.mainCameraTag);
-        Debug.Assert(mainCamera != null);
+        if(mainCamera == null)
+            Debug.LogWarning(GlobalDefines.mainCameraTag + " not found.");
 
         // Store player camera.
         var playerCamera = mainCamera.GetComponent<PlayerCamera>();
-        Debug.Assert(playerCamera != null);
-
         PlayerCamera = playerCamera;
+        if (playerCamera == null)
+            Debug.LogWarning("PlayerCamera not found.");
+
 
         // Store hand controller.
         var handController = mainCamera.GetComponent<HandController>();
-        Debug.Assert(handController != null);
-
         HandController = handController;
+        if (handController == null)
+            Debug.LogWarning("HandController not found.");
+
 
         // Store world.
         var worldObject = GameObject.Find(GlobalDefines.worldName);
-        Debug.Assert(worldObject != null);
         World = worldObject.GetComponent<World>();
-        Debug.Assert(World != null);
+        if (worldObject == null || World == null)
+            Debug.LogWarning("World not found.");
     }
 }

@@ -1,5 +1,4 @@
 using UnityEngine;
-using SimplexNoise;
 
 public class ChunkGenerator
 {
@@ -15,7 +14,7 @@ public class ChunkGenerator
     public ChunkGenerator(int x, int z, ChunkGeneratorStats stats, ChunkGenerationCallback generationCallback)
     {
         _chunkStats = stats;
-        _generatedChunk = new Chunk(x, z, stats.origin, stats.chunkSize, stats.maxY);
+        _generatedChunk = new Chunk(x, z, stats.origin, stats.chunkSize, stats.height);
 
         finishCallback = generationCallback;
     }
@@ -33,39 +32,16 @@ public class ChunkGenerator
         finishCallback(_generatedChunk);
     }
 
-    private int GetNoise(float x, float y, float z, float scale, int max)
-    {
-        return Mathf.FloorToInt((Noise.Generate(x * scale, y * scale, z * scale) + 1) * (max / 2.0f));
-    }
-
     private void GenerateWorldChunk()
     {
         for (int x = 0; x < _chunkStats.chunkSize; x++)
         {
             for (int z = 0; z < _chunkStats.chunkSize; z++)
             {
-                Vector3 noisePosition = _chunkStats.origin;
-                noisePosition.x += x;
-                noisePosition.z += z;
+                int y = _chunkStats.heightMap[x, z];
 
-                // Noise is applied in y-axis only.
-                int height = 0;
-                if (_chunkStats.noisePatterns != null
-                && _chunkStats.noisePatterns.Length > 0)
-                {
-                    for (int i = 0; i < _chunkStats.noisePatterns.Length; i++)
-                    {
-                        var noisePattern = _chunkStats.noisePatterns[i];
-                        height += noisePattern.Calculate(_chunkStats, noisePosition);
-                    }
-
-                    // Clamp/Normalize height
-                    height /= _chunkStats.noisePatterns.Length;
-                    height = Mathf.Clamp(height, 0, _chunkStats.maxY - 1);
-                }
-
-                Vector3 blockWorldPos = _chunkStats.origin + new Vector3(x, height, z);
-                Block newBlock = new Block(x, height, z, true, blockWorldPos);
+                Vector3 blockWorldPos = _chunkStats.origin + new Vector3(x, y, z);
+                Block newBlock = new Block(x, y, z, true, _chunkStats.blockMap[x, z], blockWorldPos);
                 _generatedChunk.grid.SetBlock(newBlock.x, newBlock.y, newBlock.z, newBlock);
             }
         }

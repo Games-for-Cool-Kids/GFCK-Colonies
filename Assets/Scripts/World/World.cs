@@ -5,17 +5,9 @@ using System.Threading;
 
 public class World : MonoBehaviour
 {
-    public int worldChunksX = 4;
-    public int worldChunksZ = 4;
-
-    public int chunkSize = 16;
-    public int maxY = 16;
-
-    public float baseNoise = 0.02f;
-    public float baseNoiseHeight = 4;
-    public float frequency = 0.005f;
-
-    public NoiseBase[] noisePatterns;
+    public int chunkSize = 32;
+    public int worldChunkWidth { get; private set; } // Nr of chunks in width and length, as world is a square.
+    public int height = 50;
 
     public int maxWorkers = 4;
     List<ChunkGenerator> toDoWorkers = new List<ChunkGenerator>();
@@ -23,6 +15,7 @@ public class World : MonoBehaviour
 
     public Material material;
 
+    public WorldVariable worldVariable;
     public Chunk[,] chunks;
     public BlockGrid worldGrid;
 
@@ -68,16 +61,18 @@ public class World : MonoBehaviour
     {
         Reset();
 
+        worldChunkWidth = Mathf.FloorToInt(worldVariable.size / chunkSize);
+
         CreateChunks();
     }
 
     private void CreateChunks()
     {
-        chunks = new Chunk[worldChunksX, worldChunksZ];
+        chunks = new Chunk[worldChunkWidth, worldChunkWidth];
 
-        for (int x = 0; x < worldChunksX; x++)
+        for (int x = 0; x < worldChunkWidth; x++)
         {
-            for (int z = 0; z < worldChunksZ; z++)
+            for (int z = 0; z < worldChunkWidth; z++)
             {
                 Vector3 chunkPos = transform.position;
                 chunkPos.x += x * chunkSize;
@@ -90,7 +85,7 @@ public class World : MonoBehaviour
 
     public void RequestWorldChunkGeneration(int x, int z, Vector3 position)
     {
-        ChunkGenerator generator = new(x, z, CreateChunkStats(position), AddGeneratedChunk);
+        ChunkGenerator generator = new(x, z, CreateChunkStats(x, z, position), AddGeneratedChunk);
         toDoWorkers.Add(generator);
     }
 
@@ -132,17 +127,15 @@ public class World : MonoBehaviour
         return chunkMesh;
     }
 
-    private ChunkGeneratorStats CreateChunkStats(Vector3 position)
+    private ChunkGeneratorStats CreateChunkStats(int x, int z, Vector3 position)
     {
         return new ChunkGeneratorStats
         {
             chunkSize = this.chunkSize,
-            maxY = this.maxY,
-            baseNoise = this.baseNoise,
-            baseNoiseHeight = this.baseNoiseHeight,
-            frequency = this.frequency,
+            height = this.height,
             origin = position,
-            noisePatterns = this.noisePatterns,
+            heightMap = worldVariable.GetChunkHeightMap(x, z, chunkSize),
+            blockMap = worldVariable.GetChunkBlockMap(x, z, chunkSize),
         };
     }
 
@@ -185,8 +178,8 @@ public class World : MonoBehaviour
 
     public Chunk GetChunk(int x, int z)
     {
-        if(x < 0 || x >= worldChunksX
-        || z < 0 || z >= worldChunksZ)
+        if(x < 0 || x >= worldChunkWidth
+        || z < 0 || z >= worldChunkWidth)
             return null;
 
         return chunks[x, z];

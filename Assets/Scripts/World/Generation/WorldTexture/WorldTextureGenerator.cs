@@ -1,125 +1,140 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class WorldTextureGenerator : MonoBehaviour
 {
-	public SpriteRenderer spriteRenderer;
-	public Sprite worldBaseSprite;
-	Sprite worldSprite;
+    public SpriteRenderer spriteRenderer;
 
-	public Color ground;
-	public Color grass;
-	public Color water;
-	public Color sand;
+    public Color ground;
+    public Color grass;
+    public Color water;
+    public Color sand;
 
-	public WorldTextureNode[,] grid;
-	int maxX;
-	int maxY;
+    public WorldTextureNode[,] grid;
+    public int textureSize = 256; // Always a square.
 
-	public int initialWaterPercentage = 55;
+    public int initialWaterPercentage = 55;
 
-	public SimulationStep currentStep;
-	public SimulationStep beachStep;
+    public SimulationStep currentStep;
+    public SimulationStep beachStep;
 
-	private void Start()
-	{
-		CreateBase();
-	}
+    public WorldVariable worldVariable;
 
-	public void CreateBase()
-	{
-		worldSprite = Instantiate(worldBaseSprite);
-		maxX = worldSprite.texture.width;
-		maxY = worldSprite.texture.height;
+    private void Start()
+    {
+        worldVariable.Init(textureSize);
+        spriteRenderer.sprite = worldVariable.worldSprite;
 
-		grid = new WorldTextureNode[maxX, maxY];
+        CreateBase();
+    }
 
-		for (int x = 0; x < maxX; x++)
-		{
-			for (int y = 0; y < maxY; y++)
-			{
-				WorldTextureNode node = new();
-				node.x = x;
-				node.y = y;
-				grid[x, y] = node;
+    public void CreateBase()
+    {
+        grid = new WorldTextureNode[textureSize, textureSize];
 
-				if (Random.Range(0, 100) > initialWaterPercentage)
-				{
-					node.type = WorldTextureNode.Type.GRASS;
-				}
-				else
-				{
-					node.type = WorldTextureNode.Type.WATER;
-				}
-			}
-		}
+        for (int x = 0; x < textureSize; x++)
+        {
+            for (int y = 0; y < textureSize; y++)
+            {
+                WorldTextureNode node = new();
+                node.x = x;
+                node.y = y;
+                grid[x, y] = node;
 
-		DrawWorldSprite();
+                if (Random.Range(0, 100) > initialWaterPercentage)
+                {
+                    node.type = Block.Type.GRASS;
+                }
+                else
+                {
+                    node.type = Block.Type.WATER;
+                }
+            }
+        }
 
-		spriteRenderer.sprite = worldSprite;
-	}
+        DrawWorld();
+    }
 
-	public void Step()
-	{
-		for (int x = 0; x < maxX; x++)
-		{
-			for (int y = 0; y < maxY; y++)
-			{
-				WorldTextureNode node = grid[x, y];
-				node.type = currentStep.GetNodeState(node, grid, maxX, maxY);
-			}
-		}
+    public void Step()
+    {
+        for (int x = 0; x < textureSize; x++)
+        {
+            for (int y = 0; y < textureSize; y++)
+            {
+                WorldTextureNode node = grid[x, y];
+                node.type = currentStep.GetNodeType(node, grid, textureSize, textureSize);
+            }
+        }
 
         ApplyBeachStep();
 
-        DrawWorldSprite();
-	}
+        DrawWorld();
+    }
 
-	public void ApplySteps(int amount)
-	{
-		for (int i = 0; i < amount; i++)
-		{
-			Step();
-		}
-	}
-
-	private void ApplyBeachStep()
+    public void ApplySteps(int amount)
     {
-		for (int x = 0; x < maxX; x++)
-		{
-			for (int y = 0; y < maxY; y++)
-			{
-				WorldTextureNode node = grid[x, y];
-				node.type = beachStep.GetNodeState(node, grid, maxX, maxY);
-			}
-		}
-	}
+        for (int i = 0; i < amount; i++)
+        {
+            Step();
+        }
+    }
 
-	private void DrawWorldSprite()
-	{
-		for (int x = 0; x < maxX; x++)
-		{
-			for (int y = 0; y < maxY; y++)
-			{
-				WorldTextureNode node = grid[x, y];
+    private void ApplyBeachStep()
+    {
+        for (int x = 0; x < textureSize; x++)
+        {
+            for (int y = 0; y < textureSize; y++)
+            {
+                WorldTextureNode node = grid[x, y];
+                node.type = beachStep.GetNodeType(node, grid, textureSize, textureSize);
+            }
+        }
+    }
 
-				switch(node.type)
+    private void DrawWorld()
+    {
+        for (int x = 0; x < textureSize; x++)
+        {
+            for (int y = 0; y < textureSize; y++)
+            {
+                WorldTextureNode node = grid[x, y];
+
+                switch (node.type)
                 {
-					case WorldTextureNode.Type.GROUND:
-						worldSprite.texture.SetPixel(x, y, ground);
-						break;
-					case WorldTextureNode.Type.GRASS:
-						worldSprite.texture.SetPixel(x, y, grass);
-						break;
-					case WorldTextureNode.Type.WATER:
-						worldSprite.texture.SetPixel(x, y, water);
-						break;
-					case WorldTextureNode.Type.BEACH:
-						worldSprite.texture.SetPixel(x, y, sand);
-						break;
-				}
-			}
-		}
+                    case Block.Type.GROUND:
+                        worldVariable.texture.SetPixel(x, y, ground);
+                        worldVariable.blockMap[x, y] = Block.Type.GROUND;
+                        worldVariable.heightMap[x, y] = 2;
+                        break;
+                    case Block.Type.GRASS:
+                        worldVariable.texture.SetPixel(x, y, grass);
+                        worldVariable.blockMap[x, y] = Block.Type.GRASS;
+                        worldVariable.heightMap[x, y] = 2;
+                        break;
+                    case Block.Type.WATER:
+                        worldVariable.texture.SetPixel(x, y, water);
+                        worldVariable.blockMap[x, y] = Block.Type.WATER;
+                        worldVariable.heightMap[x, y] = 0;
+                        break;
+                    case Block.Type.SAND:
+                        worldVariable.texture.SetPixel(x, y, sand);
+                        worldVariable.blockMap[x, y] = Block.Type.SAND;
+                        worldVariable.heightMap[x, y] = 1;
+                        break;
+                }
+            }
+        }
 
-		worldSprite.texture.Apply();
-	}
+        worldVariable.ApplyTexture();
+    }
+
+    public void Load3DWorld()
+    {
+        SceneManager.LoadScene("WorldGenerationTestScene");
+    }
+
+    public void LoadGame()
+    {
+        SceneManager.LoadScene("SampleScene");
+    }
 }

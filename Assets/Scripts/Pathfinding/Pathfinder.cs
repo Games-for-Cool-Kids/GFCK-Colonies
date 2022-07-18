@@ -31,8 +31,7 @@ namespace Pathfinding
         private Block _startBlock;
         private Block _targetBlock;
 
-        private int worldChunksX;
-        private int worldChunksZ;
+        private int worldChunkWidth;
 
         private int chunkSize;
         private int maxY;
@@ -50,21 +49,20 @@ namespace Pathfinding
             this._startBlock = start;
             this._targetBlock = target;
             this.completedCallback = completedCallback;
-            this.worldChunksX = world.worldChunksX;
-            this.worldChunksZ = world.worldChunksZ;
+            this.worldChunkWidth = world.worldChunkWidth;
             this.chunkSize = world.chunkSize;
-            this.maxY = world.maxY;
+            this.maxY = world.height;
 
             GenerateChunkNodeGrids(world.chunks);
         }
 
         private void GenerateChunkNodeGrids(Chunk[,] chunks)
         {
-            _chunkNodeGrids = new NodeGrid[worldChunksX, worldChunksZ];
+            _chunkNodeGrids = new NodeGrid[worldChunkWidth, worldChunkWidth];
 
-            for (int x = 0; x < worldChunksX; x++)
+            for (int x = 0; x < worldChunkWidth; x++)
             {
-                for (int z = 0; z < worldChunksZ; z++)
+                for (int z = 0; z < worldChunkWidth; z++)
                 {
                     var currGrid = chunks[x, z].grid;
 
@@ -279,7 +277,7 @@ namespace Pathfinding
             int c_z = Mathf.FloorToInt(worldPos.z / chunkSize);
 
             if (c_x < 0 || worldPos.y < 0 || c_z < 0
-            || c_x >= worldChunksX || worldPos.y >= maxY || c_z >= worldChunksZ)
+            || c_x >= worldChunkWidth || worldPos.y >= maxY || c_z >= worldChunkWidth)
                 return null; // bounds check
 
             var grid = _chunkNodeGrids[c_x, c_z].grid;

@@ -1,13 +1,12 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-[CreateAssetMenu(menuName = "SimulationStep/Beach")]
+[CreateAssetMenu(menuName = "World/SimulationStep/Beach")]
 public class CreateBeach : SimulationStep
 {
-    public override WorldTextureNode.Type GetNodeState(WorldTextureNode node, WorldTextureNode[,] grid, int maxX, int maxY)
+    public override Block.Type GetNodeType(WorldTextureNode node, WorldTextureNode[,] grid, int maxX, int maxY)
     {
         // Only create a beach on normal ground nodes.
-        if (node.type == WorldTextureNode.Type.WATER)
+        if (node.type == Block.Type.WATER)
             return node.type;
 
         bool neighboringWater = false;
@@ -23,7 +22,7 @@ public class CreateBeach : SimulationStep
 
                 WorldTextureNode neighbor = GetNodeFromClone(_x, _y, grid, maxX, maxY);
 
-                if (neighbor.type == WorldTextureNode.Type.WATER)
+                if (neighbor.type == Block.Type.WATER)
                 {
                     neighboringWater = true;
                     goto ApplyResult;
@@ -33,7 +32,7 @@ public class CreateBeach : SimulationStep
 
         ApplyResult: // from goto
         if (neighboringWater)
-            return WorldTextureNode.Type.BEACH;
+            return Block.Type.SAND;
         else
             return node.type;
     }

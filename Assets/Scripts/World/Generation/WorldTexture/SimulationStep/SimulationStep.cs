@@ -2,7 +2,7 @@
 
 public abstract class SimulationStep : ScriptableObject
 {
-	public abstract WorldTextureNode.Type GetNodeState(WorldTextureNode node, WorldTextureNode[,] grid, int maxX, int maxY);
+	public abstract Block.Type GetNodeType(WorldTextureNode node, WorldTextureNode[,] grid, int maxX, int maxY);
 
 	protected WorldTextureNode GetNodeFromClone(int x, int y, WorldTextureNode[,] cloneGrid, int maxX, int maxY)
 	{

@@ -297,6 +297,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1920009739, guid: 2dfd28f84b6e2f64392f293d51cf5ddb, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8949228526120178112, guid: 2dfd28f84b6e2f64392f293d51cf5ddb, type: 3}
       propertyPath: m_Name
       value: World

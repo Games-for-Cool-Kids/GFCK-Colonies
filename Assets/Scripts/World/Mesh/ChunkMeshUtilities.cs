@@ -13,7 +13,7 @@ public static class ChunkMeshUtilities
         AddUVs(data, face);
     }
 
-    public static void CreateFaceUp(ChunkMeshData data, Vector3 origin)
+    public static void CreateFaceUp(ChunkMeshData data, Vector3 origin, Block.Type type)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(-0.5f, 0.5f, 0.5f);
@@ -21,10 +21,10 @@ public static class ChunkMeshUtilities
         verts[2] = origin + new Vector3(0.5f, 0.5f, -0.5f);
         verts[3] = origin + new Vector3(-0.5f, 0.5f, -0.5f);
 
-        CreateFace(verts, data, CreateBlockFace(BlockFace.DIRECTION.TOP));
+        CreateFace(verts, data, CreateBlockFace(type, BlockFace.DIRECTION.TOP));
     }
 
-    public static void CreateFaceDown(ChunkMeshData data, Vector3 origin)
+    public static void CreateFaceDown(ChunkMeshData data, Vector3 origin, Block.Type type)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(-0.5f, -0.5f, -0.5f);
@@ -32,10 +32,10 @@ public static class ChunkMeshUtilities
         verts[2] = origin + new Vector3(0.5f, -0.5f, 0.5f);
         verts[3] = origin + new Vector3(-0.5f, -0.5f, 0.5f);
 
-        CreateFace(verts, data, CreateBlockFace());
+        CreateFace(verts, data, CreateBlockFace(type));
     }
 
-    public static void CreateFaceLeft(ChunkMeshData data, Vector3 origin)
+    public static void CreateFaceLeft(ChunkMeshData data, Vector3 origin, Block.Type type)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(-0.5f, -0.5f, -0.5f);
@@ -43,10 +43,10 @@ public static class ChunkMeshUtilities
         verts[2] = origin + new Vector3(-0.5f, 0.5f, 0.5f);
         verts[3] = origin + new Vector3(-0.5f, 0.5f, -0.5f);
 
-        CreateFace(verts, data, CreateBlockFace());
+        CreateFace(verts, data, CreateBlockFace(type));
     }
 
-    public static void CreateFaceRight(ChunkMeshData data, Vector3 origin)
+    public static void CreateFaceRight(ChunkMeshData data, Vector3 origin, Block.Type type)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(0.5f, 0.5f, -0.5f);
@@ -54,10 +54,10 @@ public static class ChunkMeshUtilities
         verts[2] = origin + new Vector3(0.5f, -0.5f, 0.5f);
         verts[3] = origin + new Vector3(0.5f, -0.5f, -0.5f);
 
-        CreateFace(verts, data, CreateBlockFace());
+        CreateFace(verts, data, CreateBlockFace(type));
     }
 
-    public static void CreateFaceForward(ChunkMeshData data, Vector3 origin)
+    public static void CreateFaceForward(ChunkMeshData data, Vector3 origin, Block.Type type)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(-0.5f, -0.5f, 0.5f);
@@ -65,10 +65,10 @@ public static class ChunkMeshUtilities
         verts[2] = origin + new Vector3(0.5f, 0.5f, 0.5f);
         verts[3] = origin + new Vector3(-0.5f, 0.5f, 0.5f);
 
-        CreateFace(verts, data, CreateBlockFace());
+        CreateFace(verts, data, CreateBlockFace(type));
     }
 
-    public static void CreateFaceBackward(ChunkMeshData data, Vector3 origin)
+    public static void CreateFaceBackward(ChunkMeshData data, Vector3 origin, Block.Type type)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(-0.5f, 0.5f, -0.5f);
@@ -76,7 +76,7 @@ public static class ChunkMeshUtilities
         verts[2] = origin + new Vector3(0.5f, -0.5f, -0.5f);
         verts[3] = origin + new Vector3(-0.5f, -0.5f, -0.5f);
 
-        CreateFace(verts, data, CreateBlockFace());
+        CreateFace(verts, data, CreateBlockFace(type));
     }
 
     public static void AddFaceTriangles(ChunkMeshData data, Vector3[] vertices)
@@ -105,7 +105,7 @@ public static class ChunkMeshUtilities
         uvRect.width = _faceTexScale;
         uvRect.height = _faceTexScale;
 
-        // Fix issue with block face UV edge bleeding. HACK
+        // Fix issue with block face UV edge bleeding. TODO: find better fix
         Vector2 pixelErrorOffset = new Vector2(0.01f, 0.01f);
         uvRect.min += pixelErrorOffset;
         uvRect.max -= pixelErrorOffset;
@@ -118,15 +118,25 @@ public static class ChunkMeshUtilities
         data.uv.AddRange(uvs);
     }
 
-    public static BlockFace CreateBlockFace(BlockFace.DIRECTION direction = BlockFace.DIRECTION.SIDE)
+    public static BlockFace CreateBlockFace(Block.Type type, BlockFace.DIRECTION direction = BlockFace.DIRECTION.SIDE)
     {
-        switch(direction)
+        switch (type)
         {
-            case BlockFace.DIRECTION.TOP:
-                return new BlockFace() { x = 0, y = 2, direction = direction };
-            case BlockFace.DIRECTION.SIDE:
-            default:
+            case Block.Type.WATER:
+                return new BlockFace() { x = 1, y = 1, direction = direction };
+            case Block.Type.SAND:
                 return new BlockFace() { x = 1, y = 2, direction = direction };
+            case Block.Type.GROUND:
+            case Block.Type.GRASS:
+            default:
+                switch (direction)
+                {
+                    case BlockFace.DIRECTION.TOP:
+                        return new BlockFace() { x = 0, y = 2, direction = direction };
+                    case BlockFace.DIRECTION.SIDE:
+                    default:
+                        return new BlockFace() { x = 2, y = 2, direction = direction };
+                }
         }
     }
 }

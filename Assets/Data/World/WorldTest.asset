@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 961ebc4e4d97df74e81a50cb53e292c2, type: 3}
-  m_Name: Base Noise
+  m_Script: {fileID: 11500000, guid: 4fe6b64164f4dcf4db1cfa68085ece9f, type: 3}
+  m_Name: WorldTest
   m_EditorClassIdentifier: 

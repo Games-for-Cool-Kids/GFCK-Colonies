@@ -2,14 +2,11 @@
 
 public class ChunkGeneratorStats
 {
-    public int chunkSize = 16;
-    public int maxY = 16;
-
-    public float baseNoise = 0.02f;
-    public float baseNoiseHeight = 4;
-    public float frequency = 0.005f;
+    public int chunkSize;
+    public int height;
 
     public Vector3 origin;
 
-    public NoiseBase[] noisePatterns;
+    public int[,] heightMap;
+    public Block.Type[,] blockMap;
 }

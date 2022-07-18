@@ -4,5 +4,14 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Test/WorldGenSimulation.unity
+    guid: 0842ad9bd6c09994a9930e672235a275
+  - enabled: 1
+    path: Assets/Scenes/SampleScene.unity
+    guid: 4089d85af3ef6694cb049cbe3fdcfd9e
+  - enabled: 1
+    path: Assets/Scenes/Test/WorldGenerationTestScene.unity
+    guid: 9dbfe158a0a81464cbcfd3420999d46c
   m_configObjects: {}
