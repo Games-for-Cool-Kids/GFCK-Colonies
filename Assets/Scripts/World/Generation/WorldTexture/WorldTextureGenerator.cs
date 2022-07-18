@@ -7,15 +7,18 @@ public class WorldTextureGenerator : MonoBehaviour
 	Sprite worldSprite;
 
 	public Color ground;
+	public Color grass;
 	public Color water;
+	public Color sand;
 
 	public WorldTextureNode[,] grid;
 	int maxX;
 	int maxY;
 
-	public int initialWaterPercentage = 40;
+	public int initialWaterPercentage = 55;
 
 	public SimulationStep currentStep;
+	public SimulationStep beachStep;
 
 	private void Start()
 	{
@@ -41,48 +44,34 @@ public class WorldTextureGenerator : MonoBehaviour
 
 				if (Random.Range(0, 100) > initialWaterPercentage)
 				{
-					node.isGround = true;
-					worldSprite.texture.SetPixel(x, y, ground);
+					node.type = WorldTextureNode.Type.GRASS;
 				}
 				else
 				{
-					node.isGround = false;
-					worldSprite.texture.SetPixel(x, y, water);
+					node.type = WorldTextureNode.Type.WATER;
 				}
 			}
 		}
 
-		worldSprite.texture.Apply();
+		DrawWorldSprite();
 
 		spriteRenderer.sprite = worldSprite;
 	}
 
 	public void Step()
 	{
-		var cloneGrid = new WorldTextureNode[maxX, maxY];
-		System.Array.Copy(grid, cloneGrid, grid.Length);
-
 		for (int x = 0; x < maxX; x++)
 		{
 			for (int y = 0; y < maxY; y++)
 			{
 				WorldTextureNode node = grid[x, y];
-
-				bool isAlive = currentStep.isAlive(node, cloneGrid, maxX, maxY);
-				if (isAlive)
-				{
-					node.isGround = true;
-					worldSprite.texture.SetPixel(x, y, ground);
-				}
-				else
-				{
-					node.isGround = false;
-					worldSprite.texture.SetPixel(x, y, water);
-				}
+				node.type = currentStep.GetNodeState(node, grid, maxX, maxY);
 			}
 		}
 
-		worldSprite.texture.Apply();
+        ApplyBeachStep();
+
+        DrawWorldSprite();
 	}
 
 	public void ApplySteps(int amount)
@@ -91,5 +80,46 @@ public class WorldTextureGenerator : MonoBehaviour
 		{
 			Step();
 		}
+	}
+
+	private void ApplyBeachStep()
+    {
+		for (int x = 0; x < maxX; x++)
+		{
+			for (int y = 0; y < maxY; y++)
+			{
+				WorldTextureNode node = grid[x, y];
+				node.type = beachStep.GetNodeState(node, grid, maxX, maxY);
+			}
+		}
+	}
+
+	private void DrawWorldSprite()
+	{
+		for (int x = 0; x < maxX; x++)
+		{
+			for (int y = 0; y < maxY; y++)
+			{
+				WorldTextureNode node = grid[x, y];
+
+				switch(node.type)
+                {
+					case WorldTextureNode.Type.GROUND:
+						worldSprite.texture.SetPixel(x, y, ground);
+						break;
+					case WorldTextureNode.Type.GRASS:
+						worldSprite.texture.SetPixel(x, y, grass);
+						break;
+					case WorldTextureNode.Type.WATER:
+						worldSprite.texture.SetPixel(x, y, water);
+						break;
+					case WorldTextureNode.Type.BEACH:
+						worldSprite.texture.SetPixel(x, y, sand);
+						break;
+				}
+			}
+		}
+
+		worldSprite.texture.Apply();
 	}
 }

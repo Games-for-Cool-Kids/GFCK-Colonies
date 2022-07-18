@@ -6,9 +6,9 @@ public class CellularAutomata : SimulationStep
     public int death = 3;
     public int birth = 4;
 
-    public override bool isAlive(WorldTextureNode node, WorldTextureNode[,] cloneGrid, int maxX, int maxY)
+    public override WorldTextureNode.Type GetNodeState(WorldTextureNode node, WorldTextureNode[,] grid, int maxX, int maxY)
     {
-        int neighborCount = 0;
+        int groundNeighborCount = 0;
 
         for (int x = -1; x <= 1; x++)
         {
@@ -19,24 +19,34 @@ public class CellularAutomata : SimulationStep
                 if (_x == node.x && _y == node.y)
                     continue;
 
-                WorldTextureNode neighbor = GetNodeFromClone(_x, _y, cloneGrid, maxX, maxY);
+                WorldTextureNode neighbor = GetNodeFromClone(_x, _y, grid, maxX, maxY);
                 if (neighbor != null)
                 {
-                    if (neighbor.isGround)
+                    if (neighbor.type != WorldTextureNode.Type.WATER)
                     {
-                        neighborCount++;
+                        groundNeighborCount++;
                     }
+                }
+                else
+                {
+                    return WorldTextureNode.Type.WATER;
                 }
             }
         }
 
-        if (node.isGround)
+        if (node.type != WorldTextureNode.Type.WATER)
         {
-            return neighborCount >= death;
+            if (groundNeighborCount < death)
+                return WorldTextureNode.Type.WATER;
+            else
+                return WorldTextureNode.Type.GRASS;
         }
         else
         {
-            return neighborCount > birth;
+            if (groundNeighborCount > birth)
+                return WorldTextureNode.Type.GRASS;
+            else
+                return WorldTextureNode.Type.WATER;
         }
     }
 }
