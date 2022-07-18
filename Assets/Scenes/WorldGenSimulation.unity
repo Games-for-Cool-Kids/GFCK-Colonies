@@ -219,7 +219,7 @@ GameObject:
   - component: {fileID: 1143179998}
   - component: {fileID: 1143179997}
   m_Layer: 0
-  m_Name: Managers
+  m_Name: SimulationManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -239,6 +239,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 1800893126}
   worldSprite: {fileID: 21300000, guid: d0509f99a12adf3459649e1f979cbd75, type: 3}
+  ground: {r: 0.4662348, g: 0.8396226, b: 0.22574759, a: 1}
+  water: {r: 0.50980395, g: 0.8588236, b: 0.8470589, a: 1}
 --- !u!4 &1143179998
 Transform:
   m_ObjectHideFlags: 0
@@ -279,9 +281,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1800893124}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 5.26}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0, y: 0, z: 2.59}
+  m_LocalScale: {x: 3.3899999, y: 3.3899999, z: 3.3899999}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1069051056}
   m_RootOrder: 0
