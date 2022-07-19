@@ -2,7 +2,20 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
-    public float MoveSpeed = 10.0f;
+    public float moveSpeed = 10.0f;
+    public float hoverHeight = 25.0f;
+    public bool hoverWorld = false;
+
+    private Transform _blockFocusPoint;
+
+    private void Start()
+    {
+        if (hoverWorld)
+        {
+            _blockFocusPoint = transform.Find("BlockFocusPoint");
+            _blockFocusPoint.Translate(Vector3.up * 200, Space.World); // Set high enough to be above the world.
+        }
+    }
 
     void Update()
     {
@@ -18,8 +31,35 @@ public class PlayerCamera : MonoBehaviour
         direction += transform.right * Input.GetAxis("Horizontal");
         direction += forward * Input.GetAxis("Vertical");
 
-        Vector3 move = direction * MoveSpeed * Time.deltaTime;
-
+        // Apply move.
+        Vector3 move = direction * moveSpeed * Time.deltaTime;
         transform.Translate(move, Space.World);
+
+        if (hoverWorld)
+            HoverWorld();
+    }
+
+    private void HoverWorld()
+    {
+        Vector3 originalPos = transform.position;
+        Vector3 targetHoverPos = transform.position;
+        targetHoverPos.y = FindFocusHeight();
+
+        // Set height to hover over focus block.
+        Vector3 verticalMove = (targetHoverPos - originalPos) * moveSpeed * Time.deltaTime;
+        transform.Translate(verticalMove, Space.World);
+    }
+
+    private float FindFocusHeight()
+    {
+        LayerMask worldLayer = LayerMask.NameToLayer(GlobalDefines.worldLayerName);
+        RaycastHit focusPointHit;
+        Physics.Raycast(_blockFocusPoint.position, -Vector3.up, out focusPointHit, 1000, ~worldLayer);
+
+        Block focusBlock = GameManager.Instance.World.GetBlockFromRayHit(focusPointHit);
+        if (focusBlock == null)
+            return hoverHeight;
+        else
+            return focusBlock.worldPosition.y + hoverHeight;
     }
 }

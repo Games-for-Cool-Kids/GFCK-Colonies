@@ -221,7 +221,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08a0a0a4dadfe144f8f22acb5441961d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 30
+  moveSpeed: 40
+  defaultHeight: 25
+  hoverBlock: 0
 --- !u!114 &171576683
 MonoBehaviour:
   m_ObjectHideFlags: 0

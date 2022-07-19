@@ -38,4 +38,15 @@ public class CameraUtil
 
         return rayHit;
     }
+
+    public static RaycastHit CastRayFromScreenCenter(int layerMask = ~0)
+    {
+        Vector3 screenPos = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+        var ray = Camera.main.ScreenPointToRay(screenPos);
+
+        RaycastHit rayHit;
+        Physics.Raycast(ray, out rayHit, 1000, layerMask);
+
+        return rayHit;
+    }
 }
