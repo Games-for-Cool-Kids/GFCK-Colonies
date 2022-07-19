@@ -2,14 +2,14 @@
 
 public abstract class SimulationStep : ScriptableObject
 {
-	public abstract Block.Type GetNodeType(WorldTextureNode node, WorldTextureNode[,] grid, int maxX, int maxY);
+	public abstract Block.Type GetNodeType(WorldGenBlockNode node, WorldVariable worldVar, int maxX, int maxY);
 
-	protected WorldTextureNode GetNodeFromClone(int x, int y, WorldTextureNode[,] cloneGrid, int maxX, int maxY)
+	protected WorldGenBlockNode GetNodeFromGrid(int x, int y, WorldGenBlockNode[,] grid, int maxX, int maxY)
 	{
 		if (x < 0 || y < 0
 		 || x >= maxX || y >= maxY)
 			return null;
 
-		return cloneGrid[x, y];
+		return grid[x, y];
 	}
 }

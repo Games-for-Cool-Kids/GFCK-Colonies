@@ -7,7 +7,6 @@ public class World : MonoBehaviour
 {
     public int chunkSize = 32;
     public int worldChunkWidth { get; private set; } // Nr of chunks in width and length, as world is a square.
-    public int height = 50;
 
     public int maxWorkers = 4;
     List<ChunkGenerator> toDoWorkers = new List<ChunkGenerator>();
@@ -132,10 +131,9 @@ public class World : MonoBehaviour
         return new ChunkGeneratorStats
         {
             chunkSize = this.chunkSize,
-            height = this.height,
+            height = worldVariable.height,
             origin = position,
-            heightMap = worldVariable.GetChunkHeightMap(x, z, chunkSize),
-            blockMap = worldVariable.GetChunkBlockMap(x, z, chunkSize),
+            nodeGrid = worldVariable.GetChunkNodeGrid(x, z, chunkSize),
         };
     }
 

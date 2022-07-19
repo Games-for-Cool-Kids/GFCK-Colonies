@@ -34,14 +34,17 @@ public class ChunkGenerator
 
     private void GenerateWorldChunk()
     {
+        float singleBlockHeight = 1 / _chunkStats.height;
         for (int x = 0; x < _chunkStats.chunkSize; x++)
         {
             for (int z = 0; z < _chunkStats.chunkSize; z++)
             {
-                int y = _chunkStats.heightMap[x, z];
+                float height = _chunkStats.nodeGrid[x, z].height; // range 0.0 - 1.0
+                float rescaledHeight = height / (1 - singleBlockHeight); // Rescale is needed because default height range is inclusive for both 0 and 1. But because 'y' is a y-index it has to exclude the max height.
+                int y = Mathf.FloorToInt(height * _chunkStats.height);
 
                 Vector3 blockWorldPos = _chunkStats.origin + new Vector3(x, y, z);
-                Block newBlock = new Block(x, y, z, true, _chunkStats.blockMap[x, z], blockWorldPos);
+                Block newBlock = new Block(x, y, z, true, _chunkStats.nodeGrid[x, z].type, blockWorldPos);
                 _generatedChunk.grid.SetBlock(newBlock.x, newBlock.y, newBlock.z, newBlock);
             }
         }

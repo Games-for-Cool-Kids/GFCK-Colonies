@@ -6,7 +6,7 @@ public class CellularAutomata : SimulationStep
     public int death = 3;
     public int birth = 4;
 
-    public override Block.Type GetNodeType(WorldTextureNode node, WorldTextureNode[,] grid, int maxX, int maxY)
+    public override Block.Type GetNodeType(WorldGenBlockNode node, WorldVariable worldVar, int maxX, int maxY)
     {
         int groundNeighborCount = 0;
 
@@ -19,18 +19,14 @@ public class CellularAutomata : SimulationStep
                 if (_x == node.x && _y == node.y)
                     continue;
 
-                WorldTextureNode neighbor = GetNodeFromClone(_x, _y, grid, maxX, maxY);
+                WorldGenBlockNode neighbor = GetNodeFromGrid(_x, _y, worldVar.grid, maxX, maxY);
                 if (neighbor != null)
                 {
                     if (neighbor.type != Block.Type.WATER)
-                    {
                         groundNeighborCount++;
-                    }
                 }
                 else
-                {
                     return Block.Type.WATER;
-                }
             }
         }
 

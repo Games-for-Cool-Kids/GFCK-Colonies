@@ -51,7 +51,7 @@ namespace Pathfinding
             this.completedCallback = completedCallback;
             this.worldChunkWidth = world.worldChunkWidth;
             this.chunkSize = world.chunkSize;
-            this.maxY = world.height;
+            this.maxY = world.worldVariable.height;
 
             GenerateChunkNodeGrids(world.chunks);
         }

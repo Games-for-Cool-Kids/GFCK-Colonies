@@ -8,6 +8,7 @@ public class Block
         GRASS,
         WATER,
         SAND,
+        SNOW,
     }
 
     public int x, y, z; // Position in chunk. !Not world!

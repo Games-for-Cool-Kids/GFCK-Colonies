@@ -1,16 +1,14 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu(menuName = "World/SimulationStep/Beach")]
-public class CreateBeach : SimulationStep
+public class CreateBeachesStep : SimulationStep
 {
-    public override Block.Type GetNodeType(WorldTextureNode node, WorldTextureNode[,] grid, int maxX, int maxY)
+    public override Block.Type GetNodeType(WorldGenBlockNode node, WorldVariable worldVar, int maxX, int maxY)
     {
-        // Only create a beach on normal ground nodes.
         if (node.type == Block.Type.WATER)
             return node.type;
 
         bool neighboringWater = false;
-
         for (int x = -1; x <= 1; x++)
         {
             for (int y = -1; y <= 1; y++)
@@ -20,9 +18,15 @@ public class CreateBeach : SimulationStep
                 if (_x == node.x && _y == node.y)
                     continue;
 
-                WorldTextureNode neighbor = GetNodeFromClone(_x, _y, grid, maxX, maxY);
+                WorldGenBlockNode neighbor = GetNodeFromGrid(_x, _y, worldVar.grid, maxX, maxY);
+                if (neighbor == null)
+                    continue;
 
-                if (neighbor.type == Block.Type.WATER)
+                int nodeY = Mathf.FloorToInt(node.height * worldVar.height);
+                int neighborY = Mathf.FloorToInt(neighbor.height * worldVar.height);
+
+                if (neighbor.type == Block.Type.WATER
+                 && nodeY - neighborY == 1)
                 {
                     neighboringWater = true;
                     goto ApplyResult;
