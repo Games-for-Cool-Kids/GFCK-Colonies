@@ -6,14 +6,8 @@ public class GameObjectUtil
     {
         float offset = 0;
 
-        if (gameObject.TryGetComponent<MeshFilter>(out var mesh_filter))
-        {
-            var mesh = mesh_filter.mesh;
-            if (mesh != null)
-            {
-                offset = -mesh_filter.mesh.bounds.min.y * gameObject.transform.localScale.y;
-            }
-        }
+        if (gameObject.TryGetComponent<Renderer>(out var renderer))
+            offset = gameObject.transform.position.y - renderer.bounds.min.y;
 
         return Vector3.up * offset;
     }
