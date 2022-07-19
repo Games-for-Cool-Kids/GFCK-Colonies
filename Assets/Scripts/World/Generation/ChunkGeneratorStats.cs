@@ -8,6 +8,4 @@ public class ChunkGeneratorStats
     public Vector3 origin;
 
     public WorldGenBlockNode[,] nodeGrid;
-    //public int[,] heightMap;
-    //public Block.Type[,] blockMap;
 }

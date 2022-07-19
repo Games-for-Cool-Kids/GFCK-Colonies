@@ -1,16 +1,11 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
-using System.Threading;
 
 public class World : MonoBehaviour
 {
     public int chunkSize = 32;
     public int worldChunkWidth { get; private set; } // Nr of chunks in width and length, as world is a square.
-
-    public int maxWorkers = 4;
-    List<ChunkGenerator> toDoWorkers = new List<ChunkGenerator>();
-    List<ChunkGenerator> currentWorkers = new List<ChunkGenerator>();
 
     public Material material;
 
@@ -18,81 +13,48 @@ public class World : MonoBehaviour
     public Chunk[,] chunks;
     public BlockGrid worldGrid;
 
+    private WorldGenerator worldGenerator = null;
+
     private void Start()
     {
-        CreateWorld();
+        StartCreateWorld();
     }
 
     void Update()
     {
-        UpdateGeneratorThreads();
+        if(worldGenerator != null)
+            RunWorldGeneration();
     }
 
-    private void UpdateGeneratorThreads()
-    {
-        int i = 0;
-        while (i < currentWorkers.Count)
-        {
-            if (currentWorkers[i].GenerationCompleted)
-            {
-                currentWorkers[i].NotifyCompleted();
-                currentWorkers.RemoveAt(i);
-            }
-            else
-            {
-                i++;
-            }
-        }
-
-        if (toDoWorkers.Count > 0
-        && currentWorkers.Count < maxWorkers)
-        {
-            ChunkGenerator generator = toDoWorkers[0];
-            toDoWorkers.RemoveAt(0);
-            currentWorkers.Add(generator);
-
-            Thread workerThread = new Thread(generator.Generate);
-            workerThread.Start();
-        }
-    }
-
-    public void CreateWorld()
+    public void StartCreateWorld()
     {
         Reset();
 
         worldChunkWidth = Mathf.FloorToInt(worldVariable.size / chunkSize);
 
-        CreateChunks();
+        worldGenerator = new(chunkSize, worldChunkWidth, worldVariable, TakeGeneratedWorld); // Creates world using multithreading. We need to wait for it to finish to use the world.
+        //worldGenerator.fin
     }
 
-    private void CreateChunks()
+    public void RunWorldGeneration()
     {
-        chunks = new Chunk[worldChunkWidth, worldChunkWidth];
+        if (worldGenerator.worldGenCompleted)
+            worldGenerator.NotifyCompleted();
+        else
+            worldGenerator.Run();
+    }
 
-        for (int x = 0; x < worldChunkWidth; x++)
+    private void TakeGeneratedWorld(Chunk[,] chunks, BlockGrid worldGrid)
+    {
+        this.worldGrid = worldGrid;
+        this.chunks = chunks;
+
+        foreach (var chunk in chunks)
         {
-            for (int z = 0; z < worldChunkWidth; z++)
-            {
-                Vector3 chunkPos = transform.position;
-                chunkPos.x += x * chunkSize;
-                chunkPos.z += z * chunkSize;
-
-                RequestWorldChunkGeneration(x, z, chunkPos);
-            }
+            CreateChunkObject(chunk);
         }
-    }
 
-    public void RequestWorldChunkGeneration(int x, int z, Vector3 position)
-    {
-        ChunkGenerator generator = new(x, z, CreateChunkStats(x, z, position), AddGeneratedChunk);
-        toDoWorkers.Add(generator);
-    }
-
-    private void AddGeneratedChunk(Chunk chunk)
-    {
-        chunks[chunk.x, chunk.z] = chunk; // Store chunk
-
-        CreateChunkObject(chunk);
+        worldGenerator = null; // Stops generator from running.
     }
 
     private void CreateChunkObject(Chunk chunk)
@@ -124,17 +86,6 @@ public class World : MonoBehaviour
         chunkMesh.RecalculateNormals();
 
         return chunkMesh;
-    }
-
-    private ChunkGeneratorStats CreateChunkStats(int x, int z, Vector3 position)
-    {
-        return new ChunkGeneratorStats
-        {
-            chunkSize = this.chunkSize,
-            height = worldVariable.height,
-            origin = position,
-            nodeGrid = worldVariable.GetChunkNodeGrid(x, z, chunkSize),
-        };
     }
 
     private void Reset()
