@@ -12,18 +12,12 @@ public class WorldTextureGenerator : MonoBehaviour
     public Color sand;
     public Color snow;
 
-    public Color groundLow;
-    public Color groundHigh;
-    public Color waterDepth;
-    public Color waterShallow;
-
-
     public int textureSize = 256; // Always a square.
     public int maxHeight = 50;
     public bool reverseHeight = false;
 
     public HeightMapStep heightMapStep;
-    public SimulationStep baseStep;
+    public HeightToBlockTypeStep heightToBlockStep;
     public SimulationStep beachStep;
 
     public WorldVariable worldVariable;
@@ -59,19 +53,6 @@ public class WorldTextureGenerator : MonoBehaviour
         DrawWorld();
     }
 
-    //public void Step()
-    //{
-    //    //DrawWorld();
-    //}
-
-    //public void ApplySteps(int amount)
-    //{
-    //    for (int i = 0; i < amount; i++)
-    //    {
-    //        Step();
-    //    }
-    //}
-
     void ScanWorld(StepLogic logic)
     {
         for (int x = 0; x < textureSize; x++)
@@ -91,7 +72,7 @@ public class WorldTextureGenerator : MonoBehaviour
     private void ApplyBaseStep(int x, int y)
     {
         WorldGenBlockNode node = worldVariable.grid[x, y];
-        node.type = baseStep.GetNodeType(node, worldVariable, textureSize, textureSize);
+        node.type = heightToBlockStep.GetNodeType(node, worldVariable, textureSize, textureSize);
     }
 
     private void ApplyBeachStep(int x, int y)
@@ -102,10 +83,7 @@ public class WorldTextureGenerator : MonoBehaviour
 
     private void SetWaterBlocksToCorrectLevel()
     {
-        float singleBlockHeight = 1.0f / worldVariable.height;
-        float waterLevel = 0;
-        for (int i = 0; waterLevel < 0.2f - singleBlockHeight; i++)
-            waterLevel += singleBlockHeight;
+        float waterLevel = GetBlockHeightClosestTo(heightToBlockStep.waterLevel);
 
         for (int x = 0; x < textureSize; x++)
         {
@@ -114,15 +92,15 @@ public class WorldTextureGenerator : MonoBehaviour
                 WorldGenBlockNode node = worldVariable.grid[x, y];
 
                 if (node.type == Block.Type.WATER)
-                {
                     node.height = waterLevel;
-                }
             }
         }
     }
 
     private void DrawWorld(bool drawHeight = false)
     {
+        Texture2D heightMap = new Texture2D(textureSize, textureSize);
+
         for (int x = 0; x < textureSize; x++)
         {
             for (int y = 0; y < textureSize; y++)
@@ -130,64 +108,44 @@ public class WorldTextureGenerator : MonoBehaviour
                 WorldGenBlockNode node = worldVariable.grid[x, y];
 
                 Color pixel = Color.magenta;
-                if(drawHeight)
+                switch (node.type)
                 {
-                    float height = worldVariable.grid[x, y].height;
-                    pixel = GetHeightColor(height);
+                    case Block.Type.GROUND:
+                        pixel = ground;
+                        break;
+                    case Block.Type.GRASS:
+                        pixel = grass;
+                        break;
+                    case Block.Type.WATER:
+                        pixel = water;
+                        break;
+                    case Block.Type.SAND:
+                        pixel = sand;
+                        break;
+                    case Block.Type.SNOW:
+                        pixel = snow;
+                        break;
                 }
-                else
-                {
-                    switch (node.type)
-                    {
-                        case Block.Type.GROUND:
-                            pixel = ground;
-                            break;
-                        case Block.Type.GRASS:
-                            pixel = grass;
-                            break;
-                        case Block.Type.WATER:
-                            pixel = water;
-                            break;
-                        case Block.Type.SAND:
-                            pixel = sand;
-                            break;
-                        case Block.Type.SNOW:
-                            pixel = snow;
-                            break;
-                    }
-                }
-
+                pixel *= GetHeightColor(node.height);
                 worldVariable.texture.SetPixel(x, y, pixel);
             }
         }
 
+        heightMap.Apply();
         worldVariable.ApplyTexture();
     }
 
     private Color GetHeightColor(float height)
     {
-        return Color.magenta;
-        //if (reverseHeight)
-        //    height = 1 - height;
-        //
-        //if (height <= waterLevel)
-        //{
-        //    float level = height / waterLevel;
-        //    return Color.Lerp(waterDepth, waterShallow, level);
-        //}
-        //else
-        //{
-        //    if (height >= snowLevel)
-        //    {
-        //        float level = (height - snowLevel) / (1 - snowLevel);
-        //        return Color.Lerp(groundHigh, snow, level);
-        //    }
-        //    else
-        //    {
-        //        float level = (height - waterLevel) / (snowLevel - waterLevel);
-        //        return Color.Lerp(groundLow, groundHigh, level);
-        //    }
-        //}
+        float _colorHeight = heightToBlockStep.waterLevel + height * 0.8f;
+
+        Color heightColor = Color.white;
+        if (height > heightToBlockStep.waterLevel)
+        {
+            heightColor = Color.Lerp(new Color(0.2f, 0.2f, 0.2f), Color.white, _colorHeight);
+        }
+
+        return heightColor;
     }
 
     public void Load3DWorld()
@@ -198,5 +156,15 @@ public class WorldTextureGenerator : MonoBehaviour
     public void LoadGame()
     {
         SceneManager.LoadScene("GameScene");
+    }
+
+    private float GetBlockHeightClosestTo(float height)
+    {
+        float singleBlockHeight = 1.0f / worldVariable.height;
+        float blockHeight = 0;
+        for (int i = 0; blockHeight < height - singleBlockHeight; i++)
+            blockHeight += singleBlockHeight;
+
+        return blockHeight;
     }
 }
