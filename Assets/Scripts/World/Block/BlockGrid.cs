@@ -35,8 +35,8 @@ public class BlockGrid
 
     public Block GetBlock(int x, int y, int z)
     {
-        if(x < 0 || y < 0 || z < 0
-        || x >= MaxX || y >= MaxY || z >= MaxZ )
+        if (x < 0 || y < 0 || z < 0
+        || x >= MaxX || y >= MaxY || z >= MaxZ)
             return null;
 
         return _blocks[x, y, z];
@@ -48,7 +48,7 @@ public class BlockGrid
         int y = sourceBlock.y;
         int z = sourceBlock.z;
 
-        switch(adjacency)
+        switch (adjacency)
         {
             case Adjacency.NORTH:
                 z = z + 1; break;
@@ -84,6 +84,38 @@ public class BlockGrid
         return null;
     }
 
+    public List<Block> GetSurfaceNeighbors(Block source, bool diagonal = true)
+    {
+        List<Block> neighbors = new List<Block>();
+
+        for (int x = source.x - 1; x <= source.x + 1; x++)
+        {
+            for (int z = source.z - 1; z <= source.z + 1; z++)
+            {
+                if (x == source.x && z == source.z) // Skip self.
+                    continue;
+
+                for (int y = MaxY - 1; y > 0; y--) // Search from top-down until we hit a surface block.
+                {
+                    if (!diagonal // Skip diagonal blocks.
+                     && Mathf.Abs(x - source.x) == 1
+                     && Mathf.Abs(z - source.z) == 1)
+                        continue;
+
+                    Block neighbor = GetBlock(x, y, z);
+                    if (neighbor != null
+                     && neighbor.filled)
+                    {
+                        neighbors.Add(neighbor);
+                        y = 0; // Stop top-down search.
+                    }
+                }
+            }
+        }
+
+        return neighbors;
+    }
+
     public List<Block> GetFilledBlocks()
     {
         List<Block> filledBlocks = new();
@@ -95,7 +127,7 @@ public class BlockGrid
                 for (int z = 0; z < MaxZ; z++)
                 {
                     Block block = _blocks[x, y, z];
-                    if(block != null
+                    if (block != null
                     && block.filled)
                         filledBlocks.Add(GetBlock(x, y, z));
                 }
@@ -110,8 +142,29 @@ public class BlockGrid
         return _blocks;
     }
 
-    public void setData(Block[,,] data)
+    public void SetData(Block[,,] data)
     {
         _blocks = data;
+    }
+
+    public void InsertGridAt(int posX, int posZ, BlockGrid other)
+    {
+        if (posX < 0 || posZ < 0
+        || posX + other.MaxX > MaxX || other.MaxY > MaxY || posZ + other.MaxZ > MaxZ)
+        {
+            Debug.LogError("Out of bounds.");
+            return;
+        }
+
+        for (int x = posX; x < posX + other.MaxX; x++)
+        {
+            for (int y = 0; y < other.MaxY; y++)
+            {
+                for (int z = posZ; z < posZ + other.MaxZ; z++)
+                {
+                    _blocks[x, y, z] = other.GetBlock(x, y, z);
+                }
+            }
+        }
     }
 }

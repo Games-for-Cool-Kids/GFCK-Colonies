@@ -14,13 +14,17 @@ public class WorldGenerator
 
     private WorldVariable worldVariable;
 
+    // Status
+    private bool chunksGenerated = false;
     public volatile bool worldGenCompleted = false;
+
     // Output
     private Chunk[,] chunks;
 
     // Finished callback
     public delegate void WorldGenerationFinishedCallBack(Chunk[,] chunks);
     private WorldGenerationFinishedCallBack worldGenFinishedCallback;
+
 
     public WorldGenerator(int chunkSize,
                           int worldChunkWidth,
@@ -32,13 +36,18 @@ public class WorldGenerator
         this.worldVariable = worldVariable;
         this.worldGenFinishedCallback = worldGenerationFinishedCallback;
 
-
         CreateChunks();
     }
 
     public void Run()
     {
-        UpdateChunkGeneratorThreads();
+        if (worldGenCompleted)
+            return;
+
+        if (!chunksGenerated)
+            UpdateChunkGeneratorThreads();
+        else
+            FillHoles();
     }
 
     private void UpdateChunkGeneratorThreads()
@@ -69,12 +78,12 @@ public class WorldGenerator
         }
 
         if (currentWorkers.Count == 0)
-            worldGenCompleted = true;
+            chunksGenerated = true;
     }
 
     public void NotifyCompleted()
     {
-        worldGenFinishedCallback(chunks, worldGrid);
+        worldGenFinishedCallback(chunks);
     }
 
     private void CreateChunks()
@@ -114,5 +123,12 @@ public class WorldGenerator
     private void AddChunk(Chunk chunk)
     {
         chunks[chunk.x, chunk.z] = chunk; // Store generated chunk
+    }
+
+    private void FillHoles()
+    {
+
+
+        worldGenCompleted = true;
     }
 }

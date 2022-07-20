@@ -22,6 +22,7 @@ public class ChunkGenerator
     public void Generate()
     {
         GenerateWorldChunk();
+        FillHoles();
         CreateBlockMeshes();
 
         GenerationCompleted = true;
@@ -46,6 +47,35 @@ public class ChunkGenerator
                 Vector3 blockWorldPos = _chunkStats.origin + new Vector3(x, y, z);
                 Block newBlock = new Block(x, y, z, true, _chunkStats.nodeGrid[x, z].type, blockWorldPos);
                 _generatedChunk.grid.SetBlock(newBlock.x, newBlock.y, newBlock.z, newBlock);
+            }
+        }
+    }
+
+    private void FillHoles()
+    {
+        foreach (Block surfaceBlock in _generatedChunk.grid.GetFilledBlocks())
+        {
+            var neighbors = _generatedChunk.grid.GetSurfaceNeighbors(surfaceBlock, false);
+
+            int highestHeightDiff = 0;
+            foreach (Block neighbor in neighbors)
+            {
+                int heightDiff = surfaceBlock.y - neighbor.y;
+                if(heightDiff > highestHeightDiff)
+                    highestHeightDiff = heightDiff;
+            }
+
+            int emptyBlocks = highestHeightDiff - 1;
+            if (emptyBlocks > 0)
+            {
+                int x = surfaceBlock.x;
+                int z = surfaceBlock.z;
+
+                for (int y = surfaceBlock.y - 1; y >= surfaceBlock.y - emptyBlocks; y--)
+                {
+                    Block fill = new Block(x, y, z, true, surfaceBlock.type, new Vector3(x, y, z));
+                    _generatedChunk.grid.SetBlock(x, y, z, fill);
+                }
             }
         }
     }
