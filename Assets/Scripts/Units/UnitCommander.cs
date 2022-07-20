@@ -7,7 +7,7 @@ public class UnitCommander : MonoBehaviour
     {
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
-            var target_block = GameManager.Instance.World.GetBlockUnderMouse(true);
+            var target_block = GameManager.Instance.World.GetBlockUnderMouse();
             if (target_block != null)
             {
                 foreach (var unit in UnitSelector.Instance.SelectedUnits)

@@ -11,7 +11,7 @@ public class CreateObjectOnClick : MonoBehaviour
         if(_createAfterClick
         && Input.GetMouseButtonDown(0))
         {
-            var hovered_block = GameManager.Instance.World.GetBlockUnderMouse(true);
+            var hovered_block = GameManager.Instance.World.GetBlockUnderMouse();
             if (hovered_block != null)
             {
                 var new_object = Instantiate(ObjectToCreate);
