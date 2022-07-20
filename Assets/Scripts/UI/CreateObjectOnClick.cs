@@ -16,9 +16,9 @@ public class CreateObjectOnClick : MonoBehaviour
             {
                 var new_object = Instantiate(ObjectToCreate);
                 new_object.transform.position = hovered_block.GetWorldPositionOnTop() + GameObjectUtil.GetPivotToMeshMinOffset(new_object);
-            }
 
-            _createAfterClick = false;
+                _createAfterClick = false;
+            }
         }
     }
 
