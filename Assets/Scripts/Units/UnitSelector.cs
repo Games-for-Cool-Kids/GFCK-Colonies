@@ -40,10 +40,9 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
 
     private void HandleLeftClick()
     {
-        LayerMask mask = LayerMask.NameToLayer(GlobalDefines.characterLayerName);
-        mask += LayerMask.NameToLayer(GlobalDefines.worldLayerName);
+        LayerMask mask = LayerMask.GetMask(GlobalDefines.characterLayerName, GlobalDefines.worldLayerName);
 
-        Collider clickedCollider = CameraUtil.CastMouseRayFromCamera(/*~mask*/).collider;
+        Collider clickedCollider = CameraUtil.CastMouseRayFromCamera(mask).collider;
         if (clickedCollider != null)
         {
             if (clickedCollider.TryGetComponent(out MilitaryUnit unit))
@@ -94,7 +93,7 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
         if (_unitSelectionArea.sizeDelta.magnitude <= 0.1f)
         {
             Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-            if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, PhysicsUtil.GetInverseLayerMaskFromName(GlobalDefines.characterLayerName)))
+            if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask(GlobalDefines.characterLayerName)))
                 return;
 
             if (!hit.collider.TryGetComponent<MilitaryUnit>(out MilitaryUnit unit))

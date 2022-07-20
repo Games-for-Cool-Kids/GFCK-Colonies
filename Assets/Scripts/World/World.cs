@@ -139,7 +139,7 @@ public class World : MonoBehaviour
 
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        int layerMask = ignoreOtherLayers ? ~LayerMask.NameToLayer(GlobalDefines.worldLayerName) : ~0;
+        LayerMask layerMask = ignoreOtherLayers ? LayerMask.GetMask(GlobalDefines.worldLayerName) : ~0;
 
         if (Physics.Raycast(ray, out hit, 1000, layerMask))
             return GetBlockFromRayHit(hit);

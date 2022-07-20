@@ -52,9 +52,8 @@ public class PlayerCamera : MonoBehaviour
 
     private float FindFocusHeight()
     {
-        LayerMask worldLayer = LayerMask.NameToLayer(GlobalDefines.worldLayerName);
         RaycastHit focusPointHit;
-        Physics.Raycast(_blockFocusPoint.position, -Vector3.up, out focusPointHit, 1000, ~worldLayer);
+        Physics.Raycast(_blockFocusPoint.position, -Vector3.up, out focusPointHit, 1000, LayerMask.GetMask(GlobalDefines.worldLayerName));
 
         Block focusBlock = GameManager.Instance.World.GetBlockFromRayHit(focusPointHit);
         if (focusBlock == null)
