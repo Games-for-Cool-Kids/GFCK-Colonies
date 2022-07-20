@@ -11,7 +11,6 @@ public class World : MonoBehaviour
 
     public WorldVariable worldVariable;
     public Chunk[,] chunks;
-    public BlockGrid worldGrid;
 
     private WorldGenerator worldGenerator = null;
 
@@ -44,9 +43,8 @@ public class World : MonoBehaviour
             worldGenerator.Run();
     }
 
-    private void TakeGeneratedWorld(Chunk[,] chunks, BlockGrid worldGrid)
+    private void TakeGeneratedWorld(Chunk[,] chunks)
     {
-        this.worldGrid = worldGrid;
         this.chunks = chunks;
 
         foreach (var chunk in chunks)

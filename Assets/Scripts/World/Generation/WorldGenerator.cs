@@ -14,13 +14,12 @@ public class WorldGenerator
 
     private WorldVariable worldVariable;
 
+    public volatile bool worldGenCompleted = false;
     // Output
     private Chunk[,] chunks;
-    private BlockGrid worldGrid;
 
     // Finished callback
-    public volatile bool worldGenCompleted;
-    public delegate void WorldGenerationFinishedCallBack(Chunk[,] chunks, BlockGrid worldGrid);
+    public delegate void WorldGenerationFinishedCallBack(Chunk[,] chunks);
     private WorldGenerationFinishedCallBack worldGenFinishedCallback;
 
     public WorldGenerator(int chunkSize,
@@ -33,7 +32,6 @@ public class WorldGenerator
         this.worldVariable = worldVariable;
         this.worldGenFinishedCallback = worldGenerationFinishedCallback;
 
-        worldGrid = new(worldVariable.size, worldVariable.height, worldVariable.size);
 
         CreateChunks();
     }
