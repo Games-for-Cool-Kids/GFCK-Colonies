@@ -27,21 +27,15 @@ public class WorldTextureGenerator : MonoBehaviour
 
     private void Start()
     {
+        Generate();
+    }
+
+    public void Generate()
+    {
         worldVariable.Init(textureSize, maxHeight);
 
         InitImageInScene();
 
-        CreateBase();
-    }
-
-    private void InitImageInScene()
-    { 
-        imageObject.GetComponent<RectTransform>().sizeDelta = new Vector2(textureSize, textureSize);
-        imageObject.GetComponent<Image>().sprite = worldVariable.worldSprite;
-    }
-
-    public void CreateBase()
-    {
         GenerateHeightMap();
 
         ScanWorld(ApplyBaseStep);
@@ -51,6 +45,12 @@ public class WorldTextureGenerator : MonoBehaviour
         ScanWorld(ApplyBeachStep);
 
         DrawWorld();
+    }
+
+    private void InitImageInScene()
+    { 
+        imageObject.GetComponent<RectTransform>().sizeDelta = new Vector2(textureSize, textureSize);
+        imageObject.GetComponent<Image>().sprite = worldVariable.worldSprite;
     }
 
     void ScanWorld(StepLogic logic)

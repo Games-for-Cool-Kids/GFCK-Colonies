@@ -688,7 +688,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1143179997}
         m_TargetAssemblyTypeName: WorldTextureGenerator, Assembly-CSharp
-        m_MethodName: CreateBase
+        m_MethodName: Generate
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
