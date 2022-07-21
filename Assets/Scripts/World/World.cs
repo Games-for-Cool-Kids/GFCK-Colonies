@@ -150,8 +150,9 @@ public class World : MonoBehaviour
             if (chunk.meshChanged)
             {
                 GameObject chunkObject = chunkObjects[chunk.x, chunk.z];
-                chunkObject.GetComponent<MeshFilter>().mesh = chunk.TakeMesh();
-                chunkObject.GetComponent<MeshCollider>().sharedMesh = chunkObject.GetComponent<MeshFilter>().mesh;
+                Mesh chunkMesh = chunk.TakeMesh();
+                chunkObject.GetComponent<MeshFilter>().mesh = chunkMesh;
+                chunkObject.GetComponent<MeshCollider>().sharedMesh = chunkMesh;
             }
         }
     }
