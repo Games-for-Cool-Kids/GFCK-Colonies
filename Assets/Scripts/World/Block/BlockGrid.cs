@@ -208,7 +208,7 @@ public class BlockGrid
         Block belowBlock = GetBlock(x, y - 1, z);
         if (belowBlock == null) // Create block under destroyed block, if empty below.
         { 
-            Block newBlock = new Block(x, y - 1, z, true, block.type, new Vector3(block.worldPosition.x, y, block.worldPosition.z));
+            Block newBlock = new Block(x, y - 1, z, true, block.type, new Vector3(block.worldPosition.x, y - 1, block.worldPosition.z));
             SetBlock(newBlock);
         }
 
