@@ -855,7 +855,7 @@ MonoBehaviour:
   water: {r: 0.50980395, g: 0.8588236, b: 0.8470589, a: 1}
   sand: {r: 0.909804, g: 0.75294125, b: 0.4901961, a: 1}
   snow: {r: 0.7983268, g: 0.8679245, b: 0.8665753, a: 1}
-  textureSize: 1024
+  textureSize: 512
   maxHeight: 30
   heightMapStep: {fileID: 11400000, guid: cfa8fafd15815dc468987d56abfe2fca, type: 2}
   heightToBlockStep: {fileID: 11400000, guid: 1450b651feb4255498a7f8ae3f96fdff, type: 2}
