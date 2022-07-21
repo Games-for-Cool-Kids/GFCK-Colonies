@@ -222,8 +222,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 40
-  defaultHeight: 25
-  hoverBlock: 0
+  hoverHeight: 25
+  hoverWorld: 0
 --- !u!114 &171576683
 MonoBehaviour:
   m_ObjectHideFlags: 0

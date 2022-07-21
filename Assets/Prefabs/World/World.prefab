@@ -47,10 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05183713e9a9f3940a0dac72dbdf053e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldChunkSize: 8
   chunkSize: 32
-  height: 50
-  maxWorkers: 4
   material: {fileID: 2100000, guid: cfa4251079c9db54eb415deae520b548, type: 2}
   worldVariable: {fileID: 11400000, guid: dcb761a78047c944790678bd7027d5e9, type: 2}
 --- !u!114 &1920009736
@@ -90,3 +87,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8155813e450f604ca11cb6940d81532, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  material: {fileID: 2100000, guid: 83db10aba8f445745b866c693b46c8ca, type: 2}

@@ -5,6 +5,8 @@ public class ShowHoveredBlock : MonoBehaviour
     private World _world;
     private GameObject _testCube;
 
+    public Material material;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -12,6 +14,10 @@ public class ShowHoveredBlock : MonoBehaviour
 
         _testCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         _testCube.name = "HoveredBlock";
+        _testCube.layer = Physics.IgnoreRaycastLayer;
+        _testCube.transform.localScale = Vector3.one * 1.1f;
+        _testCube.GetComponent<MeshRenderer>().material = material;
+
         Destroy(_testCube.GetComponent<BoxCollider>());
     }
 
@@ -22,7 +28,7 @@ public class ShowHoveredBlock : MonoBehaviour
 
         if (block != null)
         {
-            _testCube.transform.position = block.worldPosition + Vector3.up / 4;
+            _testCube.transform.position = block.worldPosition;
             _testCube.SetActive(true);
         }
         else
