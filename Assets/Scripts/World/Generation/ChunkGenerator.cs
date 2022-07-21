@@ -45,7 +45,7 @@ public class ChunkGenerator
 
                 Vector3 blockWorldPos = _chunkStats.origin + new Vector3(x, y, z);
                 Block newBlock = new Block(x, y, z, true, _chunkStats.nodeGrid[x, z].type, blockWorldPos);
-                _generatedChunk.grid.SetBlock(newBlock.x, newBlock.y, newBlock.z, newBlock);
+                _generatedChunk.grid.SetBlock(newBlock);
             }
         }
     }
@@ -73,7 +73,7 @@ public class ChunkGenerator
                 for (int y = surfaceBlock.y - 1; y >= surfaceBlock.y - emptyBlocks; y--)
                 {
                     Block fill = new Block(x, y, z, true, Block.Type.ROCK, new Vector3(x, y, z));
-                    _generatedChunk.grid.SetBlock(x, y, z, fill);
+                    _generatedChunk.grid.SetBlock(fill);
                 }
             }
         }

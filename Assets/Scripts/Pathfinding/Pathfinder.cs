@@ -53,10 +53,10 @@ namespace Pathfinding
             this.chunkSize = world.chunkSize;
             this.maxY = world.worldVariable.height;
 
-            GenerateChunkNodeGrids(world.chunks);
+            GenerateChunkNodeGrids(world.chunkGrid);
         }
 
-        private void GenerateChunkNodeGrids(Chunk[,] chunks)
+        private void GenerateChunkNodeGrids(ChunkGrid chunkGrid)
         {
             _chunkNodeGrids = new NodeGrid[worldChunkWidth, worldChunkWidth];
 
@@ -64,7 +64,7 @@ namespace Pathfinding
             {
                 for (int z = 0; z < worldChunkWidth; z++)
                 {
-                    var currGrid = chunks[x, z].grid;
+                    var currGrid = chunkGrid.chunks[x, z].grid;
 
                     _chunkNodeGrids[x, z] = new NodeGrid();
                     _chunkNodeGrids[x, z].grid = new PathNode[currGrid.MaxX, currGrid.MaxY, currGrid.MaxZ];

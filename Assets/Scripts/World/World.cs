@@ -5,12 +5,13 @@ using System.Collections.Generic;
 public class World : MonoBehaviour
 {
     public int chunkSize = 32;
-    public int worldChunkWidth { get; private set; } // Nr of chunks in width and length, as world is a square.
+    public int worldChunkWidth { get; private set; } // Nr of chunkGrid in width and length, as world is a square.
 
     public Material material;
 
     public WorldVariable worldVariable;
-    public Chunk[,] chunks;
+    public ChunkGrid chunkGrid;
+    public GameObject[,] chunkObjects;
 
     private WorldGenerator worldGenerator = null;
 
@@ -23,16 +24,22 @@ public class World : MonoBehaviour
     {
         if(worldGenerator != null)
             RunWorldGeneration();
+
+        if(Input.GetMouseButtonDown(0))
+        {
+            Block block = GetBlockUnderMouse();
+            if (block != null)
+                DigBlock(block);
+        }
     }
 
     public void StartCreateWorld()
     {
-        Reset();
+        ResetWorld();
 
         worldChunkWidth = Mathf.FloorToInt(worldVariable.size / chunkSize);
 
         worldGenerator = new(chunkSize, worldChunkWidth, worldVariable, TakeGeneratedWorld); // Creates world using multithreading. We need to wait for it to finish to use the world.
-        //worldGenerator.fin
     }
 
     public void RunWorldGeneration()
@@ -43,11 +50,12 @@ public class World : MonoBehaviour
             worldGenerator.Run();
     }
 
-    private void TakeGeneratedWorld(Chunk[,] chunks)
+    private void TakeGeneratedWorld(ChunkGrid generatedChunkGrid)
     {
-        this.chunks = chunks;
+        chunkGrid = generatedChunkGrid;
+        chunkObjects = new GameObject[worldChunkWidth, worldChunkWidth];
 
-        foreach (var chunk in chunks)
+        foreach (var chunk in generatedChunkGrid.chunks)
         {
             CreateChunkObject(chunk);
         }
@@ -62,9 +70,10 @@ public class World : MonoBehaviour
         newChunkObject.layer = LayerMask.NameToLayer(GlobalDefines.worldLayerName);
         newChunkObject.transform.parent = transform;
         newChunkObject.transform.position = chunk.origin;
+        chunkObjects[chunk.x, chunk.z] = newChunkObject;
 
         MeshFilter meshFilter = newChunkObject.AddComponent<MeshFilter>();
-        meshFilter.mesh = LoadChunkMesh(chunk);
+        meshFilter.mesh = chunk.TakeMesh();
 
         MeshRenderer renderer = newChunkObject.AddComponent<MeshRenderer>();
         renderer.material = material;
@@ -72,21 +81,7 @@ public class World : MonoBehaviour
         newChunkObject.AddComponent<MeshCollider>();
     }
 
-    private Mesh LoadChunkMesh(Chunk chunk)
-    {
-        Mesh chunkMesh = new Mesh()
-        {
-            vertices = chunk.meshData.vertices.ToArray(),
-            uv = chunk.meshData.uv.ToArray(),
-            triangles = chunk.meshData.triangles.ToArray()
-        };
-
-        chunkMesh.RecalculateNormals();
-
-        return chunkMesh;
-    }
-
-    private void Reset()
+    private void ResetWorld()
     {
         foreach (Transform child in transform)
         {
@@ -114,13 +109,7 @@ public class World : MonoBehaviour
 
     public Chunk GetChunkAt(Vector3 worldPos)
     {
-        Vector3 relativePos = worldPos - transform.position;
-        relativePos += new Vector3(0.5f, 0.5f, 0.5f); // We need offset of half a block. Origin is middle of first block.
-
-        int chunkX = Mathf.FloorToInt(relativePos.x / this.chunkSize);
-        int chunkZ = Mathf.FloorToInt(relativePos.z / this.chunkSize);
-
-        return GetChunk(chunkX, chunkZ);
+        return chunkGrid.GetChunkAt(worldPos);
     }
 
     public Chunk GetChunk(int x, int z)
@@ -129,7 +118,7 @@ public class World : MonoBehaviour
         || z < 0 || z >= worldChunkWidth)
             return null;
 
-        return chunks[x, z];
+        return chunkGrid.chunks[x, z];
     }
 
     public Block GetBlockUnderMouse(bool ignoreOtherLayers = false)
@@ -145,5 +134,25 @@ public class World : MonoBehaviour
             return GetBlockFromRayHit(hit);
 
         return null;
+    }
+
+    public void DigBlock(Block block)
+    {
+        chunkGrid.DestroyBlock(block);
+
+        UpdateChangedChunkMeshes();
+    }
+
+    private void UpdateChangedChunkMeshes()
+    {
+        foreach (var chunk in chunkGrid.chunks)
+        {
+            if (chunk.meshChanged)
+            {
+                GameObject chunkObject = chunkObjects[chunk.x, chunk.z];
+                chunkObject.GetComponent<MeshFilter>().mesh = chunk.TakeMesh();
+                chunkObject.GetComponent<MeshCollider>().sharedMesh = chunkObject.GetComponent<MeshFilter>().mesh;
+            }
+        }
     }
 }

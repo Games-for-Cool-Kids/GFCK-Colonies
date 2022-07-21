@@ -52,7 +52,7 @@ public class Block
         if (eastBlock == null || !eastBlock.filled)
             ChunkMeshUtilities.CreateFaceRight(worldData, blockPos, type);
 
-        // We don't create a bottom face.
+        // We don't create a bottom face. Since the camera can never see the bottom of blocks.
     }
 
     // Determines if it can be used for pathfinding.

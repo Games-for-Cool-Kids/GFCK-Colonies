@@ -28,9 +28,9 @@ public class BlockGrid
         _blocks = new Block[MaxX, MaxY, MaxZ];
     }
 
-    public void SetBlock(int x, int y, int z, Block block)
+    public void SetBlock(Block block)
     {
-        _blocks[x, y, z] = block;
+        _blocks[block.x, block.y, block.z] = block;
     }
 
     public Block GetBlock(int x, int y, int z)
@@ -99,6 +99,15 @@ public class BlockGrid
         }
 
         return null;
+    }
+
+    public List<Block> GetSurfaceNeighbors(int x, int y, int z, bool diagonal = true)
+    {
+        Block block = GetBlock(x, y, z);
+        if(block != null)
+            return GetSurfaceNeighbors(block);
+
+        return new List<Block>(); // empty list
     }
 
     public List<Block> GetSurfaceNeighbors(Block source, bool diagonal = true)
@@ -182,6 +191,48 @@ public class BlockGrid
                     _blocks[x, y, z] = other.GetBlock(x, y, z);
                 }
             }
+        }
+    }
+
+    public void DestroyBlock(Block block)
+    {
+        if (block.y == 0) // Cannot destroy bottom-most block.
+            return;
+
+        int x = block.x;
+        int y = block.y;
+        int z = block.z;
+
+        _blocks[x, y, z] = null; // Clear block in grid.
+
+        Block belowBlock = GetBlock(x, y - 1, z);
+        if (belowBlock == null) // Create block under destroyed block, if empty below.
+        { 
+            Block newBlock = new Block(x, y - 1, z, true, block.type, new Vector3(block.worldPosition.x, y, block.worldPosition.z));
+            SetBlock(newBlock);
+        }
+
+        // Fill holes at neighbors.
+        var neighbors = GetSurfaceNeighbors(block, false);
+        foreach (Block neighbor in neighbors)
+        {
+            int heightDiff = neighbor.y - (y - 1);
+            CreateBlocksUnder(neighbor, heightDiff - 1);
+        }
+    }
+
+    public void CreateBlocksUnder(Block block, int amount, Block.Type type = Block.Type.ROCK)
+    {
+        int x = block.x;
+        int z = block.z;
+
+        for (int y = block.y - 1; y >= block.y - amount; y--)
+        {
+            Block newBlock = new Block(x, y, z,
+                                       true,
+                                       type,
+                                       new Vector3(block.worldPosition.x, y, block.worldPosition.z));
+            SetBlock(newBlock);
         }
     }
 }
