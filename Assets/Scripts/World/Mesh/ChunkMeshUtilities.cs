@@ -128,6 +128,8 @@ public static class ChunkMeshUtilities
                 return new BlockFace() { x = 1, y = 2, direction = direction };
             case Block.Type.SNOW:
                 return new BlockFace() { x = 0, y = 3, direction = direction };
+            case Block.Type.ROCK:
+                return new BlockFace() { x = 3, y = 3, direction = direction };
             case Block.Type.GROUND:
             case Block.Type.GRASS:
             default:

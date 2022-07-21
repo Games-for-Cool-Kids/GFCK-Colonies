@@ -49,7 +49,6 @@ public class WorldTextureGenerator : MonoBehaviour
 
     private void InitImageInScene()
     { 
-        imageObject.GetComponent<RectTransform>().sizeDelta = new Vector2(textureSize, textureSize);
         imageObject.GetComponent<Image>().sprite = worldVariable.worldSprite;
     }
 

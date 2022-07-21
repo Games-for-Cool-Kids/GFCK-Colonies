@@ -23,7 +23,6 @@ public class ChunkGenerator
     {
         GenerateWorldChunk();
         FillHoles();
-        CreateBlockMeshes();
 
         GenerationCompleted = true;
     }
@@ -73,18 +72,10 @@ public class ChunkGenerator
 
                 for (int y = surfaceBlock.y - 1; y >= surfaceBlock.y - emptyBlocks; y--)
                 {
-                    Block fill = new Block(x, y, z, true, surfaceBlock.type, new Vector3(x, y, z));
+                    Block fill = new Block(x, y, z, true, Block.Type.ROCK, new Vector3(x, y, z));
                     _generatedChunk.grid.SetBlock(x, y, z, fill);
                 }
             }
-        }
-    }
-
-    private void CreateBlockMeshes()
-    {
-        foreach (Block filledBlock in _generatedChunk.grid.GetFilledBlocks())
-        {
-            filledBlock.CreateMesh(_generatedChunk.meshData, _generatedChunk.grid);
         }
     }
 }

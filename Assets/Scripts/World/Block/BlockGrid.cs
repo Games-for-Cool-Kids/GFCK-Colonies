@@ -42,6 +42,23 @@ public class BlockGrid
         return _blocks[x, y, z];
     }
 
+    public Block GetSurfaceBlock(int x, int z)
+    {
+        if (x < 0 || z < 0
+        || x >= MaxX || z >= MaxZ)
+            return null;
+
+        for (int y = MaxY - 1; y > 0; y--) // Search from top-down until we hit a surface block.
+        {
+            Block block = GetBlock(x, y, z);
+            if(block != null
+            && block.filled)
+                return block;
+        }
+
+        return null;
+    }
+
     public Block GetAdjacentBlock(Block sourceBlock, Adjacency adjacency, bool checkVertically = false)
     {
         int x = sourceBlock.x;
