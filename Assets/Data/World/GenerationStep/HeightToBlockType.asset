@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c135b5067c39d1744a9b7c21c649c138, type: 3}
   m_Name: HeightToBlockType
   m_EditorClassIdentifier: 
+  waterLevel: 0.3
+  snowLevel: 0.9
+  maxHeight: 50

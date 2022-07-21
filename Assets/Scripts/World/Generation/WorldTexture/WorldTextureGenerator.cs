@@ -14,7 +14,6 @@ public class WorldTextureGenerator : MonoBehaviour
 
     public int textureSize = 256; // Always a square.
     public int maxHeight = 50;
-    public bool reverseHeight = false;
 
     public HeightMapStep heightMapStep;
     public HeightToBlockTypeStep heightToBlockStep;

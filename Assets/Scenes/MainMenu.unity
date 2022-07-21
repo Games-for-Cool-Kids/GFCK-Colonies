@@ -857,7 +857,6 @@ MonoBehaviour:
   snow: {r: 0.7983268, g: 0.8679245, b: 0.8665753, a: 1}
   textureSize: 1024
   maxHeight: 30
-  reverseHeight: 0
   heightMapStep: {fileID: 11400000, guid: cfa8fafd15815dc468987d56abfe2fca, type: 2}
   heightToBlockStep: {fileID: 11400000, guid: 1450b651feb4255498a7f8ae3f96fdff, type: 2}
   beachStep: {fileID: 11400000, guid: cd4462f9e0e8c4749b2b483d8dcfab88, type: 2}

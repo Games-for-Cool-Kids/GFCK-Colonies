@@ -7,6 +7,7 @@ public class HeightMapStep : ScriptableObject
 	public float grain = 20;
 	public float midPoint = 0.5f;
 	public int seed;
+	public bool invertHeight = false;
 
 	public void ApplyTo(WorldVariable worldVariable)
     {
@@ -39,6 +40,8 @@ public class HeightMapStep : ScriptableObject
 		if (_width < 1.0f || _height < 1.0f)
 		{
 			float c = (c1 + c2 + c3 + c4) * .25f;
+			if (invertHeight)
+				c = 1 - c;
 			worldVariable.grid[(int)x, (int)y].height = c;
 		}
 		else
