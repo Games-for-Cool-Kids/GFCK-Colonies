@@ -146,9 +146,9 @@ public class WorldGenerator
     {
         foreach(var chunk in chunkGrid.chunks)
         {
-            foreach (Block filledBlock in chunk.grid.GetFilledBlocks())
+            foreach (BlockData filledBlock in chunk.grid.GetFilledBlocks())
             {
-                filledBlock.CreateMesh(chunk.meshData, chunk.grid);
+                Chunk.AddBlockToChunkMesh(filledBlock, chunk);
             }
         }
     }

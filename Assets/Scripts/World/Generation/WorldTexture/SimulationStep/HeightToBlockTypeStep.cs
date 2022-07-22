@@ -7,20 +7,20 @@ public class HeightToBlockTypeStep : SimulationStep
     public float snowLevel = 0.8f;
     public int maxHeight = 50;
 
-    public override Block.Type GetNodeType(WorldGenBlockNode node, WorldVariable worldVar, int maxX, int maxY)
+    public override BlockType GetNodeType(WorldGenBlockNode node, WorldVariable worldVar, int maxX, int maxY)
     {
         float height = node.height;
         if (height <= waterLevel)
         {
-            return Block.Type.WATER;
+            return BlockType.WATER;
         }
         else if(height >= snowLevel)
         {
-            return Block.Type.SNOW;
+            return BlockType.SNOW;
         }
         else
         {
-            return Block.Type.GROUND;
+            return BlockType.GROUND;
         }
     }
 }

@@ -47,8 +47,8 @@ public class ChunkGrid
 
         for (int i = 0; i < chunkSize; i++)
         {
-            Block currentBlock = null;
-            Block neighborBlock = null;
+            BlockData currentBlock = null;
+            BlockData neighborBlock = null;
             switch (direction)
             {
                 case BlockGrid.Adjacency.NORTH:
@@ -74,14 +74,14 @@ public class ChunkGrid
             {
                 for (int y = currentBlock.y - 1; y >= currentBlock.y - blocksToFill; y--)
                 {
-                    Block fill = new Block(currentBlock.x, y, currentBlock.z, true, Block.Type.ROCK, new Vector3(currentBlock.x, y, currentBlock.z));
+                    BlockData fill = BlockCode.CreateBlockData(currentBlock.x, y, currentBlock.z, true, BlockType.ROCK, new Vector3(currentBlock.x, y, currentBlock.z));
                     current.grid.SetBlock(fill);
                 }
             }
         }
     }
 
-    public void DestroyBlock(Block block)
+    public void DestroyBlock(BlockData block)
     {
         Chunk chunk = GetChunkAt(block.worldPosition);
         chunk.DestroyBlock(block);
@@ -90,28 +90,28 @@ public class ChunkGrid
         if(block.x == 0 && chunk.x > 0)
         {
             Chunk westNeighbor = chunks[chunk.x - 1, chunk.z];
-            Block neighborBlock = westNeighbor.grid.GetSurfaceBlock(chunkSize - 1, block.z);
+            BlockData neighborBlock = westNeighbor.grid.GetSurfaceBlock(chunkSize - 1, block.z);
             westNeighbor.grid.CreateBlocksUnder(neighborBlock, neighborBlock.y - block.y);
             westNeighbor.CreateMeshData(); // Update mesh.
         }
         else if (block.x == chunkSize - 1 && chunk.x < width - 1)
         {
             Chunk eastNeighbor = chunks[chunk.x + 1, chunk.z];
-            Block neighborBlock = eastNeighbor.grid.GetSurfaceBlock(0, block.z);
+            BlockData neighborBlock = eastNeighbor.grid.GetSurfaceBlock(0, block.z);
             eastNeighbor.grid.CreateBlocksUnder(neighborBlock, neighborBlock.y - block.y);
             eastNeighbor.CreateMeshData(); // Update mesh.
         }
         if (block.z == 0 && chunk.z > 0)
         {
             Chunk southNeighbor = chunks[chunk.x, chunk.z - 1];
-            Block neighborBlock = southNeighbor.grid.GetSurfaceBlock(block.x, chunkSize - 1);
+            BlockData neighborBlock = southNeighbor.grid.GetSurfaceBlock(block.x, chunkSize - 1);
             southNeighbor.grid.CreateBlocksUnder(neighborBlock, neighborBlock.y - block.y);
             southNeighbor.CreateMeshData(); // Update mesh.
         }
         else if (block.z == chunkSize - 1 && chunk.z < width - 1)
         {
             Chunk northNeighbor = chunks[chunk.x, chunk.z + 1];
-            Block neighborBlock = northNeighbor.grid.GetSurfaceBlock(block.x, 0);
+            BlockData neighborBlock = northNeighbor.grid.GetSurfaceBlock(block.x, 0);
             northNeighbor.grid.CreateBlocksUnder(neighborBlock, neighborBlock.y - block.y);
             northNeighbor.CreateMeshData(); // Update mesh.
         }

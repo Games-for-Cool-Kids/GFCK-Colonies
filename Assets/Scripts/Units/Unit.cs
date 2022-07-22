@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class Unit : MonoBehaviour
 {
-    List<Block> path = null;
+    List<BlockData> path = null;
     int pathIndex = 0;
 
     public bool pingPong = false; // Unit will go back and forth along path start/end blocks.
@@ -22,7 +22,7 @@ public class Unit : MonoBehaviour
          || path.Count == 0)
             return;
 
-        Block targetBlock = path[pathIndex + 1];
+        BlockData targetBlock = path[pathIndex + 1];
 
         Vector3 targetPos = targetBlock.worldPosition + GameObjectUtil.GetPivotToMeshMinOffset(gameObject) + Vector3.up / 2;
         Vector3 characterToTarget = targetPos - transform.position;
@@ -46,7 +46,7 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void SetPath(List<Block> path)
+    public void SetPath(List<BlockData> path)
     {
         this.path = path;
     }
@@ -61,13 +61,13 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public Block GetCurrentBlock()
+    public BlockData GetCurrentBlock()
     {
         Vector3 posUnderBlock = transform.position - GameObjectUtil.GetPivotToMeshMinOffset(gameObject) - Vector3.up / 2; // Offset with half a block.
         return GameManager.Instance.World.GetBlockAt(posUnderBlock);
     }
 
-    public void MoveTo(Block targetBlock)
+    public void MoveTo(BlockData targetBlock)
     {
         ClearPath();
 

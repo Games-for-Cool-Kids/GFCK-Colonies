@@ -89,7 +89,7 @@ public class WorldTextureGenerator : MonoBehaviour
             {
                 WorldGenBlockNode node = worldVariable.grid[x, y];
 
-                if (node.type == Block.Type.WATER)
+                if (node.type == BlockType.WATER)
                     node.height = waterLevel;
             }
         }
@@ -108,19 +108,19 @@ public class WorldTextureGenerator : MonoBehaviour
                 Color pixel = Color.magenta;
                 switch (node.type)
                 {
-                    case Block.Type.GROUND:
+                    case BlockType.GROUND:
                         pixel = ground;
                         break;
-                    case Block.Type.GRASS:
+                    case BlockType.GRASS:
                         pixel = grass;
                         break;
-                    case Block.Type.WATER:
+                    case BlockType.WATER:
                         pixel = water;
                         break;
-                    case Block.Type.SAND:
+                    case BlockType.SAND:
                         pixel = sand;
                         break;
-                    case Block.Type.SNOW:
+                    case BlockType.SNOW:
                         pixel = snow;
                         break;
                 }

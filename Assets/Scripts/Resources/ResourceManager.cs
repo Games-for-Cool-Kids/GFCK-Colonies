@@ -8,11 +8,11 @@ public class ResourceManager : MonoBehaviourSingleton<ResourceManager>
 
     // TODO This works, but is currently not necessary. Bring back if needed, and decide if it should hold claimed/unclaimed/both resources
     // An "inverse" Dictionary, where we can efficiently find a dropped resource in the world based on a given resource type
-    //private Dictionary<Type, List<Resource>> _ResourcesInWorldPerTypeUnclaimed = new Dictionary<Type, List<Resource>>();
+    //private Dictionary<BlockType, List<Resource>> _ResourcesInWorldPerTypeUnclaimed = new Dictionary<BlockType, List<Resource>>();
 
     public void AddResourceToWorld(Resource resourceInWorld)
     {
-        //Type type = resourceInWorld.Type;
+        //BlockType type = resourceInWorld.BlockType;
 
         AddResourceToContainer(resourceInWorld, _resourcesInWorldUnclaimed);
 

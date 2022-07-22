@@ -13,7 +13,7 @@ public static class ChunkMeshUtilities
         AddUVs(data, face);
     }
 
-    public static void CreateFaceUp(ChunkMeshData data, Vector3 origin, Block.Type type)
+    public static void CreateFaceUp(ChunkMeshData data, Vector3 origin, BlockType type)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(-0.5f, 0.5f, 0.5f);
@@ -24,7 +24,7 @@ public static class ChunkMeshUtilities
         CreateFace(verts, data, CreateBlockFace(type, BlockFace.DIRECTION.TOP));
     }
 
-    public static void CreateFaceDown(ChunkMeshData data, Vector3 origin, Block.Type type)
+    public static void CreateFaceDown(ChunkMeshData data, Vector3 origin, BlockType type)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(-0.5f, -0.5f, -0.5f);
@@ -35,7 +35,7 @@ public static class ChunkMeshUtilities
         CreateFace(verts, data, CreateBlockFace(type));
     }
 
-    public static void CreateFaceLeft(ChunkMeshData data, Vector3 origin, Block.Type type)
+    public static void CreateFaceLeft(ChunkMeshData data, Vector3 origin, BlockType type)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(-0.5f, -0.5f, -0.5f);
@@ -46,7 +46,7 @@ public static class ChunkMeshUtilities
         CreateFace(verts, data, CreateBlockFace(type));
     }
 
-    public static void CreateFaceRight(ChunkMeshData data, Vector3 origin, Block.Type type)
+    public static void CreateFaceRight(ChunkMeshData data, Vector3 origin, BlockType type)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(0.5f, 0.5f, -0.5f);
@@ -57,7 +57,7 @@ public static class ChunkMeshUtilities
         CreateFace(verts, data, CreateBlockFace(type));
     }
 
-    public static void CreateFaceForward(ChunkMeshData data, Vector3 origin, Block.Type type)
+    public static void CreateFaceForward(ChunkMeshData data, Vector3 origin, BlockType type)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(-0.5f, -0.5f, 0.5f);
@@ -68,7 +68,7 @@ public static class ChunkMeshUtilities
         CreateFace(verts, data, CreateBlockFace(type));
     }
 
-    public static void CreateFaceBackward(ChunkMeshData data, Vector3 origin, Block.Type type)
+    public static void CreateFaceBackward(ChunkMeshData data, Vector3 origin, BlockType type)
     {
         Vector3[] verts = new Vector3[4];
         verts[0] = origin + new Vector3(-0.5f, 0.5f, -0.5f);
@@ -118,20 +118,20 @@ public static class ChunkMeshUtilities
         data.uv.AddRange(uvs);
     }
 
-    public static BlockFace CreateBlockFace(Block.Type type, BlockFace.DIRECTION direction = BlockFace.DIRECTION.SIDE)
+    public static BlockFace CreateBlockFace(BlockType type, BlockFace.DIRECTION direction = BlockFace.DIRECTION.SIDE)
     {
         switch (type)
         {
-            case Block.Type.WATER:
+            case BlockType.WATER:
                 return new BlockFace() { x = 1, y = 1, direction = direction };
-            case Block.Type.SAND:
+            case BlockType.SAND:
                 return new BlockFace() { x = 1, y = 2, direction = direction };
-            case Block.Type.SNOW:
+            case BlockType.SNOW:
                 return new BlockFace() { x = 0, y = 3, direction = direction };
-            case Block.Type.ROCK:
+            case BlockType.ROCK:
                 return new BlockFace() { x = 3, y = 3, direction = direction };
-            case Block.Type.GROUND:
-            case Block.Type.GRASS:
+            case BlockType.GROUND:
+            case BlockType.GRASS:
             default:
                 switch (direction)
                 {

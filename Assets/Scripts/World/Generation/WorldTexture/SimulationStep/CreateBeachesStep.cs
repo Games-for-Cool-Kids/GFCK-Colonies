@@ -3,9 +3,9 @@
 [CreateAssetMenu(menuName = "World/SimulationStep/Beach")]
 public class CreateBeachesStep : SimulationStep
 {
-    public override Block.Type GetNodeType(WorldGenBlockNode node, WorldVariable worldVar, int maxX, int maxY)
+    public override BlockType GetNodeType(WorldGenBlockNode node, WorldVariable worldVar, int maxX, int maxY)
     {
-        if (node.type == Block.Type.WATER)
+        if (node.type == BlockType.WATER)
             return node.type;
 
         bool neighboringWater = false;
@@ -25,7 +25,7 @@ public class CreateBeachesStep : SimulationStep
                 int nodeY = Mathf.FloorToInt(node.height * worldVar.height);
                 int neighborY = Mathf.FloorToInt(neighbor.height * worldVar.height);
 
-                if (neighbor.type == Block.Type.WATER
+                if (neighbor.type == BlockType.WATER
                  && nodeY - neighborY == 1)
                 {
                     neighboringWater = true;
@@ -36,7 +36,7 @@ public class CreateBeachesStep : SimulationStep
 
         ApplyResult: // from goto
         if (neighboringWater)
-            return Block.Type.SAND;
+            return BlockType.SAND;
         else
             return node.type;
     }

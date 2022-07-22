@@ -55,7 +55,7 @@ public class PlayerCamera : MonoBehaviour
         RaycastHit focusPointHit;
         Physics.Raycast(_blockFocusPoint.position, -Vector3.up, out focusPointHit, 1000, LayerMask.GetMask(GlobalDefines.worldLayerName));
 
-        Block focusBlock = GameManager.Instance.World.GetBlockFromRayHit(focusPointHit);
+        BlockData focusBlock = GameManager.Instance.World.GetBlockFromRayHit(focusPointHit);
         if (focusBlock == null)
             return hoverHeight;
         else

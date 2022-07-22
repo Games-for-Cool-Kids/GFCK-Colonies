@@ -10,11 +10,11 @@ namespace Pathfinding
     {
         class PathNode
         {
-            public PathNode(Block block)
+            public PathNode(BlockData block)
             {
                 this.block = block;
             }
-            public Block block;
+            public BlockData block;
             public PathNode parent = null;
             public Heuristics heuristics = new();
         }
@@ -28,15 +28,15 @@ namespace Pathfinding
             }
         }
         private NodeGrid[,] _chunkNodeGrids;
-        private Block _startBlock;
-        private Block _targetBlock;
+        private BlockData _startBlock;
+        private BlockData _targetBlock;
 
         private int worldChunkWidth;
 
         private int chunkSize;
         private int maxY;
 
-        private List<Block> _foundPath;
+        private List<BlockData> _foundPath;
 
         private bool _allowVertical = true;
 
@@ -44,7 +44,7 @@ namespace Pathfinding
         public PathfindMaster.PathFindingJobComplete completedCallback;
 
         //Constructor
-        public Pathfinder(World world, Block start, Block target, PathfindMaster.PathFindingJobComplete completedCallback)
+        public Pathfinder(World world, BlockData start, BlockData target, PathfindMaster.PathFindingJobComplete completedCallback)
         {
             this._startBlock = start;
             this._targetBlock = target;
@@ -68,7 +68,7 @@ namespace Pathfinding
 
                     _chunkNodeGrids[x, z] = new NodeGrid();
                     _chunkNodeGrids[x, z].grid = new PathNode[currGrid.MaxX, currGrid.MaxY, currGrid.MaxZ];
-                    foreach (Block filledBlock in currGrid.GetFilledBlocks())
+                    foreach (BlockData filledBlock in currGrid.GetFilledBlocks())
                     {
                         _chunkNodeGrids[x, z].grid[filledBlock.x, filledBlock.y, filledBlock.z] = new PathNode(filledBlock);
                     }
@@ -91,9 +91,9 @@ namespace Pathfinding
             }
         }
 
-        private List<Block> FindPathActual(Block start, Block target)
+        private List<BlockData> FindPathActual(BlockData start, BlockData target)
         {
-            List<Block> foundPath = new();
+            List<BlockData> foundPath = new();
 
             //We need two lists, one for the nodes we need to check and one for the nodes we've already checked
             List<PathNode> openSet = new();
@@ -162,10 +162,10 @@ namespace Pathfinding
             return foundPath;
         }
 
-        private List<Block> RetracePath(Block startBlock, PathNode endNode)
+        private List<BlockData> RetracePath(BlockData startBlock, PathNode endNode)
         {
             //Retrace the path, is basically going from the endNode to the startNode
-            List<Block> path = new List<Block>();
+            List<BlockData> path = new List<BlockData>();
             PathNode currentNode = endNode;
 
             while (currentNode.block != startBlock)
@@ -226,7 +226,7 @@ namespace Pathfinding
             // Check given neighbour.
             search = GetPathNode(worldPos);
             if (search != null
-            && search.block.IsWalkable())
+            && BlockCode.IsWalkable(search.block))
                 neighbour = search;
 
             // If we want to move diagonally, the neighboring orthogonal blocks also need to be walkable.
@@ -235,14 +235,14 @@ namespace Pathfinding
             {
                 search = GetPathNode(worldPos + Vector3.right * xDiff);
                 if (search == null
-                || !search.block.IsWalkable())
+                || !BlockCode.IsWalkable(search.block))
                 {
                     neighbour = null;
                 }
 
                 search = GetPathNode(worldPos + Vector3.forward * zDiff);
                 if (search == null
-                || !search.block.IsWalkable())
+                || !BlockCode.IsWalkable(search.block))
                 {
                     neighbour = null;
                 }
@@ -254,7 +254,7 @@ namespace Pathfinding
                 {
                     search = GetPathNode(worldPos + Vector3.up);
                     if (neighbour != null
-                    && neighbour.block.IsWalkable())
+                    && BlockCode.IsWalkable(search.block))
                         neighbour = search;
                 }
 
@@ -263,7 +263,7 @@ namespace Pathfinding
                 {
                     search = GetPathNode(worldPos - Vector3.up);
                     if (neighbour != null
-                    && neighbour.block.IsWalkable())
+                    && BlockCode.IsWalkable(search.block))
                         neighbour = search;
                 }
             }
@@ -288,7 +288,7 @@ namespace Pathfinding
             return grid[x, y, z];
         }
 
-        private float GetDistance(Block posA, Block posB)
+        private float GetDistance(BlockData posA, BlockData posB)
         {
             float distX = Mathf.Abs(posA.worldPosition.x - posB.worldPosition.x);
             float distZ = Mathf.Abs(posA.worldPosition.z - posB.worldPosition.z);

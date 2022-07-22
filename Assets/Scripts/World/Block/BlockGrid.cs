@@ -17,7 +17,7 @@ public class BlockGrid
     public int MaxY { get; private set; }
     public int MaxZ { get; private set; }
 
-    private Block[,,] _blocks; // Data
+    private BlockData[,,] _blocks; // Data
 
     public BlockGrid(int maxX, int maxY, int maxZ)
     {
@@ -25,15 +25,15 @@ public class BlockGrid
         MaxY = maxY;
         MaxZ = maxZ;
 
-        _blocks = new Block[MaxX, MaxY, MaxZ];
+        _blocks = new BlockData[MaxX, MaxY, MaxZ];
     }
 
-    public void SetBlock(Block block)
+    public void SetBlock(BlockData block)
     {
         _blocks[block.x, block.y, block.z] = block;
     }
 
-    public Block GetBlock(int x, int y, int z)
+    public BlockData GetBlock(int x, int y, int z)
     {
         if (x < 0 || y < 0 || z < 0
         || x >= MaxX || y >= MaxY || z >= MaxZ)
@@ -42,7 +42,7 @@ public class BlockGrid
         return _blocks[x, y, z];
     }
 
-    public Block GetSurfaceBlock(int x, int z)
+    public BlockData GetSurfaceBlock(int x, int z)
     {
         if (x < 0 || z < 0
         || x >= MaxX || z >= MaxZ)
@@ -50,7 +50,7 @@ public class BlockGrid
 
         for (int y = MaxY - 1; y > 0; y--) // Search from top-down until we hit a surface block.
         {
-            Block block = GetBlock(x, y, z);
+            BlockData block = GetBlock(x, y, z);
             if(block != null
             && block.filled)
                 return block;
@@ -59,7 +59,7 @@ public class BlockGrid
         return null;
     }
 
-    public Block GetAdjacentBlock(Block sourceBlock, Adjacency adjacency, bool checkVertically = false)
+    public BlockData GetAdjacentBlock(BlockData sourceBlock, Adjacency adjacency, bool checkVertically = false)
     {
         int x = sourceBlock.x;
         int y = sourceBlock.y;
@@ -81,7 +81,7 @@ public class BlockGrid
                 y = y - 1; break;
         }
 
-        Block adjacentBlock = GetBlock(x, y, z);
+        BlockData adjacentBlock = GetBlock(x, y, z);
         if (adjacentBlock != null)
             return adjacentBlock;
 
@@ -101,18 +101,18 @@ public class BlockGrid
         return null;
     }
 
-    public List<Block> GetSurfaceNeighbors(int x, int y, int z, bool diagonal = true)
+    public List<BlockData> GetSurfaceNeighbors(int x, int y, int z, bool diagonal = true)
     {
-        Block block = GetBlock(x, y, z);
+        BlockData block = GetBlock(x, y, z);
         if(block != null)
             return GetSurfaceNeighbors(block);
 
-        return new List<Block>(); // empty list
+        return new List<BlockData>(); // empty list
     }
 
-    public List<Block> GetSurfaceNeighbors(Block source, bool diagonal = true)
+    public List<BlockData> GetSurfaceNeighbors(BlockData source, bool diagonal = true)
     {
-        List<Block> neighbors = new List<Block>();
+        List<BlockData> neighbors = new List<BlockData>();
 
         for (int x = source.x - 1; x <= source.x + 1; x++)
         {
@@ -128,7 +128,7 @@ public class BlockGrid
                      && Mathf.Abs(z - source.z) == 1)
                         continue;
 
-                    Block neighbor = GetBlock(x, y, z);
+                    BlockData neighbor = GetBlock(x, y, z);
                     if (neighbor != null
                      && neighbor.filled)
                     {
@@ -142,9 +142,9 @@ public class BlockGrid
         return neighbors;
     }
 
-    public List<Block> GetFilledBlocks()
+    public List<BlockData> GetFilledBlocks()
     {
-        List<Block> filledBlocks = new();
+        List<BlockData> filledBlocks = new();
 
         for (int x = 0; x < MaxX; x++)
         {
@@ -152,7 +152,7 @@ public class BlockGrid
             {
                 for (int z = 0; z < MaxZ; z++)
                 {
-                    Block block = _blocks[x, y, z];
+                    BlockData block = _blocks[x, y, z];
                     if (block != null
                     && block.filled)
                         filledBlocks.Add(GetBlock(x, y, z));
@@ -163,12 +163,12 @@ public class BlockGrid
         return filledBlocks;
     }
 
-    public Block[,,] GetData()
+    public BlockData[,,] GetData()
     {
         return _blocks;
     }
 
-    public void SetData(Block[,,] data)
+    public void SetData(BlockData[,,] data)
     {
         _blocks = data;
     }
@@ -194,7 +194,7 @@ public class BlockGrid
         }
     }
 
-    public void DestroyBlock(Block block)
+    public void DestroyBlock(BlockData block)
     {
         if (block.y == 0) // Cannot destroy bottom-most block.
             return;
@@ -205,30 +205,30 @@ public class BlockGrid
 
         _blocks[x, y, z] = null; // Clear block in grid.
 
-        Block belowBlock = GetBlock(x, y - 1, z);
+        BlockData belowBlock = GetBlock(x, y - 1, z);
         if (belowBlock == null) // Create block under destroyed block, if empty below.
         { 
-            Block newBlock = new Block(x, y - 1, z, true, block.type, new Vector3(block.worldPosition.x, y - 1, block.worldPosition.z));
+            BlockData newBlock = BlockCode.CreateBlockData(x, y - 1, z, true, block.type, new Vector3(block.worldPosition.x, y - 1, block.worldPosition.z));
             SetBlock(newBlock);
         }
 
         // Fill holes at neighbors.
         var neighbors = GetSurfaceNeighbors(block, false);
-        foreach (Block neighbor in neighbors)
+        foreach (BlockData neighbor in neighbors)
         {
             int heightDiff = neighbor.y - (y - 1);
             CreateBlocksUnder(neighbor, heightDiff - 1);
         }
     }
 
-    public void CreateBlocksUnder(Block block, int amount, Block.Type type = Block.Type.ROCK)
+    public void CreateBlocksUnder(BlockData block, int amount, BlockType type = BlockType.ROCK)
     {
         int x = block.x;
         int z = block.z;
 
         for (int y = block.y - 1; y >= block.y - amount; y--)
         {
-            Block newBlock = new Block(x, y, z,
+            BlockData newBlock = BlockCode.CreateBlockData(x, y, z,
                                        true,
                                        type,
                                        new Vector3(block.worldPosition.x, y, block.worldPosition.z));

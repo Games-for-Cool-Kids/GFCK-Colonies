@@ -20,7 +20,7 @@ public class Chunk
         this.meshChanged = false;
     }
 
-    public Block GetBlockAt(Vector3 worldPos)
+    public BlockData GetBlockAt(Vector3 worldPos)
     {
         worldPos -= origin; // Make relative to chunk.
 
@@ -31,7 +31,7 @@ public class Chunk
         return grid.GetBlock(blockX, blockY, blockZ);
     }
 
-    public void DestroyBlock(Block block)
+    public void DestroyBlock(BlockData block)
     {
         grid.DestroyBlock(block);
     }
@@ -41,8 +41,10 @@ public class Chunk
         meshData = new ChunkMeshData();
         meshChanged = true;
 
-        foreach (Block filledBlock in grid.GetFilledBlocks())
-            filledBlock.CreateMesh(meshData, grid);
+        foreach (BlockData filledBlock in grid.GetFilledBlocks())
+        {
+            AddBlockToChunkMesh(filledBlock, this);
+        }
     }
 
     public Mesh TakeMesh()
@@ -63,5 +65,46 @@ public class Chunk
     public void CreateBlocksUnder(int x, int y, int z, int amount)
     {
         grid.CreateBlocksUnder(grid.GetBlock(x, y, z), amount);
+    }
+
+    public static void AddBlockToChunkMesh(BlockData block, Chunk chunk)
+    {
+        AddBlockFaceToMeshIfVisible(block, chunk, BlockGrid.Adjacency.ABOVE);
+        AddBlockFaceToMeshIfVisible(block, chunk, BlockGrid.Adjacency.NORTH);
+        AddBlockFaceToMeshIfVisible(block, chunk, BlockGrid.Adjacency.SOUTH);
+        AddBlockFaceToMeshIfVisible(block, chunk, BlockGrid.Adjacency.EAST);
+        AddBlockFaceToMeshIfVisible(block, chunk, BlockGrid.Adjacency.WEST);
+    }
+
+    private static void AddBlockFaceToMeshIfVisible(BlockData block, Chunk chunk, BlockGrid.Adjacency adjacency)
+    {
+        BlockData neighbor = chunk.grid.GetAdjacentBlock(block, adjacency);
+        if (neighbor == null
+        || !neighbor.filled)
+        {
+            Vector3 localPos = BlockCode.GetLocalPosition(block);
+
+            switch (adjacency)
+            {
+                case BlockGrid.Adjacency.NORTH:
+                    ChunkMeshUtilities.CreateFaceForward(chunk.meshData, localPos, block.type);
+                    break;
+                case BlockGrid.Adjacency.SOUTH:
+                    ChunkMeshUtilities.CreateFaceBackward(chunk.meshData, localPos, block.type);
+                    break;
+                case BlockGrid.Adjacency.EAST:
+                    ChunkMeshUtilities.CreateFaceRight(chunk.meshData, localPos, block.type);
+                    break;
+                case BlockGrid.Adjacency.WEST:
+                    ChunkMeshUtilities.CreateFaceLeft(chunk.meshData, localPos, block.type);
+                    break;
+                case BlockGrid.Adjacency.ABOVE:
+                    ChunkMeshUtilities.CreateFaceUp(chunk.meshData, localPos, block.type);
+                    break;
+                case BlockGrid.Adjacency.BELOW:  // Maybe we can even skip the backside of blocks too.
+                default:                         // We don't create a bottom face. Since the camera can never see the bottom of blocks.
+                    break;
+            }
+        }
     }
 }

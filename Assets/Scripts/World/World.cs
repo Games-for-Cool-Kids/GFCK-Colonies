@@ -27,7 +27,7 @@ public class World : MonoBehaviour
 
         if(Input.GetMouseButtonDown(0))
         {
-            Block block = GetBlockUnderMouse();
+            BlockData block = GetBlockUnderMouse();
             if (block != null)
                 DigBlock(block);
         }
@@ -89,14 +89,14 @@ public class World : MonoBehaviour
         }
     }
 
-    public Block GetBlockFromRayHit(RaycastHit hit)
+    public BlockData GetBlockFromRayHit(RaycastHit hit)
     {
         // Rays intersect with surface. Because the surface is touching, but not inside the box, we need to use the normal to check the position inside the block.
         return GetBlockAt(hit.point - hit.normal / 2);
     }
 
     // Expects a position inside of the block.
-    public Block GetBlockAt(Vector3 worldPos)
+    public BlockData GetBlockAt(Vector3 worldPos)
     {
         var chunk = GetChunkAt(worldPos);
         if (chunk == null)
@@ -121,7 +121,7 @@ public class World : MonoBehaviour
         return chunkGrid.chunks[x, z];
     }
 
-    public Block GetBlockUnderMouse(bool ignoreOtherLayers = false)
+    public BlockData GetBlockUnderMouse(bool ignoreOtherLayers = false)
     {
         if (UIUtil.IsMouseOverUI()) // Always ignore UI
             return null;
@@ -136,7 +136,7 @@ public class World : MonoBehaviour
         return null;
     }
 
-    public void DigBlock(Block block)
+    public void DigBlock(BlockData block)
     {
         chunkGrid.DestroyBlock(block);
 

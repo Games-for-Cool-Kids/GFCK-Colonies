@@ -2,7 +2,7 @@
 {
     public int x, y;
     public float height;
-    public Block.Type type;
+    public BlockType type;
 
     public WorldGenBlockNode(int x, int y)
     {
