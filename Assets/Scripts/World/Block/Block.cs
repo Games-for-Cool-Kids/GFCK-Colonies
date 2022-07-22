@@ -10,6 +10,16 @@ public enum BlockType
     ROCK,
 }
 
+public enum BlockAdjacency
+{
+    NORTH,
+    SOUTH,
+    WEST,
+    EAST,
+    ABOVE,
+    BELOW,
+}
+
 public class BlockData
 {
     public int x, y, z; // Local position in chunk.

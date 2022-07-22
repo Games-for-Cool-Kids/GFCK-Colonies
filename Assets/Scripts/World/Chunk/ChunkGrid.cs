@@ -22,22 +22,22 @@ public class ChunkGrid
         return chunks[x, z];
     }
 
-    public void FillNeighboringEdge(int x, int z, BlockGrid.Adjacency direction)
+    public void FillNeighboringEdge(int x, int z, BlockAdjacency direction)
     {
         Chunk current = chunks[x, z];
         Chunk neighbor = null;
         switch (direction)
         {
-            case BlockGrid.Adjacency.NORTH:
+            case BlockAdjacency.NORTH:
                 neighbor = GetChunk(x, z + 1);
                 break;
-            case BlockGrid.Adjacency.SOUTH:
+            case BlockAdjacency.SOUTH:
                 neighbor = GetChunk(x, z - 1);
                 break;
-            case BlockGrid.Adjacency.EAST:
+            case BlockAdjacency.EAST:
                 neighbor = GetChunk(x + 1, z);
                 break;
-            case BlockGrid.Adjacency.WEST:
+            case BlockAdjacency.WEST:
                 neighbor = GetChunk(x - 1, z);
                 break;
         }
@@ -51,19 +51,19 @@ public class ChunkGrid
             BlockData neighborBlock = null;
             switch (direction)
             {
-                case BlockGrid.Adjacency.NORTH:
+                case BlockAdjacency.NORTH:
                     currentBlock = current.grid.GetSurfaceBlock(i, chunkSize - 1);
                     neighborBlock = neighbor.grid.GetSurfaceBlock(i, 0);
                     break;
-                case BlockGrid.Adjacency.SOUTH:
+                case BlockAdjacency.SOUTH:
                     currentBlock = current.grid.GetSurfaceBlock(i, 0);
                     neighborBlock = neighbor.grid.GetSurfaceBlock(i, chunkSize - 1);
                     break;
-                case BlockGrid.Adjacency.EAST:
+                case BlockAdjacency.EAST:
                     currentBlock = current.grid.GetSurfaceBlock(chunkSize - 1, i);
                     neighborBlock = neighbor.grid.GetSurfaceBlock(0, i);
                     break;
-                case BlockGrid.Adjacency.WEST:
+                case BlockAdjacency.WEST:
                     currentBlock = current.grid.GetSurfaceBlock(0, i);
                     neighborBlock = neighbor.grid.GetSurfaceBlock(chunkSize - 1, i);
                     break;

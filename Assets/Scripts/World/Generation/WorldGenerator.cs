@@ -134,10 +134,10 @@ public class WorldGenerator
         {
             for (int c_z = 0; c_z < worldChunkWidth; c_z++)
             {
-                chunkGrid.FillNeighboringEdge(c_x, c_z, BlockGrid.Adjacency.NORTH);
-                chunkGrid.FillNeighboringEdge(c_x, c_z, BlockGrid.Adjacency.SOUTH);
-                chunkGrid.FillNeighboringEdge(c_x, c_z, BlockGrid.Adjacency.EAST);
-                chunkGrid.FillNeighboringEdge(c_x, c_z, BlockGrid.Adjacency.WEST);
+                chunkGrid.FillNeighboringEdge(c_x, c_z, BlockAdjacency.NORTH);
+                chunkGrid.FillNeighboringEdge(c_x, c_z, BlockAdjacency.SOUTH);
+                chunkGrid.FillNeighboringEdge(c_x, c_z, BlockAdjacency.EAST);
+                chunkGrid.FillNeighboringEdge(c_x, c_z, BlockAdjacency.WEST);
             }
         }
     }
