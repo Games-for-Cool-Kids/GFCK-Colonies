@@ -4,11 +4,11 @@ public class ChunkGenerator
 {
     private ChunkGeneratorStats _chunkStats;
 
-    private Chunk _generatedChunk = null;
+    private ChunkData _generatedChunk = null;
 
     public volatile bool GenerationCompleted;
 
-    public delegate void ChunkGenerationCallback(Chunk chunk);
+    public delegate void ChunkGenerationCallback(ChunkData chunk);
     ChunkGenerationCallback finishCallback;
 
     public ChunkGenerator(int x, int z, ChunkGeneratorStats stats, ChunkGenerationCallback generationCallback)
