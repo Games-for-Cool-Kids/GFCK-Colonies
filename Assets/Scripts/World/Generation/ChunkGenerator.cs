@@ -14,7 +14,7 @@ public class ChunkGenerator
     public ChunkGenerator(int x, int z, ChunkGeneratorStats stats, ChunkGenerationCallback generationCallback)
     {
         _chunkStats = stats;
-        _generatedChunk = new Chunk(x, z, stats.origin, stats.chunkSize, stats.height);
+        _generatedChunk = ChunkCode.CreateChunk(x, z, stats.origin, stats.chunkSize, stats.height);
 
         finishCallback = generationCallback;
     }
@@ -44,20 +44,20 @@ public class ChunkGenerator
                 int y = Mathf.FloorToInt(height * _chunkStats.height);
 
                 Vector3 blockWorldPos = _chunkStats.origin + new Vector3(x, y, z);
-                Block newBlock = new Block(x, y, z, true, _chunkStats.nodeGrid[x, z].type, blockWorldPos);
-                _generatedChunk.grid.SetBlock(newBlock);
+                BlockData newBlock = BlockCode.CreateBlockData(x, y, z, true, _chunkStats.nodeGrid[x, z].type, blockWorldPos);
+                ChunkCode.SetBlock(_generatedChunk, newBlock);
             }
         }
     }
 
     private void FillHoles()
     {
-        foreach (Block surfaceBlock in _generatedChunk.grid.GetFilledBlocks())
+        foreach (BlockData surfaceBlock in ChunkCode.GetFilledBlocks(_generatedChunk))
         {
-            var neighbors = _generatedChunk.grid.GetSurfaceNeighbors(surfaceBlock, false);
+            var neighbors = ChunkCode.GetSurfaceNeighbors(_generatedChunk, surfaceBlock, false);
 
             int highestHeightDiff = 0;
-            foreach (Block neighbor in neighbors)
+            foreach (BlockData neighbor in neighbors)
             {
                 int heightDiff = surfaceBlock.y - neighbor.y;
                 if(heightDiff > highestHeightDiff)
@@ -72,8 +72,8 @@ public class ChunkGenerator
 
                 for (int y = surfaceBlock.y - 1; y >= surfaceBlock.y - emptyBlocks; y--)
                 {
-                    Block fill = new Block(x, y, z, true, Block.Type.ROCK, new Vector3(x, y, z));
-                    _generatedChunk.grid.SetBlock(fill);
+                    BlockData fill = BlockCode.CreateBlockData(x, y, z, true, BlockType.ROCK, new Vector3(x, y, z));
+                    ChunkCode.SetBlock(_generatedChunk, fill);
                 }
             }
         }

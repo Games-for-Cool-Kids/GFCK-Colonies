@@ -2,7 +2,7 @@
 
 public abstract class SimulationStep : ScriptableObject
 {
-	public abstract Block.Type GetNodeType(WorldGenBlockNode node, WorldVariable worldVar, int maxX, int maxY);
+	public abstract BlockType GetNodeType(WorldGenBlockNode node, WorldVariable worldVar, int maxX, int maxY);
 
 	protected WorldGenBlockNode GetNodeFromGrid(int x, int y, WorldGenBlockNode[,] grid, int maxX, int maxY)
 	{

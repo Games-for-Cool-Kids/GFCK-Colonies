@@ -11,7 +11,7 @@ namespace Pathfinding
         public int MaxJobs = 3;
 
         //Delegates are a variable that points to a function
-        public delegate void PathFindingJobComplete(List<Block> path);
+        public delegate void PathFindingJobComplete(List<BlockData> path);
 
         private List<Pathfinder> currentJobs;
         private List<Pathfinder> todoJobs;
@@ -56,8 +56,15 @@ namespace Pathfinding
             }
         }
 
-        public void RequestPathfind(Block start, Block target, PathFindingJobComplete completeCallback)
+        public void RequestPathfind(BlockData start, BlockData target, PathFindingJobComplete completeCallback)
         {
+            if(start == null
+            || target == null)
+            {
+                Debug.LogError("Start or end block cannot be null");
+                return;
+            }
+
             Pathfinder newJob = new Pathfinder(GameManager.Instance.World, start, target, completeCallback);
             todoJobs.Add(newJob);
         }

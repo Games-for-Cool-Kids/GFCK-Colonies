@@ -24,13 +24,6 @@ public class World : MonoBehaviour
     {
         if(worldGenerator != null)
             RunWorldGeneration();
-
-        if(Input.GetMouseButtonDown(0))
-        {
-            Block block = GetBlockUnderMouse();
-            if (block != null)
-                DigBlock(block);
-        }
     }
 
     public void StartCreateWorld()
@@ -73,7 +66,7 @@ public class World : MonoBehaviour
         chunkObjects[chunk.x, chunk.z] = newChunkObject;
 
         MeshFilter meshFilter = newChunkObject.AddComponent<MeshFilter>();
-        meshFilter.mesh = chunk.TakeMesh();
+        meshFilter.mesh = ChunkCode.TakeMesh(chunk);
 
         MeshRenderer renderer = newChunkObject.AddComponent<MeshRenderer>();
         renderer.material = material;
@@ -89,14 +82,14 @@ public class World : MonoBehaviour
         }
     }
 
-    public Block GetBlockFromRayHit(RaycastHit hit)
+    public BlockData GetBlockFromRayHit(RaycastHit hit)
     {
         // Rays intersect with surface. Because the surface is touching, but not inside the box, we need to use the normal to check the position inside the block.
         return GetBlockAt(hit.point - hit.normal / 2);
     }
 
     // Expects a position inside of the block.
-    public Block GetBlockAt(Vector3 worldPos)
+    public BlockData GetBlockAt(Vector3 worldPos)
     {
         var chunk = GetChunkAt(worldPos);
         if (chunk == null)
@@ -104,7 +97,7 @@ public class World : MonoBehaviour
             return null;
         }
 
-        return chunk.GetBlockAt(worldPos);
+        return ChunkCode.GetBlockAt(chunk, worldPos);
     }
 
     public Chunk GetChunkAt(Vector3 worldPos)
@@ -121,7 +114,7 @@ public class World : MonoBehaviour
         return chunkGrid.chunks[x, z];
     }
 
-    public Block GetBlockUnderMouse(bool ignoreOtherLayers = false)
+    public BlockData GetBlockUnderMouse(bool ignoreOtherLayers = false)
     {
         if (UIUtil.IsMouseOverUI()) // Always ignore UI
             return null;
@@ -136,7 +129,7 @@ public class World : MonoBehaviour
         return null;
     }
 
-    public void DigBlock(Block block)
+    public void DigBlock(BlockData block)
     {
         chunkGrid.DestroyBlock(block);
 
@@ -150,7 +143,7 @@ public class World : MonoBehaviour
             if (chunk.meshChanged)
             {
                 GameObject chunkObject = chunkObjects[chunk.x, chunk.z];
-                Mesh chunkMesh = chunk.TakeMesh();
+                Mesh chunkMesh = ChunkCode.TakeMesh(chunk);
                 chunkObject.GetComponent<MeshFilter>().mesh = chunkMesh;
                 chunkObject.GetComponent<MeshCollider>().sharedMesh = chunkMesh;
             }

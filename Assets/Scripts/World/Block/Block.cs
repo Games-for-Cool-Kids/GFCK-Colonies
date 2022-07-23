@@ -1,68 +1,60 @@
 using UnityEngine;
 
-public class Block
+public enum BlockType
 {
-    public enum Type
-    {
-        GROUND,
-        GRASS,
-        WATER,
-        SAND,
-        SNOW,
-        ROCK,
-    }
+    GROUND,
+    GRASS,
+    WATER,
+    SAND,
+    SNOW,
+    ROCK,
+}
 
-    public int x, y, z; // Position in chunk. !Not world!
+public enum BlockAdjacency
+{
+    NORTH,
+    SOUTH,
+    WEST,
+    EAST,
+    ABOVE,
+    BELOW,
+}
 
-    public bool filled = false;
-
+public class BlockData
+{
+    public int x, y, z; // Local position in chunk.
+    public bool filled;
     public Vector3 worldPosition;
+    public BlockType type;
+}
 
-    public Type type;
-
-    public Block(int x, int y, int z, bool filled, Type type, Vector3 worldPosition)
+public class BlockCode
+{
+    public static BlockData CreateBlockData(int x, int y, int z, bool filled, BlockType type, Vector3 worldPosition)
     {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.filled = filled;
-        this.worldPosition = worldPosition;
-        this.type = type;
+        BlockData data = new();
+        data.x = x;
+        data.y = y;
+        data.z = z;
+        data.filled = filled;
+        data.worldPosition = worldPosition;
+        data.type = type;
+
+        return data;
     }
 
-    public virtual void CreateMesh(ChunkMeshData worldData, BlockGrid grid)
+    public static Vector3 GetLocalPosition(BlockData block)
     {
-        Vector3 blockPos = new Vector3(x, y, z);
-
-        ChunkMeshUtilities.CreateFaceUp(worldData, blockPos, type); // Always create up.
-
-        Block northBlock = grid.GetAdjacentBlock(this, BlockGrid.Adjacency.NORTH);
-        if (northBlock == null || !northBlock.filled)
-            ChunkMeshUtilities.CreateFaceForward(worldData, blockPos, type);
-
-        Block southBlock = grid.GetAdjacentBlock(this, BlockGrid.Adjacency.SOUTH);
-        if (southBlock == null || !southBlock.filled)
-            ChunkMeshUtilities.CreateFaceBackward(worldData, blockPos, type);
-
-        Block westBlock = grid.GetAdjacentBlock(this, BlockGrid.Adjacency.WEST);
-        if (westBlock == null || !westBlock.filled)
-            ChunkMeshUtilities.CreateFaceLeft(worldData, blockPos, type);
-
-        Block eastBlock = grid.GetAdjacentBlock(this, BlockGrid.Adjacency.EAST);
-        if (eastBlock == null || !eastBlock.filled)
-            ChunkMeshUtilities.CreateFaceRight(worldData, blockPos, type);
-
-        // We don't create a bottom face. Since the camera can never see the bottom of blocks.
+        return new Vector3(block.x, block.y, block.z);
     }
 
-    // Determines if it can be used for pathfinding.
-    public bool IsWalkable()
+    public static Vector3 GetSurfaceWorldPos(BlockData block)
     {
-        return filled;
+        return block.worldPosition + Vector3.up / 2;
     }
 
-    public Vector3 GetWorldPositionOnTop()
+    public static bool IsWalkable(BlockData block)
     {
-        return worldPosition + Vector3.up / 2;
+        return block.filled; // Determines if it can be used for pathfinding.
     }
 }
