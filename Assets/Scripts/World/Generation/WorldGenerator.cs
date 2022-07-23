@@ -18,10 +18,10 @@ public class WorldGenerator
     public volatile bool worldGenCompleted = false;
 
     // Output
-    private ChunkGrid chunkGrid;
+    private ChunkData[,] chunks;
 
     // Finished callback
-    public delegate void WorldGenerationFinishedCallBack(ChunkGrid chunks);
+    public delegate void WorldGenerationFinishedCallBack(ChunkData[,] chunks);
     private WorldGenerationFinishedCallBack worldGenFinishedCallback;
 
 
@@ -86,12 +86,12 @@ public class WorldGenerator
 
     public void NotifyCompleted()
     {
-        worldGenFinishedCallback(chunkGrid);
+        worldGenFinishedCallback(chunks);
     }
 
     private void CreateChunks()
     {
-        chunkGrid = new ChunkGrid(worldChunkWidth, chunkSize);
+        chunks = new ChunkData[worldChunkWidth, worldChunkWidth];
 
         for (int x = 0; x < worldChunkWidth; x++)
         {
@@ -125,7 +125,7 @@ public class WorldGenerator
 
     private void AddChunk(ChunkData chunk)
     {
-        chunkGrid.chunks[chunk.x, chunk.z] = chunk; // Store generated chunk
+        chunks[chunk.x, chunk.z] = chunk; // Store generated chunk
     }
 
     private void FillHoles()
@@ -134,22 +134,27 @@ public class WorldGenerator
         {
             for (int c_z = 0; c_z < worldChunkWidth; c_z++)
             {
-                chunkGrid.FillNeighboringEdge(c_x, c_z, BlockAdjacency.NORTH);
-                chunkGrid.FillNeighboringEdge(c_x, c_z, BlockAdjacency.SOUTH);
-                chunkGrid.FillNeighboringEdge(c_x, c_z, BlockAdjacency.EAST);
-                chunkGrid.FillNeighboringEdge(c_x, c_z, BlockAdjacency.WEST);
+                ChunkCode.FillNeighboringEdge(chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.NORTH);
+                ChunkCode.FillNeighboringEdge(chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.SOUTH);
+                ChunkCode.FillNeighboringEdge(chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.EAST);
+                ChunkCode.FillNeighboringEdge(chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.WEST);
             }
         }
     }
 
     private void CreateChunkMeshes()
     {
-        foreach(var chunk in chunkGrid.chunks)
+        foreach(var chunk in chunks)
         {
             foreach (BlockData filledBlock in ChunkCode.GetFilledBlocks(chunk))
             {
                 ChunkCode.AddBlockToChunkMesh(chunk, filledBlock);
             }
         }
+    }
+
+    private World.ChunkDimensions GetWorldChunkDimensions()
+    {
+        return new World.ChunkDimensions { chunkSize = this.chunkSize, worldChunkWidth = this.worldChunkWidth };
     }
 }

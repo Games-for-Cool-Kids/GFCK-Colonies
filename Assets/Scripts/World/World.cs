@@ -4,13 +4,19 @@ using System.Collections.Generic;
 
 public class World : MonoBehaviour
 {
+    public class ChunkDimensions
+    {
+        public int chunkSize;
+        public int worldChunkWidth; // Number of chunks in x/z direction.
+    }
+
     public int chunkSize = 32;
-    public int worldChunkWidth { get; private set; } // Nr of chunkGrid in width and length, as world is a square.
+    public int worldChunkWidth { get; private set; } // Nr of chunkGrid in worldChunkWidth and length, as world is a square.
 
     public Material material;
 
     public WorldVariable worldVariable;
-    public ChunkGrid chunkGrid;
+    public ChunkData[,] chunks;
     public GameObject[,] chunkObjects;
 
     private WorldGenerator worldGenerator = null;
@@ -43,12 +49,12 @@ public class World : MonoBehaviour
             worldGenerator.Run();
     }
 
-    private void TakeGeneratedWorld(ChunkGrid generatedChunkGrid)
+    private void TakeGeneratedWorld(ChunkData[,] generatedChunks)
     {
-        chunkGrid = generatedChunkGrid;
+        chunks = generatedChunks;
         chunkObjects = new GameObject[worldChunkWidth, worldChunkWidth];
 
-        foreach (var chunk in generatedChunkGrid.chunks)
+        foreach (var chunk in generatedChunks)
         {
             CreateChunkObject(chunk);
         }
@@ -76,6 +82,8 @@ public class World : MonoBehaviour
 
     private void ResetWorld()
     {
+        chunks = null;
+
         foreach (Transform child in transform)
         {
             GameObject.Destroy(child.gameObject);
@@ -91,7 +99,7 @@ public class World : MonoBehaviour
     // Expects a position inside of the block.
     public BlockData GetBlockAt(Vector3 worldPos)
     {
-        var chunk = GetChunkAt(worldPos);
+        var chunk = ChunkCode.GetChunkAt(chunks, GetWorldChunkDimensions(), worldPos);
         if (chunk == null)
         {
             return null;
@@ -100,18 +108,13 @@ public class World : MonoBehaviour
         return ChunkCode.GetBlockAt(chunk, worldPos);
     }
 
-    public ChunkData GetChunkAt(Vector3 worldPos)
-    {
-        return chunkGrid.GetChunkAt(worldPos);
-    }
-
     public ChunkData GetChunk(int x, int z)
     {
         if(x < 0 || x >= worldChunkWidth
         || z < 0 || z >= worldChunkWidth)
             return null;
 
-        return chunkGrid.chunks[x, z];
+        return chunks[x, z];
     }
 
     public BlockData GetBlockUnderMouse(bool ignoreOtherLayers = false)
@@ -131,14 +134,14 @@ public class World : MonoBehaviour
 
     public void DigBlock(BlockData block)
     {
-        chunkGrid.DestroyBlock(block);
+        ChunkCode.DestroyBlock(chunks, GetWorldChunkDimensions(), block);
 
         UpdateChangedChunkMeshes();
     }
 
     private void UpdateChangedChunkMeshes()
     {
-        foreach (var chunk in chunkGrid.chunks)
+        foreach (var chunk in chunks)
         {
             if (chunk.meshChanged)
             {
@@ -148,5 +151,10 @@ public class World : MonoBehaviour
                 chunkObject.GetComponent<MeshCollider>().sharedMesh = chunkMesh;
             }
         }
+    }
+
+    private World.ChunkDimensions GetWorldChunkDimensions()
+    {
+        return new World.ChunkDimensions { chunkSize = this.chunkSize, worldChunkWidth = this.worldChunkWidth };
     }
 }
