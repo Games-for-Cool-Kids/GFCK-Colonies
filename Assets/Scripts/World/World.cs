@@ -73,7 +73,7 @@ public class World : MonoBehaviour
         chunkObjects[chunk.x, chunk.z] = newChunkObject;
 
         MeshFilter meshFilter = newChunkObject.AddComponent<MeshFilter>();
-        meshFilter.mesh = chunk.TakeMesh();
+        meshFilter.mesh = ChunkCode.TakeMesh(chunk);
 
         MeshRenderer renderer = newChunkObject.AddComponent<MeshRenderer>();
         renderer.material = material;
@@ -104,7 +104,7 @@ public class World : MonoBehaviour
             return null;
         }
 
-        return chunk.GetBlockAt(worldPos);
+        return ChunkCode.GetBlockAt(chunk, worldPos);
     }
 
     public Chunk GetChunkAt(Vector3 worldPos)
@@ -150,7 +150,7 @@ public class World : MonoBehaviour
             if (chunk.meshChanged)
             {
                 GameObject chunkObject = chunkObjects[chunk.x, chunk.z];
-                Mesh chunkMesh = chunk.TakeMesh();
+                Mesh chunkMesh = ChunkCode.TakeMesh(chunk);
                 chunkObject.GetComponent<MeshFilter>().mesh = chunkMesh;
                 chunkObject.GetComponent<MeshCollider>().sharedMesh = chunkMesh;
             }

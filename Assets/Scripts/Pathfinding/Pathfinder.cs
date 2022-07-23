@@ -64,11 +64,11 @@ namespace Pathfinding
             {
                 for (int z = 0; z < worldChunkWidth; z++)
                 {
-                    var currGrid = chunkGrid.chunks[x, z].grid;
+                    var currentChunk = chunkGrid.chunks[x, z];
 
                     _chunkNodeGrids[x, z] = new NodeGrid();
-                    _chunkNodeGrids[x, z].grid = new PathNode[currGrid.MaxX, currGrid.MaxY, currGrid.MaxZ];
-                    foreach (BlockData filledBlock in currGrid.GetFilledBlocks())
+                    _chunkNodeGrids[x, z].grid = new PathNode[currentChunk.MaxX, currentChunk.MaxY, currentChunk.MaxZ];
+                    foreach (BlockData filledBlock in ChunkCode.GetFilledBlocks(currentChunk))
                     {
                         _chunkNodeGrids[x, z].grid[filledBlock.x, filledBlock.y, filledBlock.z] = new PathNode(filledBlock);
                     }

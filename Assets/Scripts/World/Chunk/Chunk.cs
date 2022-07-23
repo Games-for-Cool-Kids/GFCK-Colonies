@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Chunk
 {
@@ -9,83 +10,112 @@ public class Chunk
     public int MaxX;
     public int MaxY;
     public int MaxZ;
-    private BlockData[,,] blocks; // Data
+    public BlockData[,,] blocks; // Data
 
     public ChunkMeshData meshData;
-    public bool meshChanged { get; private set; }
+    public bool meshChanged;
+}
 
-    public Chunk(int x, int z, Vector3 position, int size, int maxY)
+public class ChunkCode
+{
+    public static Chunk CreateChunk(int x, int z, Vector3 position, int size, int maxY)
     {
-        this.x = x;
-        this.z = z;
-        this.origin = position;
-        this.MaxX = size;
-        this.MaxY = maxY;
-        this.MaxZ = size;
-        this.blocks = new BlockData[MaxX, MaxY, MaxZ];
-        this.meshData = new ChunkMeshData();
-        this.meshChanged = false;
+        Chunk chunk = new Chunk();
+
+        chunk.x = x;
+        chunk.z = z;
+        chunk.origin = position;
+        chunk.MaxX = size;
+        chunk.MaxY = maxY;
+        chunk.MaxZ = size;
+        chunk.blocks = new BlockData[size, maxY, size];
+        chunk.meshData = new ChunkMeshData();
+        chunk.meshChanged = false;
+
+        return chunk;
     }
 
-    public BlockData GetBlockAt(Vector3 worldPos)
+    public static BlockData GetBlockAt(Chunk chunk, Vector3 worldPos)
     {
-        worldPos -= origin; // Make relative to chunk.
+        worldPos -= chunk.origin; // Make relative to chunk.
 
         int blockX = Mathf.RoundToInt(worldPos.x);
         int blockY = Mathf.RoundToInt(worldPos.y);
         int blockZ = Mathf.RoundToInt(worldPos.z);
 
-        return GetBlock(blockX, blockY, blockZ);
+        return GetBlock(chunk, blockX, blockY, blockZ);
     }
 
-    public void DestroyBlock(BlockData block)
+    public static void DestroyBlock(Chunk chunk, BlockData block)
     {
-        grid.DestroyBlock(block);
-    }
+        if (block.y == 0) // Cannot destroy bottom-most block.
+            return;
 
-    public void CreateMeshData()
-    {
-        meshData = new ChunkMeshData();
-        meshChanged = true;
+        int x = block.x;
+        int y = block.y;
+        int z = block.z;
 
-        foreach (BlockData filledBlock in grid.GetFilledBlocks())
+        chunk.blocks[x, y, z] = null; // Clear block in grid.
+
+        BlockData belowBlock = GetBlock(chunk, x, y - 1, z);
+        if (belowBlock == null) // Create block under destroyed block, if empty below.
         {
-            AddBlockToChunkMesh(filledBlock, this);
+            BlockData newBlock = BlockCode.CreateBlockData(x, y - 1, z, true, block.type, new Vector3(block.worldPosition.x, y - 1, block.worldPosition.z));
+            SetBlock(chunk, newBlock);
+        }
+
+        // Fill holes at neighbors.
+        var neighbors = GetSurfaceNeighbors(chunk, block, false);
+        foreach (BlockData neighbor in neighbors)
+        {
+            int heightDiff = neighbor.y - (y - 1);
+            CreateBlocksUnder(chunk, neighbor, heightDiff - 1);
         }
     }
 
-    public Mesh TakeMesh()
+    public static void CreateMeshData(Chunk chunk)
     {
-        meshChanged = false;
+        chunk.meshData = new ChunkMeshData();
+        chunk.meshChanged = true;
+
+        foreach (BlockData filledBlock in GetFilledBlocks(chunk))
+        {
+            AddBlockToChunkMesh(chunk, filledBlock);
+        }
+    }
+
+    public static Mesh TakeMesh(Chunk chunk)
+    {
+        chunk.meshChanged = false;
 
         Mesh chunkMesh = new Mesh()
         {
-            vertices = meshData.vertices.ToArray(),
-            uv = meshData.uv.ToArray(),
-            triangles = meshData.triangles.ToArray()
+            vertices = chunk.meshData.vertices.ToArray(),
+            uv = chunk.meshData.uv.ToArray(),
+            triangles = chunk.meshData.triangles.ToArray()
         };
         chunkMesh.RecalculateNormals();
 
         return chunkMesh;
     }
 
-    public void CreateBlocksUnder(int x, int y, int z, int amount)
+    public static void CreateBlocksUnder(Chunk chunk, int x, int y, int z, int amount)
     {
-        grid.CreateBlocksUnder(grid.GetBlock(x, y, z), amount);
+        CreateBlocksUnder(chunk, GetBlock(chunk, x, y, z), amount);
     }
 
-    public static void AddBlockToChunkMesh(BlockData block, Chunk chunk)
+    public static void AddBlockToChunkMesh(Chunk chunk, BlockData block)
     {
-        AddBlockFaceToMeshIfVisible(block, chunk, BlockAdjacency.ABOVE);
-        AddBlockFaceToMeshIfVisible(block, chunk, BlockAdjacency.NORTH);
-        AddBlockFaceToMeshIfVisible(block, chunk, BlockAdjacency.SOUTH);
-        AddBlockFaceToMeshIfVisible(block, chunk, BlockAdjacency.EAST);
-        AddBlockFaceToMeshIfVisible(block, chunk, BlockAdjacency.WEST);
+        AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.ABOVE);
+        AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.NORTH);
+        AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.SOUTH);
+        AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.EAST);
+        AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.WEST);
     }
 
-    private static void AddBlockFaceToMeshIfVisible(BlockData block, Chunk chunk, BlockAdjacency adjacency)
+    private static void AddBlockFaceToMeshIfVisible(Chunk chunk, BlockData block, BlockAdjacency adjacency)
     {
-        BlockData neighbor = chunk.grid.GetAdjacentBlock(block, adjacency);
+        BlockData neighbor = GetAdjacentBlock(chunk, block, adjacency);
         if (neighbor == null
         || !neighbor.filled)
         {
@@ -115,29 +145,29 @@ public class Chunk
         }
     }
 
-    public void SetBlock(BlockData block)
+    public static void SetBlock(Chunk chunk, BlockData block)
     {
-        blocks[block.x, block.y, block.z] = block;
+        chunk.blocks[block.x, block.y, block.z] = block;
     }
 
-    public BlockData GetBlock(int x, int y, int z)
+    public static BlockData GetBlock(Chunk chunk, int x, int y, int z)
     {
         if (x < 0 || y < 0 || z < 0
-        || x >= MaxX || y >= MaxY || z >= MaxZ)
+        || x >= chunk.MaxX || y >= chunk.MaxY || z >= chunk.MaxZ)
             return null;
 
-        return blocks[x, y, z];
+        return chunk.blocks[x, y, z];
     }
 
-    public BlockData GetSurfaceBlock(int x, int z)
+    public static BlockData GetSurfaceBlock(Chunk chunk, int x, int z)
     {
         if (x < 0 || z < 0
-        || x >= MaxX || z >= MaxZ)
+        || x >= chunk.MaxX || z >= chunk.MaxZ)
             return null;
 
-        for (int y = MaxY - 1; y > 0; y--) // Search from top-down until we hit a surface block.
+        for (int y = chunk.MaxY - 1; y > 0; y--) // Search from top-down until we hit a surface block.
         {
-            BlockData block = GetBlock(x, y, z);
+            BlockData block = GetBlock(chunk, x, y, z);
             if (block != null
             && block.filled)
                 return block;
@@ -146,7 +176,7 @@ public class Chunk
         return null;
     }
 
-    public BlockData GetAdjacentBlock(BlockData sourceBlock, BlockAdjacency adjacency, bool checkVertically = false)
+    public static BlockData GetAdjacentBlock(Chunk chunk, BlockData sourceBlock, BlockAdjacency adjacency, bool checkVertically = false)
     {
         int x = sourceBlock.x;
         int y = sourceBlock.y;
@@ -168,19 +198,19 @@ public class Chunk
                 y = y - 1; break;
         }
 
-        BlockData adjacentBlock = GetBlock(x, y, z);
+        BlockData adjacentBlock = GetBlock(chunk, x, y, z);
         if (adjacentBlock != null)
             return adjacentBlock;
 
         if (checkVertically) // Check vertically if not found on same level.
         {
             // Check one above
-            adjacentBlock = GetBlock(x, y + 1, z);
+            adjacentBlock = GetBlock(chunk, x, y + 1, z);
             if (adjacentBlock != null)
                 return adjacentBlock;
 
             // Check one below
-            adjacentBlock = GetBlock(x, y - 1, z);
+            adjacentBlock = GetBlock(chunk, x, y - 1, z);
             if (adjacentBlock != null)
                 return adjacentBlock;
         }
@@ -188,16 +218,16 @@ public class Chunk
         return null;
     }
 
-    public List<BlockData> GetSurfaceNeighbors(int x, int y, int z, bool diagonal = true)
+    public static List<BlockData> GetSurfaceNeighbors(Chunk chunk, int x, int y, int z, bool diagonal = true)
     {
-        BlockData block = GetBlock(x, y, z);
+        BlockData block = GetBlock(chunk, x, y, z);
         if (block != null)
-            return GetSurfaceNeighbors(block);
+            return GetSurfaceNeighbors(chunk, block);
 
         return new List<BlockData>(); // empty list
     }
 
-    public List<BlockData> GetSurfaceNeighbors(BlockData source, bool diagonal = true)
+    public static List<BlockData> GetSurfaceNeighbors(Chunk chunk, BlockData source, bool diagonal = true)
     {
         List<BlockData> neighbors = new List<BlockData>();
 
@@ -208,14 +238,14 @@ public class Chunk
                 if (x == source.x && z == source.z) // Skip self.
                     continue;
 
-                for (int y = MaxY - 1; y > 0; y--) // Search from top-down until we hit a surface block.
+                for (int y = chunk.MaxY - 1; y > 0; y--) // Search from top-down until we hit a surface block.
                 {
                     if (!diagonal // Skip diagonal blocks.
                      && Mathf.Abs(x - source.x) == 1
                      && Mathf.Abs(z - source.z) == 1)
                         continue;
 
-                    BlockData neighbor = GetBlock(x, y, z);
+                    BlockData neighbor = GetBlock(chunk, x, y, z);
                     if (neighbor != null
                      && neighbor.filled)
                     {
@@ -229,20 +259,20 @@ public class Chunk
         return neighbors;
     }
 
-    public List<BlockData> GetFilledBlocks()
+    public static List<BlockData> GetFilledBlocks(Chunk chunk)
     {
         List<BlockData> filledBlocks = new();
 
-        for (int x = 0; x < MaxX; x++)
+        for (int x = 0; x < chunk.MaxX; x++)
         {
-            for (int y = 0; y < MaxY; y++)
+            for (int y = 0; y < chunk.MaxY; y++)
             {
-                for (int z = 0; z < MaxZ; z++)
+                for (int z = 0; z < chunk.MaxZ; z++)
                 {
-                    BlockData block = blocks[x, y, z];
+                    BlockData block = chunk.blocks[x, y, z];
                     if (block != null
                     && block.filled)
-                        filledBlocks.Add(GetBlock(x, y, z));
+                        filledBlocks.Add(GetBlock(chunk, x, y, z));
                 }
             }
         }
@@ -250,20 +280,20 @@ public class Chunk
         return filledBlocks;
     }
 
-    public BlockData[,,] GetData()
+    public static BlockData[,,] GetData(Chunk chunk)
     {
-        return blocks;
+        return chunk.blocks;
     }
 
-    public void SetData(BlockData[,,] data)
+    public static void SetData(Chunk chunk, BlockData[,,] data)
     {
-        blocks = data;
+        chunk.blocks = data;
     }
 
-    public void InsertGridAt(int posX, int posZ, BlockGrid other)
+    public static void InsertGridAt(Chunk chunk, Chunk other, int posX, int posZ)
     {
         if (posX < 0 || posZ < 0
-        || posX + other.MaxX > MaxX || other.MaxY > MaxY || posZ + other.MaxZ > MaxZ)
+        || posX + other.MaxX > chunk.MaxX || other.MaxY > chunk.MaxY || posZ + other.MaxZ > chunk.MaxZ)
         {
             Debug.LogError("Out of bounds.");
             return;
@@ -275,40 +305,13 @@ public class Chunk
             {
                 for (int z = posZ; z < posZ + other.MaxZ; z++)
                 {
-                    blocks[x, y, z] = other.GetBlock(x, y, z);
+                    chunk.blocks[x, y, z] = GetBlock(other, x, y, z);
                 }
             }
         }
     }
 
-    public void DestroyBlock(BlockData block)
-    {
-        if (block.y == 0) // Cannot destroy bottom-most block.
-            return;
-
-        int x = block.x;
-        int y = block.y;
-        int z = block.z;
-
-        blocks[x, y, z] = null; // Clear block in grid.
-
-        BlockData belowBlock = GetBlock(x, y - 1, z);
-        if (belowBlock == null) // Create block under destroyed block, if empty below.
-        {
-            BlockData newBlock = BlockCode.CreateBlockData(x, y - 1, z, true, block.type, new Vector3(block.worldPosition.x, y - 1, block.worldPosition.z));
-            SetBlock(newBlock);
-        }
-
-        // Fill holes at neighbors.
-        var neighbors = GetSurfaceNeighbors(block, false);
-        foreach (BlockData neighbor in neighbors)
-        {
-            int heightDiff = neighbor.y - (y - 1);
-            CreateBlocksUnder(neighbor, heightDiff - 1);
-        }
-    }
-
-    public void CreateBlocksUnder(BlockData block, int amount, BlockType type = BlockType.ROCK)
+    public static void CreateBlocksUnder(Chunk chunk, BlockData block, int amount, BlockType type = BlockType.ROCK)
     {
         int x = block.x;
         int z = block.z;
@@ -319,8 +322,7 @@ public class Chunk
                                        true,
                                        type,
                                        new Vector3(block.worldPosition.x, y, block.worldPosition.z));
-            SetBlock(newBlock);
+            SetBlock(chunk, newBlock);
         }
     }
-
 }
