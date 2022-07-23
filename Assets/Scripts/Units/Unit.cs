@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public class Unit : MonoBehaviour
 {
-    List<BlockData> path = null;
-    int pathIndex = 0;
+    private List<BlockData> _path = null;
+    private int _pathIndex = 0;
 
     public bool pingPong = false; // Unit will go back and forth along path start/end blocks.
 
@@ -18,29 +18,29 @@ public class Unit : MonoBehaviour
 
     private void FollowPath()
     {
-        if (path == null
-         || path.Count == 0)
+        if (_path == null
+         || _path.Count == 0)
             return;
 
-        BlockData targetBlock = path[pathIndex + 1];
+        BlockData targetBlock = _path[_pathIndex + 1];
 
         Vector3 targetPos = targetBlock.worldPosition + GameObjectUtil.GetPivotToMeshMinOffset(gameObject) + Vector3.up / 2;
         Vector3 characterToTarget = targetPos - transform.position;
         Vector3 direction = characterToTarget.normalized;
-        Vector3 move = direction * speed * Time.deltaTime;
+        Vector3 move = direction * speed * Time.fixedDeltaTime;
 
         transform.position += move;
 
         float distanceToTarget = characterToTarget.magnitude;
         if (distanceToTarget < 0.1f) // If distance to center of target block is this small, we're good.
-            pathIndex++;
+            _pathIndex++;
 
-        if (pathIndex == path.Count - 1) // We reached end of path
+        if (_pathIndex == _path.Count - 1) // We reached end of path
         {
-            pathIndex = 0;
+            _pathIndex = 0;
 
             if (pingPong)
-                path.Reverse();
+                _path.Reverse();
             else
                 ClearPath();
         }
@@ -48,16 +48,16 @@ public class Unit : MonoBehaviour
 
     public void SetPath(List<BlockData> path)
     {
-        this.path = path;
+        this._path = path;
     }
 
     public void ClearPath()
     {
-        pathIndex = 0;
-        if(path != null)
+        _pathIndex = 0;
+        if(_path != null)
         {
-            path.Clear();
-            path = null;
+            _path.Clear();
+            _path = null;
         }
     }
 
