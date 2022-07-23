@@ -123,7 +123,7 @@ public class WorldGenerator
         };
     }
 
-    private void AddChunk(Chunk chunk)
+    private void AddChunk(ChunkData chunk)
     {
         chunkGrid.chunks[chunk.x, chunk.z] = chunk; // Store generated chunk
     }

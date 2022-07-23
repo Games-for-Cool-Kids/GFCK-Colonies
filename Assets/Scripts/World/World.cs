@@ -56,9 +56,9 @@ public class World : MonoBehaviour
         worldGenerator = null; // Stops generator from running.
     }
 
-    private void CreateChunkObject(Chunk chunk)
+    private void CreateChunkObject(ChunkData chunk)
     {
-        GameObject newChunkObject = new GameObject("Chunk" + chunk.origin.ToString());
+        GameObject newChunkObject = new GameObject("ChunkData" + chunk.origin.ToString());
         newChunkObject.isStatic = true;
         newChunkObject.layer = LayerMask.NameToLayer(GlobalDefines.worldLayerName);
         newChunkObject.transform.parent = transform;
@@ -100,12 +100,12 @@ public class World : MonoBehaviour
         return ChunkCode.GetBlockAt(chunk, worldPos);
     }
 
-    public Chunk GetChunkAt(Vector3 worldPos)
+    public ChunkData GetChunkAt(Vector3 worldPos)
     {
         return chunkGrid.GetChunkAt(worldPos);
     }
 
-    public Chunk GetChunk(int x, int z)
+    public ChunkData GetChunk(int x, int z)
     {
         if(x < 0 || x >= worldChunkWidth
         || z < 0 || z >= worldChunkWidth)

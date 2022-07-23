@@ -4,16 +4,16 @@ public class ChunkGrid
 {
     public int width;
     public int chunkSize;
-    public Chunk[,] chunks;
+    public ChunkData[,] chunks;
 
     public ChunkGrid(int width, int chunkSize)
     {
         this.width = width;
         this.chunkSize = chunkSize;
-        chunks = new Chunk[width, width];
+        chunks = new ChunkData[width, width];
     }
 
-    public Chunk GetChunk(int x, int z)
+    public ChunkData GetChunk(int x, int z)
     {
         if (x < 0 || x >= width
         || z < 0 || z >= width)
@@ -24,8 +24,8 @@ public class ChunkGrid
 
     public void FillNeighboringEdge(int x, int z, BlockAdjacency direction)
     {
-        Chunk current = chunks[x, z];
-        Chunk neighbor = null;
+        ChunkData current = chunks[x, z];
+        ChunkData neighbor = null;
         switch (direction)
         {
             case BlockAdjacency.NORTH:
@@ -83,20 +83,20 @@ public class ChunkGrid
 
     public void DestroyBlock(BlockData block)
     {
-        Chunk chunk = GetChunkAt(block.worldPosition);
+        ChunkData chunk = GetChunkAt(block.worldPosition);
         ChunkCode.DestroyBlock(chunk, block);
         ChunkCode.CreateMeshData(chunk); // Update mesh.
 
         if(block.x == 0 && chunk.x > 0)
         {
-            Chunk westNeighbor = chunks[chunk.x - 1, chunk.z];
+            ChunkData westNeighbor = chunks[chunk.x - 1, chunk.z];
             BlockData neighborBlock = ChunkCode.GetSurfaceBlock(westNeighbor, chunkSize - 1, block.z);
             ChunkCode.CreateBlocksUnder(westNeighbor, neighborBlock, neighborBlock.y - block.y);
             ChunkCode.CreateMeshData(westNeighbor); // Update mesh.
         }
         else if (block.x == chunkSize - 1 && chunk.x < width - 1)
         {
-            Chunk eastNeighbor = chunks[chunk.x + 1, chunk.z];
+            ChunkData eastNeighbor = chunks[chunk.x + 1, chunk.z];
             BlockData neighborBlock = ChunkCode.GetSurfaceBlock(eastNeighbor, 0, block.z);
             ChunkCode.CreateBlocksUnder(eastNeighbor, neighborBlock, neighborBlock.y - block.y);
             ChunkCode.CreateMeshData(eastNeighbor); // Update mesh.
@@ -104,21 +104,21 @@ public class ChunkGrid
 
         if (block.z == 0 && chunk.z > 0)
         {
-            Chunk southNeighbor = chunks[chunk.x, chunk.z - 1];
+            ChunkData southNeighbor = chunks[chunk.x, chunk.z - 1];
             BlockData neighborBlock = ChunkCode.GetSurfaceBlock(southNeighbor, block.x, chunkSize - 1);
             ChunkCode.CreateBlocksUnder(southNeighbor, neighborBlock, neighborBlock.y - block.y);
             ChunkCode.CreateMeshData(southNeighbor); // Update mesh.
         }
         else if (block.z == chunkSize - 1 && chunk.z < width - 1)
         {
-            Chunk northNeighbor = chunks[chunk.x, chunk.z + 1];
+            ChunkData northNeighbor = chunks[chunk.x, chunk.z + 1];
             BlockData neighborBlock = ChunkCode.GetSurfaceBlock(northNeighbor, block.x, 0);
             ChunkCode.CreateBlocksUnder(northNeighbor, neighborBlock, neighborBlock.y - block.y);
             ChunkCode.CreateMeshData(northNeighbor); // Update mesh.
         }
     }
 
-    public Chunk GetChunkAt(Vector3 worldPos)
+    public ChunkData GetChunkAt(Vector3 worldPos)
     {
         Vector3 relativePos = worldPos + new Vector3(0.5f, 0.5f, 0.5f); // We need offset of half a block. Origin is middle of first block.
 
