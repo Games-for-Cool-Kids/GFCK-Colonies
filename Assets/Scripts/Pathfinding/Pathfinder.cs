@@ -175,6 +175,8 @@ namespace Pathfinding
                 currentNode = currentNode.parent;
             }
 
+            path.Add(startBlock);
+
             //then we simply reverse the list
             path.Reverse();
 

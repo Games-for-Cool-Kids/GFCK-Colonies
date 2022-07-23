@@ -22,12 +22,12 @@ public class Unit : MonoBehaviour
          || _path.Count == 0)
             return;
 
-        BlockData targetBlock = _path[_pathIndex];
+        BlockData targetBlock = _path[_pathIndex + 1];
 
         Vector3 targetPos = targetBlock.worldPosition + GameObjectUtil.GetPivotToMeshMinOffset(gameObject) + Vector3.up / 2;
         Vector3 characterToTarget = targetPos - transform.position;
         Vector3 direction = characterToTarget.normalized;
-        Vector3 move = direction * speed * Time.deltaTime;
+        Vector3 move = direction * speed * Time.fixedDeltaTime;
 
         transform.position += move;
 
@@ -35,7 +35,7 @@ public class Unit : MonoBehaviour
         if (distanceToTarget < 0.1f) // If distance to center of target block is this small, we're good.
             _pathIndex++;
 
-        if (_pathIndex >= _path.Count) // We reached end of path
+        if (_pathIndex == _path.Count - 1) // We reached end of path
         {
             _pathIndex = 0;
 
