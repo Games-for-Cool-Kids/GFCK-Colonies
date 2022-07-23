@@ -24,13 +24,6 @@ public class World : MonoBehaviour
     {
         if(worldGenerator != null)
             RunWorldGeneration();
-
-        if(Input.GetMouseButtonDown(0))
-        {
-            BlockData block = GetBlockUnderMouse();
-            if (block != null)
-                DigBlock(block);
-        }
     }
 
     public void StartCreateWorld()

@@ -58,6 +58,13 @@ namespace Pathfinding
 
         public void RequestPathfind(BlockData start, BlockData target, PathFindingJobComplete completeCallback)
         {
+            if(start == null
+            || target == null)
+            {
+                Debug.LogError("Start or end block cannot be null");
+                return;
+            }
+
             Pathfinder newJob = new Pathfinder(GameManager.Instance.World, start, target, completeCallback);
             todoJobs.Add(newJob);
         }
