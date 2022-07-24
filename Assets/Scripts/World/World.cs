@@ -134,7 +134,7 @@ public class World : MonoBehaviour
 
     public void DigBlock(BlockData block)
     {
-        ChunkCode.DestroyBlock(chunks, GetWorldChunkDimensions(), block);
+        ChunkCode.DigBlock(chunks, GetWorldChunkDimensions(), block);
 
         UpdateChangedChunkMeshes();
     }

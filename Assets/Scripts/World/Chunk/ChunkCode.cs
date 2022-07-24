@@ -31,33 +31,6 @@ public class ChunkCode
         return GetBlock(chunk, blockX, blockY, blockZ);
     }
 
-    public static void DestroyBlock(ChunkData chunk, BlockData block)
-    {
-        if (block.y == 0) // Cannot destroy bottom-most block.
-            return;
-
-        int x = block.x;
-        int y = block.y;
-        int z = block.z;
-
-        chunk.blocks[x, y, z] = null; // Clear block in grid.
-
-        BlockData belowBlock = GetBlock(chunk, x, y - 1, z);
-        if (belowBlock == null) // Create block under destroyed block, if empty below.
-        {
-            BlockData newBlock = BlockCode.CreateBlockData(x, y - 1, z, true, block.type, new Vector3(block.worldPosition.x, y - 1, block.worldPosition.z));
-            SetBlock(chunk, newBlock);
-        }
-
-        // Fill holes at neighbors.
-        var neighbors = GetSurfaceNeighbors(chunk, block, false);
-        foreach (BlockData neighbor in neighbors)
-        {
-            int heightDiff = neighbor.y - (y - 1);
-            CreateBlocksUnder(chunk, neighbor, heightDiff - 1);
-        }
-    }
-
     public static void CreateMeshData(ChunkData chunk)
     {
         chunk.meshData = new ChunkMeshData();
@@ -84,11 +57,6 @@ public class ChunkCode
         return chunkMesh;
     }
 
-    public static void CreateBlocksUnder(ChunkData chunk, int x, int y, int z, int amount)
-    {
-        CreateBlocksUnder(chunk, GetBlock(chunk, x, y, z), amount);
-    }
-
     public static void AddBlockToChunkMesh(ChunkData chunk, BlockData block)
     {
         AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.ABOVE);
@@ -102,7 +70,7 @@ public class ChunkCode
     {
         BlockData neighbor = GetAdjacentBlock(chunk, block, adjacency);
         if (neighbor == null
-        || !neighbor.filled)
+        || neighbor.type == BlockType.AIR)
         {
             Vector3 localPos = BlockCode.GetLocalPosition(block);
 
@@ -154,7 +122,7 @@ public class ChunkCode
         {
             BlockData block = GetBlock(chunk, x, y, z);
             if (block != null
-            && block.filled)
+            && block.type != BlockType.AIR)
                 return block;
         }
 
@@ -232,7 +200,7 @@ public class ChunkCode
 
                     BlockData neighbor = GetBlock(chunk, x, y, z);
                     if (neighbor != null
-                     && neighbor.filled)
+                     && neighbor.type != BlockType.AIR)
                     {
                         neighbors.Add(neighbor);
                         y = 0; // Stop top-down search.
@@ -256,44 +224,13 @@ public class ChunkCode
                 {
                     BlockData block = chunk.blocks[x, y, z];
                     if (block != null
-                    && block.filled)
+                    && block.type != BlockType.AIR)
                         filledBlocks.Add(GetBlock(chunk, x, y, z));
                 }
             }
         }
 
         return filledBlocks;
-    }
-
-    public static BlockData[,,] GetData(ChunkData chunk)
-    {
-        return chunk.blocks;
-    }
-
-    public static void SetData(ChunkData chunk, BlockData[,,] data)
-    {
-        chunk.blocks = data;
-    }
-
-    public static void InsertGridAt(ChunkData chunk, ChunkData other, int posX, int posZ)
-    {
-        if (posX < 0 || posZ < 0
-        || posX + other.MaxX > chunk.MaxX || other.MaxY > chunk.MaxY || posZ + other.MaxZ > chunk.MaxZ)
-        {
-            Debug.LogError("Out of bounds.");
-            return;
-        }
-
-        for (int x = posX; x < posX + other.MaxX; x++)
-        {
-            for (int y = 0; y < other.MaxY; y++)
-            {
-                for (int z = posZ; z < posZ + other.MaxZ; z++)
-                {
-                    chunk.blocks[x, y, z] = GetBlock(other, x, y, z);
-                }
-            }
-        }
     }
 
     public static void CreateBlocksUnder(ChunkData chunk, BlockData block, int amount, BlockType type = BlockType.ROCK)
@@ -304,7 +241,6 @@ public class ChunkCode
         for (int y = block.y - 1; y >= block.y - amount; y--)
         {
             BlockData newBlock = BlockCode.CreateBlockData(x, y, z,
-                                       true,
                                        type,
                                        new Vector3(block.worldPosition.x, y, block.worldPosition.z));
             SetBlock(chunk, newBlock);
@@ -372,7 +308,7 @@ public class ChunkCode
             {
                 for (int y = currentBlock.y - 1; y >= currentBlock.y - blocksToFill; y--)
                 {
-                    BlockData fill = BlockCode.CreateBlockData(currentBlock.x, y, currentBlock.z, true, BlockType.ROCK, new Vector3(currentBlock.x, y, currentBlock.z));
+                    BlockData fill = BlockCode.CreateBlockData(currentBlock.x, y, currentBlock.z, BlockType.ROCK, new Vector3(currentBlock.x, y, currentBlock.z));
                     ChunkCode.SetBlock(current, fill);
                 }
             }
@@ -388,47 +324,29 @@ public class ChunkCode
         int y = Mathf.FloorToInt(localPos.y);
         int z = Mathf.FloorToInt(localPos.z);
 
-        BlockData newBlock = BlockCode.CreateBlockData(localPos, true, BlockType.GROUND, worldPos);
+        BlockData newBlock = BlockCode.CreateBlockData(localPos, BlockType.GROUND, worldPos);
         chunk.blocks[x, y, z] = newBlock;
 
         ChunkCode.CreateMeshData(chunk); // Update mesh.
     }
 
-    public static void DestroyBlock(ChunkData[,] chunks, World.ChunkDimensions dimensions, BlockData block)
+    public static void DigBlock(ChunkData chunk, BlockData block)
+    {
+        if (block.y == 0) // Cannot destroy bottom-most block.
+            return;
+
+        int x = block.x;
+        int y = block.y;
+        int z = block.z;
+
+        chunk.blocks[x, y, z].type = BlockType.AIR; // Set block to empty.
+    }
+
+    public static void DigBlock(ChunkData[,] chunks, World.ChunkDimensions dimensions, BlockData block)
     {
         ChunkData chunk = GetChunkAt(chunks, dimensions, block.worldPosition);
-        ChunkCode.DestroyBlock(chunk, block);
+        ChunkCode.DigBlock(chunk, block);
         ChunkCode.CreateMeshData(chunk); // Update mesh.
-
-        if (block.x == 0 && chunk.x > 0)
-        {
-            ChunkData westNeighbor = chunks[chunk.x - 1, chunk.z];
-            BlockData neighborBlock = ChunkCode.GetSurfaceBlock(westNeighbor, dimensions.chunkSize - 1, block.z);
-            ChunkCode.CreateBlocksUnder(westNeighbor, neighborBlock, neighborBlock.y - block.y);
-            ChunkCode.CreateMeshData(westNeighbor); // Update mesh.
-        }
-        else if (block.x == dimensions.chunkSize - 1 && chunk.x < dimensions.worldChunkWidth - 1)
-        {
-            ChunkData eastNeighbor = chunks[chunk.x + 1, chunk.z];
-            BlockData neighborBlock = ChunkCode.GetSurfaceBlock(eastNeighbor, 0, block.z);
-            ChunkCode.CreateBlocksUnder(eastNeighbor, neighborBlock, neighborBlock.y - block.y);
-            ChunkCode.CreateMeshData(eastNeighbor); // Update mesh.
-        }
-
-        if (block.z == 0 && chunk.z > 0)
-        {
-            ChunkData southNeighbor = chunks[chunk.x, chunk.z - 1];
-            BlockData neighborBlock = ChunkCode.GetSurfaceBlock(southNeighbor, block.x, dimensions.chunkSize - 1);
-            ChunkCode.CreateBlocksUnder(southNeighbor, neighborBlock, neighborBlock.y - block.y);
-            ChunkCode.CreateMeshData(southNeighbor); // Update mesh.
-        }
-        else if (block.z == dimensions.chunkSize - 1 && chunk.z < dimensions.worldChunkWidth - 1)
-        {
-            ChunkData northNeighbor = chunks[chunk.x, chunk.z + 1];
-            BlockData neighborBlock = ChunkCode.GetSurfaceBlock(northNeighbor, block.x, 0);
-            ChunkCode.CreateBlocksUnder(northNeighbor, neighborBlock, neighborBlock.y - block.y);
-            ChunkCode.CreateMeshData(northNeighbor); // Update mesh.
-        }
     }
 
     public static ChunkData GetChunkAt(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 worldPos)
@@ -440,5 +358,4 @@ public class ChunkCode
 
         return GetChunk(chunks, dimensions.worldChunkWidth, chunkX, chunkZ);
     }
-
 }

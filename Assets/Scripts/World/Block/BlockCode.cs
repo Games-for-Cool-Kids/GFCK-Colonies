@@ -12,22 +12,21 @@ public enum BlockAdjacency
 
 public class BlockCode
 {
-    public static BlockData CreateBlockData(Vector3 localPosition, bool filled, BlockType type, Vector3 worldPosition)
+    public static BlockData CreateBlockData(Vector3 localPosition, BlockType type, Vector3 worldPosition)
     {
         int x = Mathf.FloorToInt(localPosition.x);
         int y = Mathf.FloorToInt(localPosition.y);
         int z = Mathf.FloorToInt(localPosition.z);
 
-        return CreateBlockData(x, y, z, filled, type, worldPosition);
+        return CreateBlockData(x, y, z, type, worldPosition);
     }
 
-    public static BlockData CreateBlockData(int x, int y, int z, bool filled, BlockType type, Vector3 worldPosition)
+    public static BlockData CreateBlockData(int x, int y, int z, BlockType type, Vector3 worldPosition)
     {
         BlockData data = new();
         data.x = x;
         data.y = y;
         data.z = z;
-        data.filled = filled;
         data.worldPosition = worldPosition;
         data.type = type;
 
@@ -46,6 +45,7 @@ public class BlockCode
 
     public static bool IsWalkable(BlockData block)
     {
-        return block.filled; // Determines if it can be used for pathfinding.
+        return block.type != BlockType.AIR
+            || block.type != BlockType.WATER; // Determines if it can be used for pathfinding.
     }
 }
