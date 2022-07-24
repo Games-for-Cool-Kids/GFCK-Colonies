@@ -12,6 +12,15 @@ public enum BlockAdjacency
 
 public class BlockCode
 {
+    public static BlockData CreateBlockData(Vector3 localPosition, bool filled, BlockType type, Vector3 worldPosition)
+    {
+        int x = Mathf.FloorToInt(localPosition.x);
+        int y = Mathf.FloorToInt(localPosition.y);
+        int z = Mathf.FloorToInt(localPosition.z);
+
+        return CreateBlockData(x, y, z, filled, type, worldPosition);
+    }
+
     public static BlockData CreateBlockData(int x, int y, int z, bool filled, BlockType type, Vector3 worldPosition)
     {
         BlockData data = new();

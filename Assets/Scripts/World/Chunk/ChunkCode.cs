@@ -379,6 +379,21 @@ public class ChunkCode
         }
     }
 
+    public static void AddBlock(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 worldPos)
+    {
+        ChunkData chunk = GetChunkAt(chunks, dimensions, worldPos);
+
+        Vector3 localPos = worldPos - chunk.origin;
+        int x = Mathf.FloorToInt(localPos.x);
+        int y = Mathf.FloorToInt(localPos.y);
+        int z = Mathf.FloorToInt(localPos.z);
+
+        BlockData newBlock = BlockCode.CreateBlockData(localPos, true, BlockType.GROUND, worldPos);
+        chunk.blocks[x, y, z] = newBlock;
+
+        ChunkCode.CreateMeshData(chunk); // Update mesh.
+    }
+
     public static void DestroyBlock(ChunkData[,] chunks, World.ChunkDimensions dimensions, BlockData block)
     {
         ChunkData chunk = GetChunkAt(chunks, dimensions, block.worldPosition);
