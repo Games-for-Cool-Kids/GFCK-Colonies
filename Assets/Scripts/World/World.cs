@@ -139,18 +139,30 @@ public class World : MonoBehaviour
         UpdateChangedChunkMeshes();
     }
 
+    public void AddBlock(Vector3 worldPos)
+    {
+        var chunkDimensions = GetWorldChunkDimensions();
+        ChunkCode.AddBlock(chunks, chunkDimensions, worldPos);
+
+        ChunkData chunk = ChunkCode.GetChunkAt(chunks, chunkDimensions, worldPos);
+        UpdateChunkMesh(chunk);
+    }
+
+    private void UpdateChunkMesh(ChunkData chunk)
+    {
+        if (chunk.meshChanged)
+        {
+            GameObject chunkObject = chunkObjects[chunk.x, chunk.z];
+            Mesh chunkMesh = ChunkCode.TakeMesh(chunk);
+            chunkObject.GetComponent<MeshFilter>().mesh = chunkMesh;
+            chunkObject.GetComponent<MeshCollider>().sharedMesh = chunkMesh;
+        }
+    }
+
     private void UpdateChangedChunkMeshes()
     {
         foreach (var chunk in chunks)
-        {
-            if (chunk.meshChanged)
-            {
-                GameObject chunkObject = chunkObjects[chunk.x, chunk.z];
-                Mesh chunkMesh = ChunkCode.TakeMesh(chunk);
-                chunkObject.GetComponent<MeshFilter>().mesh = chunkMesh;
-                chunkObject.GetComponent<MeshCollider>().sharedMesh = chunkMesh;
-            }
-        }
+            UpdateChunkMesh(chunk);
     }
 
     private World.ChunkDimensions GetWorldChunkDimensions()
