@@ -59,11 +59,26 @@ public class ChunkCode
 
     public static void AddBlockToChunkMesh(ChunkData chunk, BlockData block)
     {
+        //Vector3 localPos = BlockCode.GetLocalPosition(block);
+
+        //var neighbours = GetAllNeighboringBlocks(chunk, block);
+ 
+        // Flat faces first
+        //if (IsSolidBlock(neighbours[BlockAdjacency.NORTH]))
+        {
+            //ChunkMeshUtilities.CreateFaceForward(chunk.meshData, localPos, block.type);
+        }
+
         AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.ABOVE);
         AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.NORTH);
         AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.SOUTH);
         AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.EAST);
         AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.WEST);
+    }
+
+    public static bool IsSolidBlock(BlockData block)
+    {
+        return block != null && block.filled;
     }
 
     private static void AddBlockFaceToMeshIfVisible(ChunkData chunk, BlockData block, BlockAdjacency adjacency)
@@ -127,6 +142,33 @@ public class ChunkCode
         }
 
         return null;
+    }
+
+    public static Dictionary<BlockAdjacency, BlockData> GetAllNeighboringBlocks(ChunkData chunk, BlockData sourceBlock)
+    {
+        int x = sourceBlock.x;
+        int y = sourceBlock.y;
+        int z = sourceBlock.z;
+
+        Dictionary<BlockAdjacency, BlockData> neighbours = new Dictionary<BlockAdjacency, BlockData>()
+        {
+            { BlockAdjacency.NORTH, GetBlock(chunk, x, y, z + 1) },
+            { BlockAdjacency.SOUTH, GetBlock(chunk, x, y, z - 1) },
+            { BlockAdjacency.WEST, GetBlock(chunk, x - 1, y, z) },
+            { BlockAdjacency.EAST, GetBlock(chunk, x + 1, y, z) },
+            { BlockAdjacency.ABOVE, GetBlock(chunk, x, y + 1, z) },
+            { BlockAdjacency.BELOW, GetBlock(chunk, x, y - 1, z) },
+            { BlockAdjacency.NORTH_BELOW, GetBlock(chunk, x, y - 1, z + 1) },
+            { BlockAdjacency.SOUTH_BELOW, GetBlock(chunk, x, y - 1, z - 1) },
+            { BlockAdjacency.WEST_BELOW, GetBlock(chunk, x - 1, y - 1, z) },
+            { BlockAdjacency.EAST_BELOW, GetBlock(chunk, x + 1, y - 1, z) },
+            { BlockAdjacency.NORTH_ABOVE, GetBlock(chunk, x, y + 1, z + 1) },
+            { BlockAdjacency.SOUTH_ABOVE, GetBlock(chunk, x, y + 1, z - 1) },
+            { BlockAdjacency.WEST_ABOVE, GetBlock(chunk, x - 1, y + 1, z) },
+            { BlockAdjacency.EAST_ABOVE, GetBlock(chunk, x + 1, y + 1, z) },
+        };
+
+        return neighbours;
     }
 
     public static BlockData GetAdjacentBlock(ChunkData chunk, BlockData sourceBlock, BlockAdjacency adjacency, bool checkVertically = false)
