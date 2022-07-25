@@ -78,7 +78,7 @@ public class ChunkCode
 
     public static bool IsSolidBlock(BlockData block)
     {
-        return block != null && block.filled;
+        return block != null && block.type != BlockType.AIR;
     }
 
     private static void AddBlockFaceToMeshIfVisible(ChunkData chunk, BlockData block, BlockAdjacency adjacency)
@@ -107,7 +107,7 @@ public class ChunkCode
                     ChunkMeshUtilities.CreateFaceUp(chunk.meshData, localPos, block.type);
                     break;
                 case BlockAdjacency.BELOW:  // Maybe we can even skip the backside of blocks too.
-                default:                         // We don't create a bottom face. Since the camera can never see the bottom of blocks.
+                default:                    // We don't create a bottom face. Since the camera can never see the bottom of blocks.
                     break;
             }
         }
