@@ -41,10 +41,10 @@ namespace Pathfinding
         private bool _allowVertical = true;
 
         public volatile bool executionFinished = false;
-        public PathfindMaster.PathFindingJobComplete completedCallback;
+        public PathfindMaster.PathFindingThreadComplete completedCallback;
 
         //Constructor
-        public Pathfinder(World world, BlockData start, BlockData target, PathfindMaster.PathFindingJobComplete completedCallback)
+        public Pathfinder(World world, BlockData start, BlockData target, PathfindMaster.PathFindingThreadComplete completedCallback)
         {
             this._startBlock = start;
             this._targetBlock = target;

@@ -8,30 +8,30 @@ namespace Pathfinding
     public class PathfindMaster : MonoBehaviourSingleton<PathfindMaster>
     {
         //The maximum simultaneous threads we allow to open
-        public int MaxJobs = 3;
+        public int MaxThreads = 3;
 
         //Delegates are a variable that points to a function
-        public delegate void PathFindingJobComplete(List<BlockData> path);
+        public delegate void PathFindingThreadComplete(List<BlockData> path);
 
-        private List<Pathfinder> currentJobs;
-        private List<Pathfinder> todoJobs;
+        private List<Pathfinder> currentThreads;
+        private List<Pathfinder> todoThreads;
 
         void Start()
         {
-            currentJobs = new List<Pathfinder>();
-            todoJobs = new List<Pathfinder>();
+            currentThreads = new List<Pathfinder>();
+            todoThreads = new List<Pathfinder>();
         }
    
         void Update() 
         {
             int i = 0;
 
-            while(i < currentJobs.Count)
+            while(i < currentThreads.Count)
             {
-                if(currentJobs[i].executionFinished)
+                if(currentThreads[i].executionFinished)
                 {
-                    currentJobs[i].NotifyComplete();
-                    currentJobs.RemoveAt(i);
+                    currentThreads[i].NotifyComplete();
+                    currentThreads.RemoveAt(i);
                 }
                 else
                 {
@@ -39,15 +39,15 @@ namespace Pathfinding
                 }
             }
 
-            if(todoJobs.Count > 0 && currentJobs.Count < MaxJobs)
+            if(todoThreads.Count > 0 && currentThreads.Count < MaxThreads)
             {
-                Pathfinder job = todoJobs[0];
-                todoJobs.RemoveAt(0);
-                currentJobs.Add(job);
+                Pathfinder thread = todoThreads[0];
+                todoThreads.RemoveAt(0);
+                currentThreads.Add(thread);
 
                 //Start a new thread
-                Thread jobThread = new Thread(job.FindPath);
-                jobThread.Start();
+                Thread threadThread = new Thread(thread.FindPath);
+                threadThread.Start();
 
                 //As per the doc
                 //https://msdn.microsoft.com/en-us/library/system.threading.thread(v=vs.110).aspx
@@ -56,7 +56,7 @@ namespace Pathfinding
             }
         }
 
-        public void RequestPathfind(BlockData start, BlockData target, PathFindingJobComplete completeCallback)
+        public void RequestPathfind(BlockData start, BlockData target, PathFindingThreadComplete completeCallback)
         {
             if(start == null
             || target == null)
@@ -65,8 +65,8 @@ namespace Pathfinding
                 return;
             }
 
-            Pathfinder newJob = new Pathfinder(GameManager.Instance.World, start, target, completeCallback);
-            todoJobs.Add(newJob);
+            Pathfinder newThread = new Pathfinder(GameManager.Instance.World, start, target, completeCallback);
+            todoThreads.Add(newThread);
         }
     }
 }
