@@ -62,7 +62,7 @@ public class ChunkCode
         //Vector3 localPos = BlockCode.GetLocalPosition(block);
 
         //var neighbours = GetAllNeighboringBlocks(chunk, block);
- 
+
         // Flat faces first
         //if (IsSolidBlock(neighbours[BlockAdjacency.NORTH]))
         {
@@ -211,9 +211,9 @@ public class ChunkCode
             case BlockAdjacency.EAST:
                 x = x + 1; break;
             case BlockAdjacency.ABOVE:
-                y = y + 1; break;
+                y = y + 1; checkVertically = false; break;
             case BlockAdjacency.BELOW:
-                y = y - 1; break;
+                y = y - 1; checkVertically = false; break;
         }
 
         BlockData adjacentBlock = GetBlock(chunk, x, y, z);
@@ -296,6 +296,27 @@ public class ChunkCode
         }
 
         return filledBlocks;
+    }
+
+    public static List<BlockData> GetWalkableBlocks(ChunkData chunk)
+    {
+        List<BlockData> walkableBlocks = new();
+
+        for (int x = 0; x < chunk.MaxX; x++)
+        {
+            for (int y = 0; y < chunk.MaxY; y++)
+            {
+                for (int z = 0; z < chunk.MaxZ; z++)
+                {
+                    BlockData block = chunk.blocks[x, y, z];
+                    if (block != null
+                     && IsWalkable(chunk, block))
+                        walkableBlocks.Add(GetBlock(chunk, x, y, z));
+                }
+            }
+        }
+
+        return walkableBlocks;
     }
 
     public static void CreateBlocksUnder(ChunkData chunk, BlockData block, int amount, BlockType type = BlockType.ROCK)
@@ -422,5 +443,19 @@ public class ChunkCode
         int chunkZ = Mathf.FloorToInt(relativePos.z / dimensions.chunkSize);
 
         return GetChunk(chunks, dimensions.worldChunkWidth, chunkX, chunkZ);
+    }
+
+    public static bool IsSurfaceBlock(ChunkData chunk, BlockData block)
+    {
+        BlockData blockAbove = GetAdjacentBlock(chunk, block, BlockAdjacency.ABOVE);
+        return blockAbove == null
+            || blockAbove.type == BlockType.AIR;
+    }
+
+    public static bool IsWalkable(ChunkData chunk, BlockData block)
+    {
+        return IsSurfaceBlock(chunk, block)
+            && block.type != BlockType.AIR
+            && block.type != BlockType.WATER; // Determines if it can be used for pathfinding.
     }
 }

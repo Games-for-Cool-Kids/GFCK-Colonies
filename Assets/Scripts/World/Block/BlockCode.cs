@@ -51,10 +51,4 @@ public class BlockCode
     {
         return block.worldPosition + Vector3.up / 2;
     }
-
-    public static bool IsWalkable(BlockData block)
-    {
-        return block.type != BlockType.AIR
-            || block.type != BlockType.WATER; // Determines if it can be used for pathfinding.
-    }
 }
