@@ -132,6 +132,11 @@ public class World : MonoBehaviour
         return null;
     }
 
+    public BlockData GetSurfaceBlockUnder(Vector3 worldPos)
+    {
+        return ChunkCode.GetSurfaceBlockUnder(chunks, GetWorldChunkDimensions(), worldPos);
+    }
+
     public void DigBlock(BlockData block)
     {
         ChunkCode.DigBlock(chunks, GetWorldChunkDimensions(), block);

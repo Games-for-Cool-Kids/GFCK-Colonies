@@ -127,6 +127,29 @@ public class ChunkCode
         return chunk.blocks[x, y, z];
     }
 
+    public static BlockData GetSurfaceBlockUnder(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 worldPos)
+    {
+        ChunkData chunk = GetChunkAt(chunks, dimensions, worldPos);
+
+        if (chunk == null)
+            return null;
+
+        Vector3 localBlockPos = worldPos - chunk.origin;
+        int x = Mathf.FloorToInt(localBlockPos.x);
+        int startY = Mathf.FloorToInt(worldPos.y); // Start at given y, in case there is overlap.
+        int z = Mathf.FloorToInt(localBlockPos.z);
+        for (int y = startY; y > 0; y--) // Search from top-down until we hit a surface block.
+        {
+            BlockData block = GetBlock(chunk, x, y, z);
+            if (block != null
+            && block.type != BlockType.AIR)
+                return block;
+        }
+
+        return null;
+
+    }
+
     public static BlockData GetSurfaceBlock(ChunkData chunk, int x, int z)
     {
         if (x < 0 || z < 0
