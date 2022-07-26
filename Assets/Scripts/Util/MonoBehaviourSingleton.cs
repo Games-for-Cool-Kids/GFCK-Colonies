@@ -9,7 +9,6 @@ public class MonoBehaviourSingleton<T> : MonoBehaviour where T : Component
 		if (Instance == null)
 		{
 			Instance = this as T;
-			DontDestroyOnLoad(this);
 		}
 		else
 		{
