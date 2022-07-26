@@ -19,20 +19,31 @@ public class JobManager : MonoBehaviourSingleton<JobManager>
     public void UnregisterJob(Job job)
     {
         availableJobs.Remove(job);
+
         if (takenJobs.Remove(job))
-            job.unit.StopJob();
+            job.unit.ClearJob();
     }
 
-    public Job TakeAvailableJob()
+    public Job AssignToAvailableJob(Unit employee)
     {
         if (availableJobs.Count == 0)
             return null;
 
         Job job = availableJobs[0];
-        availableJobs.RemoveAt(0);
-        takenJobs.Add(job);
+        SetJobTaken(job);
+
+        employee.job = job;
+        job.unit = employee;
+
+        job.Start();
 
         return job;
+    }
+
+    private void SetJobTaken(Job job)
+    {
+        availableJobs.RemoveAt(0);
+        takenJobs.Add(job);
     }
 
     public void GiveJobBackToLaborMarket(Job job)

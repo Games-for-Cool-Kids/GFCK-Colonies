@@ -23,16 +23,10 @@ public class Unit : MonoBehaviour
 
     public void ApplyForJob()
     {
-        job = JobManager.Instance.TakeAvailableJob();
-
-        if (job != null)
-        {
-            job.unit = this;
-            job.Start();
-        }
+        JobManager.Instance.AssignToAvailableJob(this);
     }
 
-    public void StopJob()
+    public void ClearJob()
     {
         job = null;
     }

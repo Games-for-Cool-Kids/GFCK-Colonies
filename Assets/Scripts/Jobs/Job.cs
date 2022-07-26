@@ -26,14 +26,21 @@ public class Job
     private bool _forceStop = false;
     public bool repeat = true;
 
-    public Job(Building building)
+    public Job(Building building, JobType type)
     {
         this.building = building; // All jobs are created by buildings.
+        this.type = type;
     }
 
     public virtual void Start()
     {
-        StartNextTask();
+        foreach(var task in tasks)
+        {
+            task.Finished += StartNextTask;
+        }
+
+        currentTask = tasks[0];
+        currentTask.Start();
     }
     public virtual void Tick()
     {
@@ -48,8 +55,8 @@ public class Job
     public virtual void Finish()
     {
         currentTask = null;
-        unit.StopJob(); 
-        JobManager.Instance.UnregisterJob(this);
+
+        JobManager.Instance.UnregisterJob(this); // Also removes job from unit.
     }
 
     public virtual void ForceStop()
@@ -59,11 +66,7 @@ public class Job
 
     public void StartNextTask()
     {
-        if (currentTask == null)
-            currentTask = tasks[0];
-
         int i = tasks.IndexOf(currentTask);
-
         if (i == tasks.Count - 1)
         {
             if (repeat)
@@ -72,7 +75,9 @@ public class Job
                 Finish();
         }
         else
+        {
             currentTask = tasks[i + 1];
+        }
 
         currentTask.Start();
     }

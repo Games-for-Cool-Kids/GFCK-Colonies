@@ -15,6 +15,7 @@ public class MoveToObjectTask : Task
     public MoveToObjectTask(Job job) : base(job) { }
 
     private GameObject _testCube = null;
+    private LineRenderer _pathVisualization = null;
 
     public override void Start()
     {
@@ -22,10 +23,20 @@ public class MoveToObjectTask : Task
 
         FindPath();
 
-        _testCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        _testCube.name = "TargetBlock";
-        _testCube.layer = Physics.IgnoreRaycastLayer;
-        _testCube.transform.localScale = Vector3.one * 1.1f;
+        if (_testCube == null)
+        {
+            _testCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            _testCube.name = "TargetBlock";
+            _testCube.layer = Physics.IgnoreRaycastLayer;
+            _testCube.transform.localScale = Vector3.one * 1.1f;
+        }
+
+        if(_pathVisualization == null)
+        {
+            var line = new GameObject("Path");
+            _pathVisualization = line.AddComponent<LineRenderer>();
+            _pathVisualization.widthMultiplier = 0.2f;
+        }
     }
 
     public override void Tick()
@@ -33,6 +44,7 @@ public class MoveToObjectTask : Task
         base.Tick();
 
         if (_path == null
+         && targetObject != null
          && !lookingForPath) // Path find runs on separate thread so don't find new path if already looking.
         {
             FindPath();
@@ -40,20 +52,21 @@ public class MoveToObjectTask : Task
         else if (_path != null)
         {
             if (_pathIndex == _path.Count - 1) // We reached end of path
-            {
-                ClearPath(); // Right now we c
-                job.StartNextTask();
-            }
+                Finish();
             else
                 FollowPath();
         }
     }
 
-    private void FindPath()
+    public override void Finish()
     {
-        if (targetObject == null)
-            return;
+        base.Finish();
 
+        ClearPath();
+    }
+
+    protected void FindPath()
+    {
         Vector3 targetPos = GameObjectUtil.GetObjectBottomPosition(targetObject);
         BlockData targetBlock = GameManager.Instance.World.GetSurfaceBlockUnder(targetPos);
 
@@ -74,6 +87,8 @@ public class MoveToObjectTask : Task
 
         _path = path;
         _path.RemoveAt(_path.Count - 1); // Remove last block, since we don't need to move inside the target object.
+
+        VisualizePath();
     }
 
     private void FollowPath()
@@ -84,7 +99,7 @@ public class MoveToObjectTask : Task
 
         BlockData targetBlock = _path[_pathIndex + 1];
 
-        Vector3 targetPos = BlockCode.GetSurfaceWorldPos(targetBlock) + GameObjectUtil.GetPivotToMeshMinOffset(targetObject);
+        Vector3 targetPos = BlockCode.GetSurfaceWorldPos(targetBlock) + GameObjectUtil.GetPivotToMeshMinOffset(job.unit.gameObject);
         Vector3 characterToTarget = targetPos - job.unit.transform.position;
         Vector3 direction = characterToTarget.normalized;
         Vector3 move = direction * job.unit.speed * Time.fixedDeltaTime;
@@ -105,6 +120,17 @@ public class MoveToObjectTask : Task
         {
             _path.Clear();
             _path = null;
+        }
+
+        _pathVisualization.positionCount = 0;
+    }
+
+    private void VisualizePath()
+    {
+        _pathVisualization.positionCount = _path.Count;
+        for (int i = 0; i < _path.Count; i++)
+        {
+            _pathVisualization.SetPosition(i, _path[i].worldPosition + Vector3.up);
         }
     }
 }

@@ -11,6 +11,7 @@ public class GlobalDefines
     static public string playerHandName = "PlayerHand";
     static public string buildHandName = "BuildHand";
     static public string worldName = "World";
+    static public string treeResourceNodeName = "Tree";
 
     // Layers
     static public string ignoreRayCastLayerName = "Ignore Raycast";

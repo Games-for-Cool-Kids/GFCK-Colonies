@@ -7,6 +7,9 @@ public class Task
     protected Job job; // Parent job
     protected bool _forceStop = false;
 
+    public delegate void TaskEvent();
+    public event TaskEvent Finished;
+
     public Task(Job job)
     {
         this.job = job;
@@ -26,7 +29,7 @@ public class Task
     }
     public virtual void Finish()
     {
-        job.StartNextTask();
+        Finished?.Invoke();
     }
 
     public virtual void ForceStop()

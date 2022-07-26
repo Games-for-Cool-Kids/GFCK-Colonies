@@ -6,12 +6,31 @@ public class MoveToClosestTreeTask : MoveToObjectTask
 {
     public MoveToClosestTreeTask(Job job) : base(job) { }
 
-    public override void Tick()
+    public override void Start()
     {
-        if(targetObject == null)
-            targetObject = FindTreeNearestToBuilding();
+        targetObject = FindTreeNearestToBuilding();
 
-        base.Tick();
+        GameManager.Instance.gameObjectCreate += UpdateTargetTreeIfCloser;
+
+        base.Start();
+    }
+
+    public void UpdateTargetTreeIfCloser(GameObject gameObject)
+    {
+        // ToDo: We should look for the closest tree that has a possible path to it.
+        if (gameObject.tag == GlobalDefines.resourceNodeTag
+         && gameObject.name.Contains(GlobalDefines.treeResourceNodeName))
+        {
+            float currentDistance = (job.building.transform.position - targetObject.transform.position).sqrMagnitude;
+            float newTreeDistance = (job.building.transform.position - gameObject.transform.position).sqrMagnitude;
+            if (newTreeDistance < currentDistance)
+            {
+                targetObject = gameObject;
+
+                ClearPath();
+                FindPath();
+            }
+        }
     }
 
     public GameObject FindTreeNearestToBuilding()

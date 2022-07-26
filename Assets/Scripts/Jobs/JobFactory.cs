@@ -25,16 +25,16 @@ public class JobFactory
     private static Job CreateUnemployedJob(Building jobBuilding)
     {
         Debug.Log("Unemployed job not yet implemented");
-        return new Job(jobBuilding);
+        return new Job(jobBuilding, JobType.UNEMPLOYED);
     }
     private static Job CreateCourierJob(Building jobBuilding)
     {
         Debug.Log("Miner job not yet implemented");
-        return new Job(jobBuilding);
+        return new Job(jobBuilding, JobType.COURIER);
     }
     private static Job CreateLumberJackJob(Building jobBuilding)
     {
-        var job = new Job(jobBuilding);
+        var job = new Job(jobBuilding, JobType.LUMBERJACK);
 
         job.tasks.Add(new MoveToClosestTreeTask(job));
         job.tasks.Add(CreateMoveToJobBuildingTask(job));
@@ -44,7 +44,7 @@ public class JobFactory
     private static Job CreateMinerJob(Building jobBuilding)
     {
         Debug.Log("Miner job not yet implemented");
-        return new Job(jobBuilding);
+        return new Job(jobBuilding, JobType.MINER);
     }
 
     private static Task CreateMoveToJobBuildingTask(Job job)
