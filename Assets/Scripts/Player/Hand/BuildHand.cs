@@ -57,7 +57,7 @@ public class BuildHand : MonoBehaviour
 
     public void SelectStructure(GameObject structure)
     {
-        _selectedStructure = Instantiate(structure);
+        _selectedStructure = GameManager.Instance.InstantiateGameObject(structure);
 
         // Store properties we change to restore them later.
         _oldMaterial = _selectedStructure.GetComponent<MeshRenderer>().material;

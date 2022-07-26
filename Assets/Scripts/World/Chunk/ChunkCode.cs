@@ -414,6 +414,8 @@ public class ChunkCode
         chunk.blocks[x, y, z] = newBlock;
 
         ChunkCode.CreateMeshData(chunk); // Update mesh.
+
+        GameManager.Instance.World.InvokeBlockAddEvent(newBlock);
     }
 
     public static void DigBlock(ChunkData chunk, BlockData block)
@@ -426,13 +428,15 @@ public class ChunkCode
         int z = block.z;
 
         chunk.blocks[x, y, z].type = BlockType.AIR; // Set block to empty.
+
+        GameManager.Instance.World.InvokeBlockDigEvent(block);
     }
 
     public static void DigBlock(ChunkData[,] chunks, World.ChunkDimensions dimensions, BlockData block)
     {
         ChunkData chunk = GetChunkAt(chunks, dimensions, block.worldPosition);
-        ChunkCode.DigBlock(chunk, block);
-        ChunkCode.CreateMeshData(chunk); // Update mesh.
+        DigBlock(chunk, block);
+        CreateMeshData(chunk); // Update mesh.
     }
 
     public static ChunkData GetChunkAt(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 worldPos)

@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 
     public World World { get; private set; }
 
+    public delegate void GameObjectEvent(GameObject gameObject);
+    public event GameObjectEvent gameObjectCreate;
 
     private new void Awake()
     {
@@ -36,5 +38,12 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         World = worldObject.GetComponent<World>();
         if (worldObject == null || World == null)
             Debug.LogWarning("World not found.");
+    }
+
+    public GameObject InstantiateGameObject(GameObject obj)
+    {
+        var newObject = GameObject.Instantiate(obj);
+        gameObjectCreate?.Invoke(newObject); // Send out event.
+        return newObject;
     }
 }

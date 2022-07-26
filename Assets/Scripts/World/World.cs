@@ -21,6 +21,10 @@ public class World : MonoBehaviour
 
     private WorldGenerator worldGenerator = null;
 
+    public delegate void BlockEvent(BlockData block);
+    public event BlockEvent blockAdd; // ToDo: update paths that intersect this block. (also diagonal)
+    public event BlockEvent blockDig; // ToDo: update paths that intersect this block. (also diagonal)
+
     private void Start()
     {
         StartCreateWorld();
@@ -173,5 +177,15 @@ public class World : MonoBehaviour
     private World.ChunkDimensions GetWorldChunkDimensions()
     {
         return new World.ChunkDimensions { chunkSize = this.chunkSize, worldChunkWidth = this.worldChunkWidth };
+    }
+
+    public void InvokeBlockAddEvent(BlockData block)
+    {
+        blockAdd?.Invoke(block);
+    }
+
+    public void InvokeBlockDigEvent(BlockData block)
+    {
+        blockDig?.Invoke(block);
     }
 }
