@@ -3,74 +3,43 @@ using System.Collections.Generic;
 
 public class Unit : MonoBehaviour
 {
-    private List<BlockData> _path = null;
-    private int _pathIndex = 0;
-
-    public bool pingPong = false; // Unit will go back and forth along path start/end blocks.
-
     public float speed = 5;
 
+    public Job job = null;
 
     protected void Update()
     {
-        FollowPath();
-    }
-
-    private void FollowPath()
-    {
-        if (_path == null
-         || _path.Count == 0)
-            return;
-
-        BlockData targetBlock = _path[_pathIndex + 1];
-
-        Vector3 targetPos = targetBlock.worldPosition + GameObjectUtil.GetPivotToMeshMinOffset(gameObject) + Vector3.up / 2;
-        Vector3 characterToTarget = targetPos - transform.position;
-        Vector3 direction = characterToTarget.normalized;
-        Vector3 move = direction * speed * Time.fixedDeltaTime;
-
-        transform.position += move;
-
-        float distanceToTarget = characterToTarget.magnitude;
-        if (distanceToTarget < 0.1f) // If distance to center of target block is this small, we're good.
-            _pathIndex++;
-
-        if (_pathIndex == _path.Count - 1) // We reached end of path
-        {
-            _pathIndex = 0;
-
-            if (pingPong)
-                _path.Reverse();
-            else
-                ClearPath();
-        }
-    }
-
-    public void SetPath(List<BlockData> path)
-    {
-        this._path = path;
-    }
-
-    public void ClearPath()
-    {
-        _pathIndex = 0;
-        if(_path != null)
-        {
-            _path.Clear();
-            _path = null;
-        }
+        if (job == null)
+            ApplyForJob();
+        else
+            job.Tick();
     }
 
     public BlockData GetCurrentBlock()
     {
-        Vector3 posUnderBlock = transform.position - GameObjectUtil.GetPivotToMeshMinOffset(gameObject) - Vector3.up / 2; // Offset with half a block.
-        return GameManager.Instance.World.GetBlockAt(posUnderBlock);
+        Vector3 posUnderBlock = GameObjectUtil.GetObjectBottomPosition(gameObject) - Vector3.up / 2; // Offset with half a block.
+        return GameManager.Instance.World.GetSurfaceBlockUnder(posUnderBlock);
     }
 
-    public void MoveTo(BlockData targetBlock)
+    public void ApplyForJob()
     {
-        ClearPath();
+        job = JobManager.Instance.TakeAvailableJob();
 
-        Pathfinding.PathfindMaster.Instance.RequestPathfind(GetCurrentBlock(), targetBlock, SetPath);
+        if (job != null)
+        {
+            job.unit = this;
+            job.Start();
+        }
+    }
+
+    public void StopJob()
+    {
+        job = null;
+    }
+
+    public void FireFromJob()
+    {
+        JobManager.Instance.GiveJobBackToLaborMarket(job);
+        job = null;
     }
 }

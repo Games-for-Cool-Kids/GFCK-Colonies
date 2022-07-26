@@ -44,6 +44,9 @@ public class BuildHand : MonoBehaviour
 
     private void PlaceStructure()
     {
+        if (_selectedStructure.TryGetComponent<Building>(out var building))
+            building.RegisterJobs();
+
         RestoreStructureProperties();
 
         _selectedStructure.isStatic = true;

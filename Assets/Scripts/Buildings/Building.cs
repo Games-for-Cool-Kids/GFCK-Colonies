@@ -8,7 +8,9 @@ public class Building : MonoBehaviour
 
     public event EventHandler<ResourceType> ResourceAdded;
 
-    private void Start()
+    public List<Job> jobs = new List<Job>();
+
+    public virtual void Start()
     {
         foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
         {
@@ -44,5 +46,19 @@ public class Building : MonoBehaviour
     private void ShowResourceDisplay(bool show)
     {
         gameObject.GetComponentInChildren<Canvas>().enabled = show; // First child canvas component can be used to show/hide display.
+    }
+
+    public void RegisterJobs()
+    {
+        foreach(Job job in jobs)
+        {
+            JobManager.Instance.RegisterJob(job);
+        }
+    }
+
+    public void AddJob(JobType type)
+    {
+        var job = JobFactory.CreateJob(type, this);
+        jobs.Add(job);
     }
 }

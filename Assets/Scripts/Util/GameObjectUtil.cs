@@ -11,4 +11,9 @@ public class GameObjectUtil
 
         return Vector3.up * offset;
     }
+
+    public static Vector3 GetObjectBottomPosition(GameObject gameObject)
+    {
+        return gameObject.transform.position - GetPivotToMeshMinOffset(gameObject);
+    }
 }
