@@ -11,6 +11,8 @@ public class JobManager : MonoBehaviourSingleton<JobManager>
     private List<Job> availableJobs = new();
     private List<Job> takenJobs = new();
 
+    public UDictionary<JobType, GameObject> tools;
+
     public void RegisterJob(Job job)
     {
         availableJobs.Add(job);
@@ -30,10 +32,10 @@ public class JobManager : MonoBehaviourSingleton<JobManager>
             return null;
 
         Job job = availableJobs[0];
-        SetJobTaken(job);
-
-        employee.job = job;
         job.unit = employee;
+
+        SetJobTaken(job);
+        employee.AssignJob(job);
 
         job.Start();
 

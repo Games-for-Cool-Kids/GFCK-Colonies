@@ -1,11 +1,18 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class Unit : MonoBehaviour
 {
     public float speed = 5;
 
     public Job job = null;
+
+    private Transform _toolSlot = null;
+
+    private void Start()
+    {
+        _toolSlot = transform.Find("Tool");
+        Debug.Assert(_toolSlot != null);
+    }
 
     protected void Update()
     {
@@ -35,5 +42,14 @@ public class Unit : MonoBehaviour
     {
         JobManager.Instance.GiveJobBackToLaborMarket(job);
         job = null;
+    }
+
+    public void AssignJob(Job newJob)
+    {
+        job = newJob;
+
+        var tool = JobManager.Instance.tools[job.type];
+        if(tool != null)
+            Instantiate(tool, _toolSlot);
     }
 }

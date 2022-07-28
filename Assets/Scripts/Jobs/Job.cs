@@ -8,6 +8,7 @@ public enum JobType
     COURIER,
     LUMBERJACK,
     MINER,
+    SOLDIER,
 }
 
 
