@@ -1,6 +1,9 @@
 using UnityEngine;
+using UnityEngine.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Threading;
+
 
 public class WorldGenerator
 {
@@ -12,6 +15,10 @@ public class WorldGenerator
     private int worldChunkWidth;
 
     private WorldVariable worldVariable;
+
+    private MarchingCubes _marching = new MarchingCubes();
+    private VoxelArray _voxels;
+    private List<GameObject> _meshes = new List<GameObject>();
 
     // Status
     private bool chunksGenerated = false;
@@ -34,6 +41,7 @@ public class WorldGenerator
         this.worldChunkWidth = worldChunkWidth;
         this.worldVariable = worldVariable;
         this.worldGenFinishedCallback = worldGenerationFinishedCallback;
+        this._voxels = new VoxelArray(chunkSize * worldChunkWidth, chunkSize, chunkSize * worldChunkWidth);
 
         CreateChunks();
     }
@@ -48,7 +56,8 @@ public class WorldGenerator
         else
         {
             FillHoles();
-            CreateChunkMeshes();
+            SetFilledVoxels();
+            GenerateVoxelMesh();
             worldGenCompleted = true;
         }
     }
@@ -142,19 +151,61 @@ public class WorldGenerator
         }
     }
 
-    private void CreateChunkMeshes()
+    private void SetFilledVoxels()
     {
         foreach(var chunk in chunks)
         {
             foreach (BlockData filledBlock in ChunkCode.GetFilledBlocks(chunk))
             {
-                ChunkCode.AddBlockToChunkMesh(chunk, filledBlock);
+                int worldX = chunk.x * chunkSize + filledBlock.x;
+                int worldZ = chunk.z * chunkSize + filledBlock.z;
+
+                //ChunkCode.AddBlockToChunkMesh(chunk, filledBlock);
+                _voxels[worldX, filledBlock.y, worldZ] = 1.0f;
             }
         }
+    }
+
+    private void GenerateVoxelMesh()
+    {
+        List<Vector3> verts = new List<Vector3>();
+        List<Vector3> normals = new List<Vector3>();
+        List<int> indices = new List<int>();
+
+        _marching.Generate(_voxels.Voxels, verts, indices);
+
+        var position = new Vector3(-worldChunkWidth / 2, -worldChunkWidth / 2, -chunkSize / 2);
+
+        CreateMesh32(verts, normals, indices, position);
     }
 
     private World.ChunkDimensions GetWorldChunkDimensions()
     {
         return new World.ChunkDimensions { chunkSize = this.chunkSize, worldChunkWidth = this.worldChunkWidth };
+    }
+
+    private void CreateMesh32(List<Vector3> verts, List<Vector3> normals, List<int> indices, Vector3 position)
+    {
+        Mesh mesh = new Mesh();
+        mesh.indexFormat = IndexFormat.UInt32;
+        mesh.SetVertices(verts);
+        mesh.SetTriangles(indices, 0);
+
+        if (normals.Count > 0)
+            mesh.SetNormals(normals);
+        else
+            mesh.RecalculateNormals();
+
+        mesh.RecalculateBounds();
+
+        GameObject go = new GameObject("Mesh");
+        //go.transform.parent = transform;
+        go.AddComponent<MeshFilter>();
+        go.AddComponent<MeshRenderer>();
+        //go.GetComponent<Renderer>().material = material;
+        go.GetComponent<MeshFilter>().mesh = mesh;
+        go.transform.localPosition = position;
+
+        _meshes.Add(go);
     }
 }
