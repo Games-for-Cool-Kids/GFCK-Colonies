@@ -44,7 +44,7 @@ public class WorldGenerator
         this.worldVariable = worldVariable;
         _material = material;
         this.worldGenFinishedCallback = worldGenerationFinishedCallback;
-        _voxels = new VoxelArray(chunkSize * worldChunkWidth, chunkSize, chunkSize * worldChunkWidth);
+        this._voxels = new VoxelArray(chunkSize * worldChunkWidth, worldVariable.height, chunkSize * worldChunkWidth);
 
         CreateChunks();
     }
