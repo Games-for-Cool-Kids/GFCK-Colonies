@@ -4,6 +4,9 @@ public class Unit : MonoBehaviour
 {
     public float speed = 5;
 
+    public int harvestDamage = 10;
+    public float harvestSpeed = 1; // Amount of times per second.
+
     public Job job = null;
 
     private Transform _toolSlot = null;
@@ -24,8 +27,8 @@ public class Unit : MonoBehaviour
 
     public BlockData GetCurrentBlock()
     {
-        Vector3 posUnderBlock = GameObjectUtil.GetObjectBottomPosition(gameObject) - Vector3.up / 2; // Offset with half a block.
-        return GameManager.Instance.World.GetSurfaceBlockUnder(posUnderBlock);
+        Vector3 blockPos = GameObjectUtil.GetObjectBottomPosition(gameObject) - Vector3.up / 2; // Offset with half a block.
+        return GameManager.Instance.World.GetSurfaceBlockUnder(blockPos);
     }
 
     public void ApplyForJob()

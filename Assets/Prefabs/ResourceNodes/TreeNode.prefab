@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7103761289737175743}
   - component: {fileID: -8866339475164564940}
   m_Layer: 0
-  m_Name: Tree
+  m_Name: TreeNode
   m_TagString: ResourceNode
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -112,6 +112,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 448e0c966373b9145961b7274ca51c8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ResourceToDrop: {fileID: 6456415736538556246, guid: 5c3301c55670bf545acfc1a43989f670, type: 3}
-  ResourceRefreshTime: 0.5
-  SpawnOffset: 3
+  resourceToDrop: {fileID: 6456415736538556246, guid: 5c3301c55670bf545acfc1a43989f670, type: 3}
+  type: 0
+  spawnOffset: 3
+  harvestHealth: 30
+  harvestDamage: 0

@@ -7,16 +7,17 @@ public class GlobalDefines
     static public string mainCameraTag = "MainCamera";
     static public string buildingTag = "Building";
 
-    // Object Names
-    static public string playerHandName = "PlayerHand";
-    static public string buildHandName = "BuildHand";
-    static public string worldName = "World";
-    static public string treeResourceNodeName = "Tree";
-
     // Layers
     static public string ignoreRayCastLayerName = "Ignore Raycast";
     static public string worldLayerName = "World";
     static public string characterLayerName = "Character";
     static public string previewLayerName = "Preview";
 
+    // Object Names
+    static public string playerHandName = "PlayerHand";
+    static public string buildHandName = "BuildHand";
+    static public string worldName = "World";
+    // Resource nodes
+    static public string treeResourceNodeName = "TreeNode";
+    static public string stoneResourceNodeName = "StoneNode";
 }

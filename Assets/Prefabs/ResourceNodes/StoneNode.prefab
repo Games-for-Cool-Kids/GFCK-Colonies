@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1665385087809270, guid: 750b7a6fa26e20c49b059fef9d453c45, type: 3}
       propertyPath: m_Name
-      value: Rock_4
+      value: StoneNode
       objectReference: {fileID: 0}
     - target: {fileID: 1665385087809270, guid: 750b7a6fa26e20c49b059fef9d453c45, type: 3}
       propertyPath: m_TagString
@@ -91,6 +91,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 448e0c966373b9145961b7274ca51c8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ResourceToDrop: {fileID: 1605189778940477206, guid: ddf23c90eb0fddf46bbca5f254f3b17f, type: 3}
-  ResourceRefreshTime: 0.5
-  SpawnOffset: 3
+  resourceToDrop: {fileID: 1605189778940477206, guid: ddf23c90eb0fddf46bbca5f254f3b17f, type: 3}
+  type: 1
+  spawnOffset: 3
+  harvestHealth: 50
+  harvestDamage: 0

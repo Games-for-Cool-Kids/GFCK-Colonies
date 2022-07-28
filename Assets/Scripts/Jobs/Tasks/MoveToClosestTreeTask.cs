@@ -41,7 +41,7 @@ public class MoveToClosestTreeTask : MoveToObjectTask
         var resourceNodes = GameObject.FindGameObjectsWithTag(GlobalDefines.resourceNodeTag);
         foreach(var node in resourceNodes)
         {
-            if(node.name.Contains("Tree"))
+            if(node.name.Contains(GlobalDefines.treeResourceNodeName))
             {
                 if (closestTree == null)
                     closestTree = node;

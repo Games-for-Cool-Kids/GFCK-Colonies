@@ -37,6 +37,7 @@ public class JobFactory
         var job = new Job(jobBuilding, JobType.LUMBERJACK);
 
         job.tasks.Add(new MoveToClosestTreeTask(job));
+        job.tasks.Add(new HarvestResourceTask(job, ResourceType.RESOURCE_WOOD));
         job.tasks.Add(CreateMoveToJobBuildingTask(job));
 
         return job;
