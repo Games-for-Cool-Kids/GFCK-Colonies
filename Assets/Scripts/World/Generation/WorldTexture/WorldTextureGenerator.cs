@@ -158,11 +158,8 @@ public class WorldTextureGenerator : MonoBehaviour
 
     private float GetBlockHeightClosestTo(float height)
     {
-        float singleBlockHeight = 1.0f / worldVariable.height;
-        float blockHeight = 0;
-        for (int i = 0; blockHeight < height - singleBlockHeight; i++)
-            blockHeight += singleBlockHeight;
-
-        return blockHeight;
+        float h = height * worldVariable.height;
+        h = Mathf.Floor(h);
+        return h / worldVariable.height;
     }
 }
