@@ -18,7 +18,9 @@ public class WorldGenerator
 
     private WorldVariable worldVariable;
 
-    private MarchingCubes _marching = new MarchingCubes();
+    private Marching _marching = new MarchingTertrahedron();
+    //private Marching _marching = new MarchingCubes();
+
     private VoxelArray _voxels;
 
     // Status
@@ -44,7 +46,7 @@ public class WorldGenerator
         this.worldVariable = worldVariable;
         _material = material;
         this.worldGenFinishedCallback = worldGenerationFinishedCallback;
-        this._voxels = new VoxelArray(chunkSize * worldChunkWidth, worldVariable.height, chunkSize * worldChunkWidth);
+        this._voxels = new VoxelArray(chunkSize * worldChunkWidth, worldVariable.height + 1, chunkSize * worldChunkWidth);
 
         CreateChunks();
     }
@@ -164,7 +166,7 @@ public class WorldGenerator
                 int worldZ = chunk.z * chunkSize + filledBlock.z;
 
                 //ChunkCode.AddBlockToChunkMesh(chunk, filledBlock);
-                _voxels[worldX, filledBlock.y, worldZ] = 1.0f;
+                _voxels[worldX, filledBlock.y, worldZ] = 0.01f;
             }
         }
     }
@@ -176,7 +178,7 @@ public class WorldGenerator
         List<int> indices = new List<int>();
         List<Vector2> uvs = new List<Vector2>();
 
-        _marching.Generate(_voxels.Voxels, verts, indices, uvs);
+        _marching.Generate(_voxels.Voxels, verts, indices);
 
         var position = new Vector3(-worldChunkWidth / 2, -worldChunkWidth / 2, -chunkSize / 2);
 
