@@ -8,15 +8,6 @@ public enum BlockAdjacency
     EAST,
     ABOVE,
     BELOW,
-    // Sloped
-    NORTH_BELOW,
-    SOUTH_BELOW,
-    WEST_BELOW,
-    EAST_BELOW,
-    NORTH_ABOVE,
-    SOUTH_ABOVE,
-    WEST_ABOVE,
-    EAST_ABOVE
 }
 
 public class BlockCode

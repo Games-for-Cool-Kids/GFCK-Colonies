@@ -25,7 +25,7 @@ public class MarchingCubes
 		WindingOrder = new int[] { 0, 1, 2 };
 	}
 
-	public void Generate(float[,,] voxels, IList<Vector3> verts, IList<int> indices)
+	public void Generate(float[,,] voxels, IList<Vector3> verts, IList<int> indices, List<Vector2> uvs)
 	{
 		int width = voxels.GetLength(0);
 		int height = voxels.GetLength(1);
@@ -56,36 +56,6 @@ public class MarchingCubes
 				}
 			}
 		}
-	}
-
-	public void Generate(IList<float> voxels, int width, int height, int depth, IList<Vector3> verts, IList<int> indices)
-	{
-		UpdateWindingOrder();
-
-		int x, y, z, i;
-		int ix, iy, iz;
-		for (x = 0; x < width - 1; x++)
-		{
-			for (y = 0; y < height - 1; y++)
-			{
-				for (z = 0; z < depth - 1; z++)
-				{
-					//Get the values in the 8 neighbours which make up a cube
-					for (i = 0; i < 8; i++)
-					{
-						ix = x + VertexOffset[i, 0];
-						iy = y + VertexOffset[i, 1];
-						iz = z + VertexOffset[i, 2];
-
-						Cube[i] = voxels[ix + iy * width + iz * width * height];
-					}
-
-					//Perform algorithm
-					March(x, y, z, Cube, verts, indices);
-				}
-			}
-		}
-
 	}
 
 	/// <summary>

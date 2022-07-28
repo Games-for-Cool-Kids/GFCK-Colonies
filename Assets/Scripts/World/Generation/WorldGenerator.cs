@@ -14,11 +14,12 @@ public class WorldGenerator
     private int chunkSize;
     private int worldChunkWidth;
 
+    private Material _material;
+
     private WorldVariable worldVariable;
 
     private MarchingCubes _marching = new MarchingCubes();
     private VoxelArray _voxels;
-    private List<GameObject> _meshes = new List<GameObject>();
 
     // Status
     private bool chunksGenerated = false;
@@ -34,14 +35,16 @@ public class WorldGenerator
 
     public WorldGenerator(int chunkSize,
                           int worldChunkWidth,
+                          Material material,
                           WorldVariable worldVariable,
                           WorldGenerationFinishedCallBack worldGenerationFinishedCallback)
     {
         this.chunkSize = chunkSize;
         this.worldChunkWidth = worldChunkWidth;
         this.worldVariable = worldVariable;
+        _material = material;
         this.worldGenFinishedCallback = worldGenerationFinishedCallback;
-        this._voxels = new VoxelArray(chunkSize * worldChunkWidth, chunkSize, chunkSize * worldChunkWidth);
+        _voxels = new VoxelArray(chunkSize * worldChunkWidth, chunkSize, chunkSize * worldChunkWidth);
 
         CreateChunks();
     }
@@ -171,12 +174,13 @@ public class WorldGenerator
         List<Vector3> verts = new List<Vector3>();
         List<Vector3> normals = new List<Vector3>();
         List<int> indices = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
 
-        _marching.Generate(_voxels.Voxels, verts, indices);
+        _marching.Generate(_voxels.Voxels, verts, indices, uvs);
 
         var position = new Vector3(-worldChunkWidth / 2, -worldChunkWidth / 2, -chunkSize / 2);
 
-        CreateMesh32(verts, normals, indices, position);
+        CreateMesh32(verts, normals, indices, uvs, position);
     }
 
     private World.ChunkDimensions GetWorldChunkDimensions()
@@ -184,12 +188,13 @@ public class WorldGenerator
         return new World.ChunkDimensions { chunkSize = this.chunkSize, worldChunkWidth = this.worldChunkWidth };
     }
 
-    private void CreateMesh32(List<Vector3> verts, List<Vector3> normals, List<int> indices, Vector3 position)
+    private void CreateMesh32(List<Vector3> verts, List<Vector3> normals, List<int> indices, List<Vector2> uvs,  Vector3 position)
     {
         Mesh mesh = new Mesh();
         mesh.indexFormat = IndexFormat.UInt32;
         mesh.SetVertices(verts);
         mesh.SetTriangles(indices, 0);
+        mesh.SetUVs(0, uvs);
 
         if (normals.Count > 0)
             mesh.SetNormals(normals);
@@ -198,14 +203,9 @@ public class WorldGenerator
 
         mesh.RecalculateBounds();
 
-        GameObject go = new GameObject("Mesh");
-        //go.transform.parent = transform;
-        go.AddComponent<MeshFilter>();
-        go.AddComponent<MeshRenderer>();
-        //go.GetComponent<Renderer>().material = material;
-        go.GetComponent<MeshFilter>().mesh = mesh;
+        GameObject go = new GameObject("TerrainMesh");
+        go.AddComponent<MeshFilter>().mesh = mesh;
+        go.AddComponent<MeshRenderer>().material = _material;
         go.transform.localPosition = position;
-
-        _meshes.Add(go);
     }
 }

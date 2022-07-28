@@ -42,7 +42,7 @@ public class World : MonoBehaviour
 
         worldChunkWidth = Mathf.FloorToInt(worldVariable.size / chunkSize);
 
-        worldGenerator = new(chunkSize, worldChunkWidth, worldVariable, TakeGeneratedWorld); // Creates world using multithreading. We need to wait for it to finish to use the world.
+        worldGenerator = new(chunkSize, worldChunkWidth, material, worldVariable, TakeGeneratedWorld); // Creates world using multithreading. We need to wait for it to finish to use the world.
     }
 
     public void RunWorldGeneration()
