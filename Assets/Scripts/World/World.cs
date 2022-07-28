@@ -100,7 +100,7 @@ public class World : MonoBehaviour
         return GetBlockAt(hit.point - hit.normal / 2);
     }
 
-    // Expects a position inside of the block.
+    /// <summary>Expects a position inside of the block.</summary>
     public BlockData GetBlockAt(Vector3 worldPos)
     {
         var chunk = ChunkCode.GetChunkAt(chunks, GetWorldChunkDimensions(), worldPos);
