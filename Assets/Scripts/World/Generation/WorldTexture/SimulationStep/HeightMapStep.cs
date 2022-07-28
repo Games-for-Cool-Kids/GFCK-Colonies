@@ -12,7 +12,12 @@ public class HeightMapStep : ScriptableObject
 	public void ApplyTo(WorldVariable worldVariable)
     {
 		GenerateHeightMap(worldVariable, worldVariable.size, grain, seed);
-    }
+
+		if(seed >= 0)
+        {
+			Random.InitState(seed);
+		}	
+	}
 
 	float OffsetValue(float current, float total, float grain)
 	{

@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grain: 20
   midPoint: 0.5
-  seed: 0
+  seed: -1
   invertHeight: 0
