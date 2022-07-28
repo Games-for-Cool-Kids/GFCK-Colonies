@@ -14,7 +14,6 @@ public class MoveToObjectTask : Task
 
     public MoveToObjectTask(Job job) : base(job) { }
 
-    private GameObject _testCube = null;
     private LineRenderer _pathVisualization = null;
 
     public override void Start()
@@ -22,14 +21,6 @@ public class MoveToObjectTask : Task
         base.Start();
 
         FindPath();
-
-        if (_testCube == null)
-        {
-            _testCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            _testCube.name = "TargetBlock";
-            _testCube.layer = Physics.IgnoreRaycastLayer;
-            _testCube.transform.localScale = Vector3.one * 1.1f;
-        }
 
         if(_pathVisualization == null)
         {
@@ -103,8 +94,6 @@ public class MoveToObjectTask : Task
         Vector3 characterToTarget = targetPos - job.unit.transform.position;
         Vector3 direction = characterToTarget.normalized;
         Vector3 move = direction * job.unit.speed * Time.fixedDeltaTime;
-
-        _testCube.transform.position = targetBlock.worldPosition;
 
         job.unit.transform.position += move;
         direction.y = 0; // For rotation.
