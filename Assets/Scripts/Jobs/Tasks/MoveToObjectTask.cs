@@ -107,6 +107,8 @@ public class MoveToObjectTask : Task
         _testCube.transform.position = targetBlock.worldPosition;
 
         job.unit.transform.position += move;
+        direction.y = 0; // For rotation.
+        job.unit.transform.rotation = Quaternion.LookRotation(direction);
 
         float distanceToTarget = characterToTarget.magnitude;
         if (distanceToTarget < 0.1f) // If distance to center of target block is this small, we're good.
