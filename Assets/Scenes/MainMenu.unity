@@ -428,7 +428,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 30}
-  m_SizeDelta: {x: 512, y: 512}
+  m_SizeDelta: {x: 400, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &528605961
 MonoBehaviour:
@@ -856,7 +856,7 @@ MonoBehaviour:
   sand: {r: 0.909804, g: 0.75294125, b: 0.4901961, a: 1}
   snow: {r: 0.7983268, g: 0.8679245, b: 0.8665753, a: 1}
   textureSize: 256
-  maxHeight: 10
+  maxHeight: 16
   heightMapStep: {fileID: 11400000, guid: cfa8fafd15815dc468987d56abfe2fca, type: 2}
   heightToBlockStep: {fileID: 11400000, guid: 1450b651feb4255498a7f8ae3f96fdff, type: 2}
   beachStep: {fileID: 11400000, guid: cd4462f9e0e8c4749b2b483d8dcfab88, type: 2}

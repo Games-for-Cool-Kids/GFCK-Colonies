@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-    public float speed = 5;
+    public float moveSpeed = 5;
 
     public int harvestDamage = 10;
     public float harvestSpeed = 1; // Amount of times per second.

@@ -93,7 +93,7 @@ public class MoveToObjectTask : Task
         Vector3 targetPos = BlockCode.GetSurfaceWorldPos(targetBlock) + GameObjectUtil.GetPivotToMeshMinOffset(job.unit.gameObject);
         Vector3 characterToTarget = targetPos - job.unit.transform.position;
         Vector3 direction = characterToTarget.normalized;
-        Vector3 move = direction * job.unit.speed * Time.fixedDeltaTime;
+        Vector3 move = direction * job.unit.moveSpeed * Time.fixedDeltaTime;
 
         job.unit.transform.position += move;
         direction.y = 0; // For rotation.

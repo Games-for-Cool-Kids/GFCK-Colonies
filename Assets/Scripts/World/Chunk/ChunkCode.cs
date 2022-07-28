@@ -138,6 +138,7 @@ public class ChunkCode
         int x = Mathf.FloorToInt(localBlockPos.x);
         int startY = Mathf.FloorToInt(worldPos.y); // Start at given y, in case there is overlap.
         int z = Mathf.FloorToInt(localBlockPos.z);
+
         for (int y = startY; y > 0; y--) // Search from top-down until we hit a surface block.
         {
             BlockData block = GetBlock(chunk, x, y, z);
