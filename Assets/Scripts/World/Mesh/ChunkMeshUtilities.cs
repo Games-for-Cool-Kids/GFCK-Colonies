@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -32,6 +33,38 @@ public static class ChunkMeshUtilities
                     break;
             }
         }
+    }
+
+    public static void CreateSlopeBlock(ChunkMeshData meshData, Vector3 origin, BlockAdjacency direction, BlockType type)
+    {
+        var verts = CreateSlopeNorth();
+        Quaternion rotation;
+
+        switch (direction)
+        {
+            case BlockAdjacency.SOUTH:
+                rotation = Quaternion.Euler(0, 180.0f, 0);
+                break;
+            case BlockAdjacency.WEST:
+                rotation = Quaternion.Euler(0, -90.0f, 0);
+                break;
+            case BlockAdjacency.EAST:
+                rotation = Quaternion.Euler(0, 90.0f, 0);
+                break;
+            case BlockAdjacency.NORTH:
+            case BlockAdjacency.ABOVE:
+            case BlockAdjacency.BELOW:
+            default:
+                rotation = new();
+                break;
+        }
+
+        verts[0] = rotation * verts[0] + origin;
+        verts[1] = rotation * verts[1] + origin;
+        verts[2] = rotation * verts[2] + origin;
+        verts[3] = rotation * verts[3] + origin;
+
+        CreateFace(verts, meshData, CreateBlockFace(type, BlockFace.DIRECTION.TOP));
     }
 
     public static void CreateFace(Vector3[] faceVertices, ChunkMeshData data, BlockFace face)
@@ -106,6 +139,17 @@ public static class ChunkMeshUtilities
         verts[3] = origin + new Vector3(-0.5f, -0.5f, -0.5f);
 
         CreateFace(verts, data, CreateBlockFace(type));
+    }
+
+    public static Vector3[] CreateSlopeNorth()
+    {
+        Vector3[] verts = new Vector3[4];
+        verts[0] = new Vector3(-0.5f, -0.5f, 0.5f);
+        verts[1] = new Vector3(0.5f, -0.5f, 0.5f);
+        verts[2] = new Vector3(0.5f, 0.5f, -0.5f);
+        verts[3] = new Vector3(-0.5f, 0.5f, -0.5f);
+
+        return verts;
     }
 
     public static void AddFaceTriangles(ChunkMeshData data, Vector3[] vertices)

@@ -53,20 +53,30 @@ public class ChunkCode
 
     public static void CreateBlockMesh(ChunkData[,] chunks, World.ChunkDimensions dimensions, ChunkData chunk, BlockData block)
     {
-        List<BlockAdjacency> visibleSides = BlockCode.GetCardinalDirections();
-        visibleSides.Add(BlockAdjacency.ABOVE);
-
         List<BlockAdjacency> sidesToCreate = new();
-        foreach(var direction in visibleSides)
+
+        foreach(var direction in BlockCode.GetCardinalDirections())
         {
-            if (!HasNeighbor(chunks, dimensions, block, direction))
+            if (!HasNeighbor(chunks, dimensions, block.worldPosition, direction))
                 sidesToCreate.Add(direction);
         }
+
+        if(sidesToCreate.Count == 1)
+        {
+            if (HasNeighbor(chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[0]))
+            {
+                ChunkMeshUtilities.CreateSlopeBlock(chunk.meshData, BlockCode.GetLocalPosition(block), sidesToCreate[0], block.type);
+                return;
+            }
+        }
+
+        if (!HasNeighbor(chunks, dimensions, block.worldPosition, BlockAdjacency.ABOVE))
+            sidesToCreate.Add(BlockAdjacency.ABOVE);
 
         ChunkMeshUtilities.CreateBlock(chunk.meshData, BlockCode.GetLocalPosition(block), sidesToCreate, block.type);
     }
 
-    public static bool HasNeighbor(ChunkData[,] chunks, World.ChunkDimensions dimensions, BlockData block, BlockAdjacency direction)
+    public static bool HasNeighbor(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 blockPos, BlockAdjacency direction)
     {
         Vector3 offset = Vector3.zero;
         switch (direction)
@@ -91,7 +101,7 @@ public class ChunkCode
                 break;
         }
 
-        var neighbor = GetBlockAt(chunks, dimensions, block.worldPosition + offset);
+        var neighbor = GetBlockAt(chunks, dimensions, blockPos + offset);
         return IsSolidBlock(neighbor);
     }
 
