@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public enum BlockAdjacency
 {
@@ -12,6 +13,17 @@ public enum BlockAdjacency
 
 public class BlockCode
 {
+    public static List<BlockAdjacency> GetCardinalDirections()
+    {
+        List<BlockAdjacency> directions = new();
+        directions.Add(BlockAdjacency.NORTH);
+        directions.Add(BlockAdjacency.SOUTH);
+        directions.Add(BlockAdjacency.EAST);
+        directions.Add(BlockAdjacency.WEST);
+
+        return directions;
+    }
+
     public static BlockData CreateBlockData(Vector3 localPosition, BlockType type, Vector3 worldPosition)
     {
         int x = Mathf.FloorToInt(localPosition.x);

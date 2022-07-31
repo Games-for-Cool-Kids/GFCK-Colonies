@@ -1,9 +1,38 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+
 public static class ChunkMeshUtilities
 {
     private static float _faceTexScale = 0.25f; // Texture is subdivided in 4x4 faces
+
+    public static void CreateBlock(ChunkMeshData data, Vector3 origin, List<BlockAdjacency> sides, BlockType type)
+    {
+        foreach(BlockAdjacency side in sides)
+        {
+            switch (side)
+            {
+                case BlockAdjacency.NORTH:
+                    CreateFaceForward(data, origin, type);
+                    break;
+                case BlockAdjacency.SOUTH:
+                    CreateFaceBackward(data, origin, type);
+                    break;
+                case BlockAdjacency.WEST:
+                    CreateFaceLeft(data, origin, type);
+                    break;
+                case BlockAdjacency.EAST:
+                    CreateFaceRight(data, origin, type);
+                    break;
+                case BlockAdjacency.ABOVE:
+                    CreateFaceUp(data, origin, type);
+                    break;
+                case BlockAdjacency.BELOW:
+                default:
+                    break;
+            }
+        }
+    }
 
     public static void CreateFace(Vector3[] faceVertices, ChunkMeshData data, BlockFace face)
     {
