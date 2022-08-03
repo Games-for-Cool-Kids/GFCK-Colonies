@@ -54,18 +54,34 @@ public class ChunkCode
     public static void CreateBlockMesh(ChunkData[,] chunks, World.ChunkDimensions dimensions, ChunkData chunk, BlockData block)
     {
         List<BlockAdjacency> sidesToCreate = new();
-
-        foreach(var direction in BlockCode.GetCardinalDirections())
+        foreach (var direction in BlockCode.cardinalDirections)
         {
             if (!HasNeighbor(chunks, dimensions, block.worldPosition, direction))
                 sidesToCreate.Add(direction);
         }
 
-        if(sidesToCreate.Count == 1)
+        if (HasNeighbor(chunks, dimensions, block.worldPosition, BlockAdjacency.ABOVE))
+        {
+            ChunkMeshUtilities.CreateBlock(chunk.meshData, BlockCode.GetLocalPosition(block), sidesToCreate, block.type);
+            return;
+        }
+
+        if (sidesToCreate.Count == 1)
         {
             if (HasNeighbor(chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[0]))
             {
                 ChunkMeshUtilities.CreateSlopeBlock(chunk.meshData, BlockCode.GetLocalPosition(block), sidesToCreate[0], block.type);
+                return;
+            }
+        }
+        else if (sidesToCreate.Count == 2)
+        {
+            BlockAdjacency ordinal = BlockCode.GetOrdinalDirection(sidesToCreate[0], sidesToCreate[1]);
+            if (BlockCode.ordinalDirections.Contains(ordinal)
+             && HasNeighbor(chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[0])
+             && HasNeighbor(chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[1]))
+            {
+                ChunkMeshUtilities.CreateCornerSlopeBlock(chunk.meshData, BlockCode.GetLocalPosition(block), BlockCode.GetOrdinalDirection(sidesToCreate[0], sidesToCreate[1]), block.type);
                 return;
             }
         }
