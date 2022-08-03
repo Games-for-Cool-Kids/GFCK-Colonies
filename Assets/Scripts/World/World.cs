@@ -97,7 +97,7 @@ public class World : MonoBehaviour
     public BlockData GetBlockFromRayHit(RaycastHit hit)
     {
         // Rays intersect with surface. Because the surface is touching, but not inside the box, we need to use the normal to check the position inside the block.
-        return GetBlockAt(hit.point - hit.normal / 2);
+        return GetBlockAt(hit.point - hit.normal * 0.1f);
     }
 
     /// <summary>Expects a position inside of the block.</summary>
