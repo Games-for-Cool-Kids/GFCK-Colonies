@@ -60,31 +60,31 @@ public class ChunkCode
                 sidesToCreate.Add(direction);
         }
 
-        if (HasNeighbor(chunks, dimensions, block.worldPosition, BlockAdjacency.ABOVE))
-        {
-            ChunkMeshUtilities.CreateBlock(chunk.meshData, BlockCode.GetLocalPosition(block), sidesToCreate, block.type);
-            return;
-        }
-
-        if (sidesToCreate.Count == 1)
-        {
-            if (HasNeighbor(chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[0]))
-            {
-                ChunkMeshUtilities.CreateSlopeBlock(chunk.meshData, BlockCode.GetLocalPosition(block), sidesToCreate[0], block.type);
-                return;
-            }
-        }
-        else if (sidesToCreate.Count == 2)
-        {
-            BlockAdjacency ordinal = BlockCode.GetOrdinalDirection(sidesToCreate[0], sidesToCreate[1]);
-            if (BlockCode.ordinalDirections.Contains(ordinal)
-             && HasNeighbor(chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[0])
-             && HasNeighbor(chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[1]))
-            {
-                ChunkMeshUtilities.CreateCornerSlopeBlock(chunk.meshData, BlockCode.GetLocalPosition(block), BlockCode.GetOrdinalDirection(sidesToCreate[0], sidesToCreate[1]), block.type);
-                return;
-            }
-        }
+        //if (HasNeighbor(_chunks, dimensions, block.worldPosition, BlockAdjacency.ABOVE))
+        //{
+        //    ChunkMeshUtilities.CreateBlock(chunk.meshData, BlockCode.GetLocalPosition(block), sidesToCreate, block.type);
+        //    return;
+        //}
+        //
+        //if (sidesToCreate.Count == 1)
+        //{
+        //    if (HasNeighbor(_chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[0]))
+        //    {
+        //        ChunkMeshUtilities.CreateSlopeBlock(chunk.meshData, BlockCode.GetLocalPosition(block), sidesToCreate[0], block.type);
+        //        return;
+        //    }
+        //}
+        //else if (sidesToCreate.Count == 2)
+        //{
+        //    BlockAdjacency ordinal = BlockCode.GetOrdinalDirection(sidesToCreate[0], sidesToCreate[1]);
+        //    if (BlockCode.ordinalDirections.Contains(ordinal)
+        //     && HasNeighbor(_chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[0])
+        //     && HasNeighbor(_chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[1]))
+        //    {
+        //        ChunkMeshUtilities.CreateCornerSlopeBlock(chunk.meshData, BlockCode.GetLocalPosition(block), BlockCode.GetOrdinalDirection(sidesToCreate[0], sidesToCreate[1]), block.type);
+        //        return;
+        //    }
+        //}
 
         if (!HasNeighbor(chunks, dimensions, block.worldPosition, BlockAdjacency.ABOVE))
             sidesToCreate.Add(BlockAdjacency.ABOVE);
