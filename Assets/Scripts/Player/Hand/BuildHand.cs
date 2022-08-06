@@ -37,9 +37,9 @@ public class BuildHand : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E)
          || Mouse.current.middleButton.wasPressedThisFrame)
-            _selectedStructure.transform.Rotate(Vector3.up, 90);
+            _selectedStructure.transform.Rotate(Vector3.up, 90, Space.World);
         if (Input.GetKeyDown(KeyCode.Q))
-            _selectedStructure.transform.Rotate(Vector3.up, -90);
+            _selectedStructure.transform.Rotate(Vector3.up, -90, Space.World);
     }
 
     private void PlaceStructure()
