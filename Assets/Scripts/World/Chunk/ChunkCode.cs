@@ -20,25 +20,14 @@ public class ChunkCode
         return chunk;
     }
 
-    public static BlockData GetBlockAt(ChunkData chunk, Vector3 worldPos)
-    {
-        worldPos -= chunk.origin; // Make relative to chunk.
-
-        int blockX = Mathf.RoundToInt(worldPos.x);
-        int blockY = Mathf.RoundToInt(worldPos.y);
-        int blockZ = Mathf.RoundToInt(worldPos.z);
-
-        return GetBlock(chunk, blockX, blockY, blockZ);
-    }
-
-    public static void CreateMeshData(ChunkData chunk)
+    public static void CreateMeshData(ChunkData[,] chunks, World.ChunkDimensions dimensions, ChunkData chunk)
     {
         chunk.meshData = new ChunkMeshData();
         chunk.meshChanged = true;
 
         foreach (BlockData filledBlock in GetFilledBlocks(chunk))
         {
-            AddBlockToChunkMesh(chunk, filledBlock);
+            CreateBlockMesh(chunks, dimensions, chunk, filledBlock);
         }
     }
 
@@ -57,50 +46,79 @@ public class ChunkCode
         return chunkMesh;
     }
 
-    public static void AddBlockToChunkMesh(ChunkData chunk, BlockData block)
-    {
-        AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.ABOVE);
-        AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.NORTH);
-        AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.SOUTH);
-        AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.EAST);
-        AddBlockFaceToMeshIfVisible(chunk, block, BlockAdjacency.WEST);
-    }
-
     public static bool IsSolidBlock(BlockData block)
     {
         return block != null && block.type != BlockType.AIR;
     }
 
-    private static void AddBlockFaceToMeshIfVisible(ChunkData chunk, BlockData block, BlockAdjacency adjacency)
+    public static void CreateBlockMesh(ChunkData[,] chunks, World.ChunkDimensions dimensions, ChunkData chunk, BlockData block)
     {
-        BlockData neighbor = GetAdjacentBlock(chunk, block, adjacency);
-        if (neighbor == null
-        || neighbor.type == BlockType.AIR)
+        List<BlockAdjacency> sidesToCreate = new();
+        foreach (var direction in BlockCode.cardinalDirections)
         {
-            Vector3 localPos = BlockCode.GetLocalPosition(block);
-
-            switch (adjacency)
-            {
-                case BlockAdjacency.NORTH:
-                    ChunkMeshUtilities.CreateFaceForward(chunk.meshData, localPos, block.type);
-                    break;
-                case BlockAdjacency.SOUTH:
-                    ChunkMeshUtilities.CreateFaceBackward(chunk.meshData, localPos, block.type);
-                    break;
-                case BlockAdjacency.EAST:
-                    ChunkMeshUtilities.CreateFaceRight(chunk.meshData, localPos, block.type);
-                    break;
-                case BlockAdjacency.WEST:
-                    ChunkMeshUtilities.CreateFaceLeft(chunk.meshData, localPos, block.type);
-                    break;
-                case BlockAdjacency.ABOVE:
-                    ChunkMeshUtilities.CreateFaceUp(chunk.meshData, localPos, block.type);
-                    break;
-                case BlockAdjacency.BELOW:  // Maybe we can even skip the backside of blocks too.
-                default:                    // We don't create a bottom face. Since the camera can never see the bottom of blocks.
-                    break;
-            }
+            if (!HasNeighbor(chunks, dimensions, block.worldPosition, direction))
+                sidesToCreate.Add(direction);
         }
+
+        //if (HasNeighbor(_chunks, dimensions, block.worldPosition, BlockAdjacency.ABOVE))
+        //{
+        //    ChunkMeshUtilities.CreateBlock(chunk.meshData, BlockCode.GetLocalPosition(block), sidesToCreate, block.type);
+        //    return;
+        //}
+        //
+        //if (sidesToCreate.Count == 1)
+        //{
+        //    if (HasNeighbor(_chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[0]))
+        //    {
+        //        ChunkMeshUtilities.CreateSlopeBlock(chunk.meshData, BlockCode.GetLocalPosition(block), sidesToCreate[0], block.type);
+        //        return;
+        //    }
+        //}
+        //else if (sidesToCreate.Count == 2)
+        //{
+        //    BlockAdjacency ordinal = BlockCode.GetOrdinalDirection(sidesToCreate[0], sidesToCreate[1]);
+        //    if (BlockCode.ordinalDirections.Contains(ordinal)
+        //     && HasNeighbor(_chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[0])
+        //     && HasNeighbor(_chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[1]))
+        //    {
+        //        ChunkMeshUtilities.CreateCornerSlopeBlock(chunk.meshData, BlockCode.GetLocalPosition(block), BlockCode.GetOrdinalDirection(sidesToCreate[0], sidesToCreate[1]), block.type);
+        //        return;
+        //    }
+        //}
+
+        if (!HasNeighbor(chunks, dimensions, block.worldPosition, BlockAdjacency.ABOVE))
+            sidesToCreate.Add(BlockAdjacency.ABOVE);
+
+        ChunkMeshUtilities.CreateBlock(chunk.meshData, BlockCode.GetLocalPosition(block), sidesToCreate, block.type);
+    }
+
+    public static bool HasNeighbor(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 blockPos, BlockAdjacency direction)
+    {
+        Vector3 offset = Vector3.zero;
+        switch (direction)
+        {
+            case BlockAdjacency.NORTH:
+                offset = Vector3.forward;
+                break;
+            case BlockAdjacency.SOUTH:
+                offset = Vector3.back;
+                break;
+            case BlockAdjacency.WEST:
+                offset = Vector3.left;
+                break;
+            case BlockAdjacency.EAST:
+                offset = Vector3.right;
+                break;
+            case BlockAdjacency.ABOVE:
+                offset = Vector3.up;
+                break;
+            case BlockAdjacency.BELOW:
+                offset = Vector3.down;
+                break;
+        }
+
+        var neighbor = GetBlockAt(chunks, dimensions, blockPos + offset);
+        return IsSolidBlock(neighbor);
     }
 
     public static void SetBlock(ChunkData chunk, BlockData block)
@@ -115,6 +133,27 @@ public class ChunkCode
             return null;
 
         return chunk.blocks[x, y, z];
+    }
+
+    public static BlockData GetBlockAt(ChunkData chunk, Vector3 worldPos)
+    {
+        worldPos -= chunk.origin; // Make relative to chunk.
+
+        int blockX = Mathf.RoundToInt(worldPos.x);
+        int blockY = Mathf.RoundToInt(worldPos.y);
+        int blockZ = Mathf.RoundToInt(worldPos.z);
+
+        return GetBlock(chunk, blockX, blockY, blockZ);
+    }
+
+    public static BlockData GetBlockAt(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 worldPos)
+    {
+        ChunkData chunk = GetChunkAt(chunks, dimensions, worldPos);
+
+        if (chunk == null)
+            return null;
+
+        return GetBlockAt(chunk, worldPos);
     }
 
     public static BlockData GetSurfaceBlockUnder(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 worldPos)
@@ -132,8 +171,7 @@ public class ChunkCode
         for (int y = startY; y > 0; y--) // Search from top-down until we hit a surface block.
         {
             BlockData block = GetBlock(chunk, x, y, z);
-            if (block != null
-            && block.type != BlockType.AIR)
+            if (IsSolidBlock(block))
                 return block;
         }
 
@@ -150,15 +188,14 @@ public class ChunkCode
         for (int y = chunk.MaxY - 1; y > 0; y--) // Search from top-down until we hit a surface block.
         {
             BlockData block = GetBlock(chunk, x, y, z);
-            if (block != null
-            && block.type != BlockType.AIR)
+            if (IsSolidBlock(block))
                 return block;
         }
 
         return null;
     }
 
-    public static BlockData GetAdjacentBlock(ChunkData chunk, BlockData sourceBlock, BlockAdjacency adjacency, bool checkVertically = false)
+    public static BlockData GetAdjacentBlock(ChunkData chunk, BlockData sourceBlock, BlockAdjacency adjacency)
     {
         int x = sourceBlock.x;
         int y = sourceBlock.y;
@@ -175,29 +212,21 @@ public class ChunkCode
             case BlockAdjacency.EAST:
                 x = x + 1; break;
             case BlockAdjacency.ABOVE:
-                y = y + 1; checkVertically = false; break;
+                y = y + 1; break;
             case BlockAdjacency.BELOW:
-                y = y - 1; checkVertically = false; break;
+                y = y - 1; break;
         }
 
-        BlockData adjacentBlock = GetBlock(chunk, x, y, z);
-        if (adjacentBlock != null)
-            return adjacentBlock;
+        return GetBlock(chunk, x, y, z);
+    }
 
-        if (checkVertically) // Check vertically if not found on same level.
-        {
-            // Check one above
-            adjacentBlock = GetBlock(chunk, x, y + 1, z);
-            if (adjacentBlock != null)
-                return adjacentBlock;
+    public static ChunkData GetChunk(ChunkData[,] chunks, int worldChunkWidth, int x, int z)
+    {
+        if (x < 0 || x >= worldChunkWidth
+        || z < 0 || z >= worldChunkWidth)
+            return null;
 
-            // Check one below
-            adjacentBlock = GetBlock(chunk, x, y - 1, z);
-            if (adjacentBlock != null)
-                return adjacentBlock;
-        }
-
-        return null;
+        return chunks[x, z];
     }
 
     public static List<BlockData> GetSurfaceNeighbors(ChunkData chunk, int x, int y, int z, bool diagonal = true)
@@ -228,8 +257,7 @@ public class ChunkCode
                         continue;
 
                     BlockData neighbor = GetBlock(chunk, x, y, z);
-                    if (neighbor != null
-                     && neighbor.type != BlockType.AIR)
+                    if (IsSolidBlock(neighbor))
                     {
                         neighbors.Add(neighbor);
                         y = 0; // Stop top-down search.
@@ -252,8 +280,7 @@ public class ChunkCode
                 for (int z = 0; z < chunk.MaxZ; z++)
                 {
                     BlockData block = chunk.blocks[x, y, z];
-                    if (block != null
-                    && block.type != BlockType.AIR)
+                    if (IsSolidBlock(block))
                         filledBlocks.Add(GetBlock(chunk, x, y, z));
                 }
             }
@@ -295,15 +322,6 @@ public class ChunkCode
                                        new Vector3(block.worldPosition.x, y, block.worldPosition.z));
             SetBlock(chunk, newBlock);
         }
-    }
-
-    public static ChunkData GetChunk(ChunkData[,] chunks, int worldChunkWidth, int x, int z)
-    {
-        if (x < 0 || x >= worldChunkWidth
-        || z < 0 || z >= worldChunkWidth)
-            return null;
-
-        return chunks[x, z];
     }
 
     public static void FillNeighboringEdge(ChunkData[,] chunks, World.ChunkDimensions dimensions, int x, int z, BlockAdjacency direction)
@@ -377,7 +395,7 @@ public class ChunkCode
         BlockData newBlock = BlockCode.CreateBlockData(localPos, BlockType.GROUND, worldPos);
         chunk.blocks[x, y, z] = newBlock;
 
-        ChunkCode.CreateMeshData(chunk); // Update mesh.
+        ChunkCode.CreateMeshData(chunks, dimensions, chunk); // Update mesh.
 
         GameManager.Instance.World.InvokeBlockAddEvent(newBlock);
     }
@@ -400,7 +418,7 @@ public class ChunkCode
     {
         ChunkData chunk = GetChunkAt(chunks, dimensions, block.worldPosition);
         DigBlock(chunk, block);
-        CreateMeshData(chunk); // Update mesh.
+        CreateMeshData(chunks, dimensions, chunk); // Update mesh.
     }
 
     public static ChunkData GetChunkAt(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 worldPos)
@@ -425,5 +443,36 @@ public class ChunkCode
         return IsSurfaceBlock(chunk, block)
             && block.type != BlockType.AIR
             && block.type != BlockType.WATER; // Determines if it can be used for pathfinding.
+    }
+
+    public static List<BlockData> GetSurroundingBlocks(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 worldPos, bool diagonal = true, bool includeAir = false)
+    {
+        List<BlockData> neighbors = new List<BlockData>();
+
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int z = -1; z <= 1; z++)
+            {
+                if (x == 0 && z == 0) // Skip self.
+                    continue;
+
+                if (!diagonal // Skip diagonal blocks.
+                 && Mathf.Abs(x) == 1
+                 && Mathf.Abs(z) == 1)
+                    continue;
+
+                Vector3 searchPos = worldPos + new Vector3(x, 0, z);
+                BlockData neighbor = GetBlockAt(chunks, dimensions, searchPos);
+                if (neighbor != null)
+                {
+                    if (!includeAir
+                     && neighbor.type == BlockType.AIR)
+                        continue;
+
+                    neighbors.Add(neighbor);
+                }
+            }
+        }
+        return neighbors;
     }
 }

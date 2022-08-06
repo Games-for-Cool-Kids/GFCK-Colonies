@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &6691609114180590477
+--- !u!1001 &8057347961082997275
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,15 +10,15 @@ PrefabInstance:
     - target: {fileID: -2074497701218525380, guid: 64ada2fc3551f464ea5a19f11864b609, type: 3}
       propertyPath: Structure
       value: 
-      objectReference: {fileID: 7567002938336694664, guid: 39d3f085f67a73440ab122137350909d, type: 3}
+      objectReference: {fileID: 7799568273335409043, guid: 4f3d18fc9223b31429b57aaca9a56c6c, type: 3}
     - target: {fileID: 277460506429960961, guid: 64ada2fc3551f464ea5a19f11864b609, type: 3}
       propertyPath: m_text
-      value: Lumberjack
+      value: Smithy
       objectReference: {fileID: 0}
     - target: {fileID: 277460506894526047, guid: 64ada2fc3551f464ea5a19f11864b609, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 3286163911610860551, guid: 0afe303027a3b8447aa2a883556f4eab, type: 3}
+      objectReference: {fileID: 3286163911610860551, guid: f69fc3b540b7eff4983e6b52e3554663, type: 3}
     - target: {fileID: 277460506894526049, guid: 64ada2fc3551f464ea5a19f11864b609, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -105,7 +105,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 277460506894526050, guid: 64ada2fc3551f464ea5a19f11864b609, type: 3}
       propertyPath: m_Name
-      value: StructureButton_LumberJack
+      value: StructureButton_Smithy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 64ada2fc3551f464ea5a19f11864b609, type: 3}
