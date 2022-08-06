@@ -7,32 +7,31 @@ using System.Threading;
 
 public class WorldGenerator
 {
-    private int maxWorkers = 8;
-    private List<ChunkGenerator> toDoWorkers = new List<ChunkGenerator>();
-    private List<ChunkGenerator> currentWorkers = new List<ChunkGenerator>();
+    private int _maxWorkers = 8;
+    private List<ChunkGenerator> _toDoWorkers = new List<ChunkGenerator>();
+    private List<ChunkGenerator> _currentWorkers = new List<ChunkGenerator>();
 
-    private int chunkSize;
-    private int worldChunkWidth;
+    private int _chunkSize;
+    private int _worldChunkWidth;
 
     private Material _material;
 
     private WorldVariable worldVariable;
 
-    //private Marching _marching = new MarchingTertrahedron();
     private Marching _marching = new MarchingCubes();
 
     private VoxelArray _voxels;
 
     // Status
-    private bool chunksGenerated = false;
+    private bool _chunksGenerated = false;
     public volatile bool worldGenCompleted = false;
 
     // Output
-    private ChunkData[,] chunks;
+    private ChunkData[,] _chunks;
 
     // Finished callback
     public delegate void WorldGenerationFinishedCallBack(ChunkData[,] chunks);
-    private WorldGenerationFinishedCallBack worldGenFinishedCallback;
+    private WorldGenerationFinishedCallBack _worldGenFinishedCallback;
 
 
     public WorldGenerator(int chunkSize,
@@ -41,11 +40,11 @@ public class WorldGenerator
                           WorldVariable worldVariable,
                           WorldGenerationFinishedCallBack worldGenerationFinishedCallback)
     {
-        this.chunkSize = chunkSize;
-        this.worldChunkWidth = worldChunkWidth;
+        this._chunkSize = chunkSize;
+        this._worldChunkWidth = worldChunkWidth;
         this.worldVariable = worldVariable;
         _material = material;
-        this.worldGenFinishedCallback = worldGenerationFinishedCallback;
+        this._worldGenFinishedCallback = worldGenerationFinishedCallback;
         this._voxels = new VoxelArray(chunkSize * worldChunkWidth, worldVariable.height + 1, chunkSize * worldChunkWidth);
 
         CreateChunks();
@@ -56,13 +55,14 @@ public class WorldGenerator
         if (worldGenCompleted)
             return;
 
-        if (!chunksGenerated)
+        if (!_chunksGenerated)
             UpdateChunkGeneratorThreads();
         else
         {
             FillHoles();
-            SetFilledVoxels();
+            CreateChunkMeshes();
             //GenerateVoxelMesh();
+
             worldGenCompleted = true;
         }
     }
@@ -70,12 +70,12 @@ public class WorldGenerator
     private void UpdateChunkGeneratorThreads()
     {
         int i = 0;
-        while (i < currentWorkers.Count)
+        while (i < _currentWorkers.Count)
         {
-            if (currentWorkers[i].GenerationCompleted)
+            if (_currentWorkers[i].GenerationCompleted)
             {
-                currentWorkers[i].NotifyCompleted();
-                currentWorkers.RemoveAt(i);
+                _currentWorkers[i].NotifyCompleted();
+                _currentWorkers.RemoveAt(i);
             }
             else
             {
@@ -83,37 +83,37 @@ public class WorldGenerator
             }
         }
 
-        if (toDoWorkers.Count > 0
-        && currentWorkers.Count < maxWorkers)
+        if (_toDoWorkers.Count > 0
+        && _currentWorkers.Count < _maxWorkers)
         {
-            ChunkGenerator generator = toDoWorkers[0];
-            toDoWorkers.RemoveAt(0);
-            currentWorkers.Add(generator);
+            ChunkGenerator generator = _toDoWorkers[0];
+            _toDoWorkers.RemoveAt(0);
+            _currentWorkers.Add(generator);
 
             Thread workerThread = new Thread(generator.Generate);
             workerThread.Start();
         }
 
-        if (currentWorkers.Count == 0)
-            chunksGenerated = true;
+        if (_currentWorkers.Count == 0)
+            _chunksGenerated = true;
     }
 
     public void NotifyCompleted()
     {
-        worldGenFinishedCallback(chunks);
+        _worldGenFinishedCallback(_chunks);
     }
 
     private void CreateChunks()
     {
-        chunks = new ChunkData[worldChunkWidth, worldChunkWidth];
+        _chunks = new ChunkData[_worldChunkWidth, _worldChunkWidth];
 
-        for (int x = 0; x < worldChunkWidth; x++)
+        for (int x = 0; x < _worldChunkWidth; x++)
         {
-            for (int z = 0; z < worldChunkWidth; z++)
+            for (int z = 0; z < _worldChunkWidth; z++)
             {
                 Vector3 chunkPos = Vector3.zero;
-                chunkPos.x += x * chunkSize;
-                chunkPos.z += z * chunkSize;
+                chunkPos.x += x * _chunkSize;
+                chunkPos.z += z * _chunkSize;
 
                 RequestWorldChunkGeneration(x, z, chunkPos);
             }
@@ -123,44 +123,44 @@ public class WorldGenerator
     public void RequestWorldChunkGeneration(int x, int z, Vector3 position)
     {
         ChunkGenerator generator = new(x, z, CreateChunkStats(x, z, position), AddChunk);
-        toDoWorkers.Add(generator);
+        _toDoWorkers.Add(generator);
     }
 
     private ChunkGeneratorStats CreateChunkStats(int x, int z, Vector3 position)
     {
         return new ChunkGeneratorStats
         {
-            chunkSize = this.chunkSize,
+            chunkSize = this._chunkSize,
             height = worldVariable.height,
             origin = position,
-            nodeGrid = worldVariable.GetChunkNodeGrid(x, z, chunkSize),
+            nodeGrid = worldVariable.GetChunkNodeGrid(x, z, _chunkSize),
         };
     }
 
     private void AddChunk(ChunkData chunk)
     {
-        chunks[chunk.x, chunk.z] = chunk; // Store generated chunk
+        _chunks[chunk.x, chunk.z] = chunk; // Store generated chunk
     }
 
     private void FillHoles()
     {
-        for (int c_x = 0; c_x < worldChunkWidth; c_x++)
+        for (int c_x = 0; c_x < _worldChunkWidth; c_x++)
         {
-            for (int c_z = 0; c_z < worldChunkWidth; c_z++)
+            for (int c_z = 0; c_z < _worldChunkWidth; c_z++)
             {
-                ChunkCode.FillNeighboringEdge(chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.NORTH);
-                ChunkCode.FillNeighboringEdge(chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.SOUTH);
-                ChunkCode.FillNeighboringEdge(chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.EAST);
-                ChunkCode.FillNeighboringEdge(chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.WEST);
+                ChunkCode.FillNeighboringEdge(_chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.NORTH);
+                ChunkCode.FillNeighboringEdge(_chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.SOUTH);
+                ChunkCode.FillNeighboringEdge(_chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.EAST);
+                ChunkCode.FillNeighboringEdge(_chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.WEST);
             }
         }
     }
 
-    private void SetFilledVoxels()
+    private void CreateChunkMeshes()
     {
-        foreach(var chunk in chunks)
+        foreach(var chunk in _chunks)
         {
-            ChunkCode.CreateMeshData(chunks, GetWorldChunkDimensions(), chunk);
+            ChunkCode.CreateMeshData(_chunks, GetWorldChunkDimensions(), chunk);
         }
     }
 
@@ -173,14 +173,14 @@ public class WorldGenerator
 
         _marching.Generate(_voxels.Voxels, verts, indices);
 
-        var position = new Vector3(-worldChunkWidth / 2, -worldChunkWidth / 2, -chunkSize / 2);
+        var position = new Vector3(-_worldChunkWidth / 2, -_worldChunkWidth / 2, -_chunkSize / 2);
 
         CreateMesh32(verts, normals, indices, uvs, position);
     }
 
     private World.ChunkDimensions GetWorldChunkDimensions()
     {
-        return new World.ChunkDimensions { chunkSize = this.chunkSize, worldChunkWidth = this.worldChunkWidth };
+        return new World.ChunkDimensions { chunkSize = this._chunkSize, worldChunkWidth = this._worldChunkWidth };
     }
 
     private void CreateMesh32(List<Vector3> verts, List<Vector3> normals, List<int> indices, List<Vector2> uvs,  Vector3 position)
