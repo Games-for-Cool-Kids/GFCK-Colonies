@@ -5,7 +5,6 @@ public class HeightToBlockTypeStep : SimulationStep
 {
     public float waterLevel = 0.2f;
     public float snowLevel = 0.8f;
-    public int maxHeight = 50;
 
     public override BlockType GetNodeType(WorldGenBlockNode node, WorldVariable worldVar, int maxX, int maxY)
     {
