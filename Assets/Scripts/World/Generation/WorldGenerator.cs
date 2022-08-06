@@ -18,8 +18,8 @@ public class WorldGenerator
 
     private WorldVariable worldVariable;
 
-    private Marching _marching = new MarchingTertrahedron();
-    //private Marching _marching = new MarchingCubes();
+    //private Marching _marching = new MarchingTertrahedron();
+    private Marching _marching = new MarchingCubes();
 
     private VoxelArray _voxels;
 
@@ -62,7 +62,7 @@ public class WorldGenerator
         {
             FillHoles();
             SetFilledVoxels();
-            GenerateVoxelMesh();
+            //GenerateVoxelMesh();
             worldGenCompleted = true;
         }
     }
@@ -160,14 +160,7 @@ public class WorldGenerator
     {
         foreach(var chunk in chunks)
         {
-            foreach (BlockData filledBlock in ChunkCode.GetFilledBlocks(chunk))
-            {
-                int worldX = chunk.x * chunkSize + filledBlock.x;
-                int worldZ = chunk.z * chunkSize + filledBlock.z;
-
-                //ChunkCode.AddBlockToChunkMesh(chunk, filledBlock);
-                _voxels[worldX, filledBlock.y, worldZ] = 0.01f;
-            }
+            ChunkCode.CreateMeshData(chunks, GetWorldChunkDimensions(), chunk);
         }
     }
 
