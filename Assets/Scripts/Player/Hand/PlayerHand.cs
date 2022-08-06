@@ -68,7 +68,7 @@ public class PlayerHand : MonoBehaviour
 
             if (colliderToDropOn != null)
             {
-                var stockPile = colliderToDropOn.GetComponent<BuildingStockpile>();
+                var stockPile = colliderToDropOn.GetComponent<Stockpile>();
                 if (stockPile)
                 {
                     stockPile.DropOffResource(resource);
