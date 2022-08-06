@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Building : MonoBehaviour
 {
+    public BuildingGrid grid = new(); // Need to add derived classes to BuildingEditor.
+
     public Dictionary<ResourceType, int> StoredResources = new Dictionary<ResourceType, int>();
 
     public event EventHandler<ResourceType> ResourceAdded;
