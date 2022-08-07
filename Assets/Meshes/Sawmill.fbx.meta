@@ -8,22 +8,22 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: BarkPine
-    second: {fileID: 2100000, guid: 5d15bc9b1f1e3e842b94fec6c68f6294, type: 2}
+    second: {fileID: 2100000, guid: f5950615228641b479d6ed815526b5c1, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: BlackMetal_Anvil
-    second: {fileID: 2100000, guid: 700efd437f7393c48b5791aa554db5d8, type: 2}
+    second: {fileID: 2100000, guid: 2ef3a829b73883b4cb22716e64367096, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: MetalBattered
-    second: {fileID: 2100000, guid: 41a02d45376689845b2532d337292d42, type: 2}
+    second: {fileID: 2100000, guid: 404958a24a0c60b4abffb7a4138631c4, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Plaster
-    second: {fileID: 2100000, guid: 241f007f530d4c94cb70440656bc1497, type: 2}
+    second: {fileID: 2100000, guid: 4f68f6b727fb36048b015cbf6848fb64, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -38,32 +38,32 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: WoodDebris
-    second: {fileID: 2100000, guid: 9f50e7675430c7f4899ddb0597bb65a9, type: 2}
+    second: {fileID: 2100000, guid: 086cfc5c24d5c4a42b43c5bb2634ac78, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: WoodLog
-    second: {fileID: 2100000, guid: 0e23285c45f5068409de3f7572a06f39, type: 2}
+    second: {fileID: 2100000, guid: 421c800daf18f07419baa55422132e18, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: WoodRough2
-    second: {fileID: 2100000, guid: 125be1ec51dbb9744bf134312b09e6be, type: 2}
+    second: {fileID: 2100000, guid: 7975592cb452bc24e88f4428bbb77d04, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: WoodenBeams
-    second: {fileID: 2100000, guid: c19690b672f73644f80da03c47d97898, type: 2}
+    second: {fileID: 2100000, guid: 680efd3562432e9408ccad150f98d8cc, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: WoodenPlanksWeathered
-    second: {fileID: 2100000, guid: ccaa3ef16f71d96468d789ecc7ea5f15, type: 2}
+    second: {fileID: 2100000, guid: 14f077189220eba4d8cce66c45315aac, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: WoodenTools
-    second: {fileID: 2100000, guid: 6aa425cd7bf630545b85f4000b29435f, type: 2}
+    second: {fileID: 2100000, guid: 6d9345e5328fc0046b8bffb1546845d8, type: 2}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
