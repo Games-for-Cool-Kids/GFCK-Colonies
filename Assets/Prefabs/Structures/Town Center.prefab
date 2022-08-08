@@ -53,7 +53,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3054282851085057923, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
       propertyPath: m_Name
-      value: Town Center_1
+      value: Town Center
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
@@ -62,6 +62,20 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3054282851085057923, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
   m_PrefabInstance: {fileID: 7802341196461717116}
   m_PrefabAsset: {fileID: 0}
+--- !u!64 &8922915495541648067
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5054593391912995327}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3075708836503231621, guid: 70833c041a0885949a1431ab5b5813cb, type: 3}
 --- !u!23 &-8682301808764923504
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -119,18 +133,4 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5054593391912995327}
-  m_Mesh: {fileID: 3075708836503231621, guid: 70833c041a0885949a1431ab5b5813cb, type: 3}
---- !u!64 &8922915495541648067
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5054593391912995327}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
   m_Mesh: {fileID: 3075708836503231621, guid: 70833c041a0885949a1431ab5b5813cb, type: 3}
