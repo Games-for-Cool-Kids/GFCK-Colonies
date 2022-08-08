@@ -65,3 +65,5 @@ UserSettings/Layouts/default-2021.dwlt
 *.dwlt
 
 UserSettings/
+
+ProjectSettings/Packages/com.unity.probuilder/Settings.json
