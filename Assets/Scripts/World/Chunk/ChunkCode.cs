@@ -442,7 +442,8 @@ public class ChunkCode
     {
         return IsSurfaceBlock(chunk, block)
             && block.type != BlockType.AIR
-            && block.type != BlockType.WATER; // Determines if it can be used for pathfinding.
+            && block.type != BlockType.WATER
+            && block.passable; // Determines if it can be used for pathfinding.
     }
 
     public static List<BlockData> GetSurroundingBlocks(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 worldPos, bool diagonal = true, bool includeAir = false)

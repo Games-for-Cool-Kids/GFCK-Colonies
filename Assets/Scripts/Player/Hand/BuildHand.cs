@@ -32,8 +32,11 @@ public class BuildHand : MonoBehaviour
     private void MoveStructureToMousePos()
     {
         var hovered_block = GameManager.Instance.World.GetBlockUnderMouse(true);
-        if (hovered_block != null)
-            _selectedStructure.transform.position = BlockCode.GetSurfaceWorldPos(hovered_block) + GameObjectUtil.GetPivotToMeshMinOffset(_selectedStructure);
+        if (hovered_block != null
+         && BlockCode.IsBuildable(hovered_block))
+        {
+            MoveBuildingTo(hovered_block);
+        }
 
         if (Input.GetKeyDown(KeyCode.E)
          || Mouse.current.middleButton.wasPressedThisFrame)
@@ -90,4 +93,11 @@ public class BuildHand : MonoBehaviour
 
         BuildCanceled.Invoke(this, null);
     }
+    
+    private void MoveBuildingTo(BlockData block)
+    {
+        Vector3 offset = Vector3.right / 2 + Vector3.forward / 2;
+        _selectedStructure.transform.position = BlockCode.GetSurfaceWorldPos(block) + GameObjectUtil.GetPivotToMeshMinOffset(_selectedStructure) + offset;
+    }
+        
 }

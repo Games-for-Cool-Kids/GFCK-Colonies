@@ -116,6 +116,8 @@ public class BlockCode
         data.z = z;
         data.worldPosition = worldPosition;
         data.type = type;
+        data.passable = true;
+        data.buildable = true;
 
         return data;
     }
@@ -128,5 +130,13 @@ public class BlockCode
     public static Vector3 GetSurfaceWorldPos(BlockData block)
     {
         return block.worldPosition + Vector3.up / 2;
+    }
+
+    public static bool IsBuildable(BlockData block)
+    {
+        return block.buildable
+            && block.type != BlockType.WATER
+            && block.type != BlockType.SNOW
+            && block.type != BlockType.AIR;
     }
 }
