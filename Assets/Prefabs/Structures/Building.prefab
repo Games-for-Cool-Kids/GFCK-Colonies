@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1383665135878517463}
   - component: {fileID: 7568739438462069967}
+  - component: {fileID: 5098763107178394782}
   m_Layer: 0
   m_Name: Building
   m_TagString: Building
@@ -45,6 +46,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c492daff90bace540a01b6d239e422de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5098763107178394782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3054282851085057923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65b2dc2ef85635a4ca0e4471516d729a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridCell: {fileID: 4110722468148160703, guid: c3aee33b048913b42a6b87b7c3e6b239, type: 3}
 --- !u!1001 &105464778287769600
 PrefabInstance:
   m_ObjectHideFlags: 0

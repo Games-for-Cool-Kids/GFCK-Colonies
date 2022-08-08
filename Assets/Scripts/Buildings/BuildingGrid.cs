@@ -13,24 +13,65 @@ public class BuildingGrid
 
     public int width
     {
-        get { return _width; }
-        set { _width = value; ResizeGrid(); }
+        get 
+        { 
+            return grid.GetLength(0);
+        }
+        set 
+        { 
+            if (width == value || value <= 0)
+                return;
+            
+            ResizeGrid(value, length);
+        }
     }
-    private int _width = 2;
-
     public int length
     {
-        get { return _length; }
-        set { _length = value; ResizeGrid(); }
+        get 
+        { 
+            return grid.GetLength(1); 
+        }
+        set 
+        { 
+            if (length == value || value <= 0) 
+                return; 
+            
+            ResizeGrid(width, value); 
+        }
     }
-    private int _length = 2;
+
+    [SerializeField]
+    public Cell[,] grid;
 
 
-    public Cell[,] grid = new Cell[2, 2];
-
-
-    private void ResizeGrid()
+    public BuildingGrid()
     {
-        grid = new Cell[_width, _length];
+        // By default every building has a 2x2 buildGrid.
+        grid = new Cell[2, 2];
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < length; z++)
+            {
+                grid[x, z] = Cell.BUILT;
+            }
+        }
+    }
+
+    public void ResizeGrid(int width, int length)
+    {
+        var oldGrid = grid;
+        grid = new Cell[width, length];
+
+        for(int x = 0; x < width; x++)
+        {
+            for(int z = 0; z < length; z++)
+            {
+                if (x < oldGrid.GetLength(0)
+                && z < oldGrid.GetLength(1))
+                    grid[x, z] = oldGrid[x, z];
+                else
+                    grid[x, z] = Cell.BUILT;
+            }
+        }
     }
 }

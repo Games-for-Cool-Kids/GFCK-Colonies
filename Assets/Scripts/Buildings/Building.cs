@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Building : MonoBehaviour
 {
-    public BuildingGrid grid = new(); // Need to add derived classes to BuildingEditor.
+    public BuildingGrid buildGrid = new(); // Need to add derived classes to BuildingEditor.
 
     public Dictionary<ResourceType, int> StoredResources = new Dictionary<ResourceType, int>();
 
@@ -20,6 +20,8 @@ public class Building : MonoBehaviour
         }
 
         ShowResourceDisplay(false);
+
+        CreateBuildGrid();
     }
 
     // Can be done by player-hand, or by villager
@@ -36,7 +38,7 @@ public class Building : MonoBehaviour
 
     public bool HasResources()
     {
-        foreach(int storedAmount in StoredResources.Values)
+        foreach (int storedAmount in StoredResources.Values)
         {
             if (storedAmount > 0)
                 return true;
@@ -52,7 +54,7 @@ public class Building : MonoBehaviour
 
     public void RegisterJobs()
     {
-        foreach(Job job in jobs)
+        foreach (Job job in jobs)
         {
             JobManager.Instance.RegisterJob(job);
         }
@@ -62,5 +64,17 @@ public class Building : MonoBehaviour
     {
         var job = JobFactory.CreateJob(type, this);
         jobs.Add(job);
+    }
+
+    public BlockData GetCurrentBlock()
+    {
+        return GameManager.Instance.World.GetBlockAt(transform.position + Vector3.down / 2);
+    }
+
+    private void CreateBuildGrid()
+    {
+        var bounds = GameObjectUtil.GetGridBounds(gameObject);
+
+        buildGrid.ResizeGrid(Mathf.RoundToInt(bounds.size.x), Mathf.RoundToInt(bounds.size.z));
     }
 }
