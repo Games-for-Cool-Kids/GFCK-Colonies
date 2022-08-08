@@ -117,7 +117,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3054282851085057923, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
       propertyPath: m_Name
-      value: BuildingVariant_Stockpile
+      value: Stockpile
       objectReference: {fileID: 0}
     - target: {fileID: 6081768947073097855, guid: 4518b75637bf275429f858f0e5e921ec, type: 3}
       propertyPath: m_AnchorMax.y

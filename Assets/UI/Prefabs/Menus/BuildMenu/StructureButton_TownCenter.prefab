@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: -2074497701218525380, guid: 64ada2fc3551f464ea5a19f11864b609, type: 3}
       propertyPath: Structure
       value: 
-      objectReference: {fileID: 5054593391912995327, guid: e8d454fbdd58c1d4d89c1e0dc1a9dea8, type: 3}
+      objectReference: {fileID: 5054593391912995327, guid: 4371c2674561e9b438e1184e8c760b3a, type: 3}
     - target: {fileID: 277460506429960961, guid: 64ada2fc3551f464ea5a19f11864b609, type: 3}
       propertyPath: m_text
       value: Town Center

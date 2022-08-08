@@ -1,0 +1,346 @@
+fileFormatVersion: 2
+guid: bfef4154900d7b8418e6c7ff7fc997e5
+ModelImporter:
+  serializedVersion: 21300
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BarkPine
+    second: {fileID: 2100000, guid: f5950615228641b479d6ed815526b5c1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BlackMetal_Anvil
+    second: {fileID: 2100000, guid: 2ef3a829b73883b4cb22716e64367096, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MetalBattered
+    second: {fileID: 2100000, guid: 404958a24a0c60b4abffb7a4138631c4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Plaster
+    second: {fileID: 2100000, guid: 4f68f6b727fb36048b015cbf6848fb64, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Saw
+    second: {fileID: 2100000, guid: 7f334db243082ab4dbbb7ab0e6a667ea, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TentFabric
+    second: {fileID: 2100000, guid: c6c13716542de404e9a4f64a367e066b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WoodDebris
+    second: {fileID: 2100000, guid: 086cfc5c24d5c4a42b43c5bb2634ac78, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WoodLog
+    second: {fileID: 2100000, guid: 421c800daf18f07419baa55422132e18, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WoodRough2
+    second: {fileID: 2100000, guid: 7975592cb452bc24e88f4428bbb77d04, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WoodenBeams
+    second: {fileID: 2100000, guid: 680efd3562432e9408ccad150f98d8cc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WoodenPlanksWeathered
+    second: {fileID: 2100000, guid: 14f077189220eba4d8cce66c45315aac, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WoodenTools
+    second: {fileID: 2100000, guid: 6d9345e5328fc0046b8bffb1546845d8, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: BarkDebris1_2x2_512_albedo
+    second: {fileID: 2800000, guid: 99808c726638c00438598e0f9413ad27, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: BarkDebris1_2x2_512_normal
+    second: {fileID: 2800000, guid: d733b0caa6591d049be8ca06ad0a642b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: BarkDebris1_2x2_512_roughness
+    second: {fileID: 2800000, guid: 4ac0ab6630bf4614e8491a5ba4538a12, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: BarkPine1_1x1_512_albedo
+    second: {fileID: 2800000, guid: 0a84cad6d76f1294985bafc5f625a211, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: BarkPine1_1x1_512_normal
+    second: {fileID: 2800000, guid: d2791d913fb73b54387ea3311be7f080, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: BarkPine1_1x1_512_roughness
+    second: {fileID: 2800000, guid: aaf6b44755e400e4e84be9afecd0735a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Fabric_RippedCloth_512_albedo
+    second: {fileID: 2800000, guid: 9b278e24a8f62c14981cb7e9182a9e06, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Fabric_RippedCloth_512_normal
+    second: {fileID: 2800000, guid: 76efbc9e0a3449641947201b8e1afa9e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Fabric_RippedCloth_512_roughness
+    second: {fileID: 2800000, guid: 11c87a78c0722e4429ef1a1a926c2018, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: PlasterDamaged3_4x2_1K_albedo
+    second: {fileID: 2800000, guid: 50ce531884bea8a4696d4edcb306b04f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: PlasterDamaged3_4x2_1K_normal
+    second: {fileID: 2800000, guid: 572b210c6e7ea274fa02be00365747af, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: PlasterDamaged3_4x2_1K_roughness
+    second: {fileID: 2800000, guid: 14a587f2207bf6246a636a846494f1c4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Roofing_WoodPlanks2_512_albedo
+    second: {fileID: 2800000, guid: 9de903d5105a29846911fd1ce57b731c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Roofing_WoodPlanks2_512_normal
+    second: {fileID: 2800000, guid: 3742ab0bac859074eb98ec9612e722e9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Roofing_WoodPlanks2_512_roughness
+    second: {fileID: 2800000, guid: b9b05dd1ca41ee647a36cead6328c3ed, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Saw
+    second: {fileID: 2800000, guid: 64f5593ad43591f44b4e79c81c877ca1, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Wood_Aged_512_albedo
+    second: {fileID: 2800000, guid: 63662cdad6d8e4249bd613bceb67898b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Wood_Aged_512_normal
+    second: {fileID: 2800000, guid: bae66375d1dc9f343ab52fa0d0cea932, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Wood_Aged_512_roughness
+    second: {fileID: 2800000, guid: b4d46dd14729dda488d399962916540a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Wood_OldLog2_2.52x0.63_1K_albedo
+    second: {fileID: 2800000, guid: 5114b0eaa53d0254e90c34032d93e48c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Wood_OldLog2_2.52x0.63_1K_normal
+    second: {fileID: 2800000, guid: 2a0653e8bac11724694cde9d9658a5d6, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Wood_OldLog2_2.52x0.63_1K_roughness
+    second: {fileID: 2800000, guid: f8c51479290ed054e8cd52f0162fea71, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Wood_Rough2_512_albedo
+    second: {fileID: 2800000, guid: a927df22452b8a04fbe294bb6592dc96, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Wood_Rough2_512_normal
+    second: {fileID: 2800000, guid: 712dfe15c2fcdb64ba7c337a7e6c1f6c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: beaten-up-metal1-Metallic
+    second: {fileID: 2800000, guid: 17a43ee8c32e090488e0c49298abea72, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: beaten-up-metal1-Normal-ogl
+    second: {fileID: 2800000, guid: 5f726a5da201a804f837a39b34668650, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: beaten-up-metal1-Roughness
+    second: {fileID: 2800000, guid: 765bf770a6664664a9d0b75e492fd65d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: beaten-up-metal1-albedo
+    second: {fileID: 2800000, guid: d40219aa6846d4444a582166ba12e1e0, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: rough_wood_diff_1k
+    second: {fileID: 2800000, guid: 19af6fdf2b35a59478fcb11165a93bc6, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: rough_wood_nor_gl_1k
+    second: {fileID: 2800000, guid: f482b747852629448967eadf3c62744d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: rust_coarse_01_diff_1k
+    second: {fileID: 2800000, guid: bfb12e5754ad883479ff05aba9834480, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: rust_coarse_01_nor_gl_1k
+    second: {fileID: 2800000, guid: 00bc102c2fa0e734e9d9cdeb5e77fe6d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: rust_coarse_01_rough_1k
+    second: {fileID: 2800000, guid: 520afec0b65abc245bd90c367cff4d7e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: weathered_brown_planks_diff_1k
+    second: {fileID: 2800000, guid: 5a84871154db2484795ad9bbb5893f86, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: weathered_brown_planks_nor_gl_1k
+    second: {fileID: 2800000, guid: 77567e3d56e0f094bb87c6e633e3294d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: weathered_brown_planks_rough_1k
+    second: {fileID: 2800000, guid: ff81775a1217f6945bf7a7b089b59bb0, type: 3}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 1
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
