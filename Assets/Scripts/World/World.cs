@@ -21,6 +21,9 @@ public class World : MonoBehaviour
 
     private WorldGenerator worldGenerator = null;
 
+    public delegate void WorldGenerationEvent();
+    public event WorldGenerationEvent WorldGenerationDone;
+
     public delegate void BlockEvent(BlockData block);
     public event BlockEvent blockAdd; // ToDo: update paths that intersect this block. (also diagonal)
     public event BlockEvent blockDig; // ToDo: update paths that intersect this block. (also diagonal)
@@ -64,6 +67,8 @@ public class World : MonoBehaviour
         }
 
         worldGenerator = null; // Stops generator from running.
+
+        WorldGenerationDone?.Invoke();
     }
 
     private void CreateChunkObject(ChunkData chunk)
