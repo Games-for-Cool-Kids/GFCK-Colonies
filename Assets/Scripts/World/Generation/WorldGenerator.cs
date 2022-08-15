@@ -52,8 +52,7 @@ public class WorldGenerator
 
     public void Run()
     {
-        if (worldGenCompleted)
-            return;
+        Debug.Assert(worldGenCompleted == false);
 
         if (!_chunksGenerated)
             UpdateChunkGeneratorThreads();
