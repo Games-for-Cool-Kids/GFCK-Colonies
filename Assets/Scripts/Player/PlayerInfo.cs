@@ -18,5 +18,4 @@ public class PlayerInfo : MonoBehaviourSingleton<PlayerInfo>
     {
         playerFaction.MilitaryUnits.Remove(unit);
     }
-
 }

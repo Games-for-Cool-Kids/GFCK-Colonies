@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
 {
-    public List<MilitaryUnit> SelectedUnits { get; } = new List<MilitaryUnit>();
+    public List<ComponentSelect> SelectedUnits { get; } = new List<ComponentSelect>();
     public RectTransform _unitSelectionArea = null;
 
     private Vector2 mouseDragStartPosition;
@@ -28,7 +28,7 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
         else if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
             ClearSelectedUnits();
-            SelectMilitaryUnitsInSelectionArea();
+            SelectUnitsInSelectionArea();
             _unitSelectionArea.gameObject.SetActive(false);
         }
     }
@@ -45,7 +45,7 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
         Collider clickedCollider = CameraUtil.CastMouseRayFromCamera(mask).collider;
         if (clickedCollider != null)
         {
-            if (clickedCollider.TryGetComponent(out MilitaryUnit unit))
+            if (clickedCollider.TryGetComponent(out ComponentSelect unit))
             {
                 SelectedUnits.Add(unit);
                 unit.Select();
@@ -82,13 +82,13 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
 
     private void ClearSelectedUnits()
     {
-        foreach (MilitaryUnit selectedUnit in SelectedUnits)
+        foreach (var selectedUnit in SelectedUnits)
             selectedUnit.Deselect();
 
         SelectedUnits.Clear();
     }
 
-    private void SelectMilitaryUnitsInSelectionArea()
+    private void SelectUnitsInSelectionArea()
     {
         if (_unitSelectionArea.sizeDelta.magnitude <= 0.1f)
         {
@@ -96,7 +96,7 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
             if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask(GlobalDefines.characterLayerName)))
                 return;
 
-            if (!hit.collider.TryGetComponent<MilitaryUnit>(out MilitaryUnit unit))
+            if (!hit.collider.TryGetComponent<ComponentSelect>(out ComponentSelect unit))
                 return;
 
             SelectedUnits.Add(unit);
@@ -107,6 +107,7 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
             return;
         }
 
+        // TODO Check if this is needed. Why select twice?
         Vector2 min = _unitSelectionArea.anchoredPosition - (_unitSelectionArea.sizeDelta / 2);
         Vector2 max = _unitSelectionArea.anchoredPosition + (_unitSelectionArea.sizeDelta / 2);
 
@@ -118,9 +119,9 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
                 screenPosition.y > min.y &&
                 screenPosition.y < max.y)
             {
-                MilitaryUnit milUnit = unit.GetComponent<MilitaryUnit>();
-                SelectedUnits.Add(milUnit);
-                milUnit.Select();
+                //ComponentSelect unit = unit.GetComponent<ComponentSelect>();
+                //SelectedUnits.Add(unit);
+                //unit.Select();
             }
         }
     }
