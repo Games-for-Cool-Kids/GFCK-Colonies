@@ -132,7 +132,7 @@ MonoBehaviour:
   onSelected:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3026749186245455267, guid: 17b0f7d00e6e7944292536b6fbfb991b, type: 3}
+      - m_Target: {fileID: 6451004040597422113}
         m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
         m_MethodName: set_enabled
         m_Mode: 6
@@ -147,7 +147,7 @@ MonoBehaviour:
   onDeselected:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3026749186245455267, guid: 17b0f7d00e6e7944292536b6fbfb991b, type: 3}
+      - m_Target: {fileID: 6451004040597422113}
         m_TargetAssemblyTypeName: UnityEngine.Renderer, UnityEngine
         m_MethodName: set_enabled
         m_Mode: 6
@@ -231,5 +231,10 @@ PrefabInstance:
 --- !u!4 &5497762762054289733 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4597128197814510791, guid: 17b0f7d00e6e7944292536b6fbfb991b, type: 3}
+  m_PrefabInstance: {fileID: 8324830964567485826}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &6451004040597422113 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3026749186245455267, guid: 17b0f7d00e6e7944292536b6fbfb991b, type: 3}
   m_PrefabInstance: {fileID: 8324830964567485826}
   m_PrefabAsset: {fileID: 0}
