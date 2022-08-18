@@ -1,9 +1,14 @@
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
 public class Unit : MonoBehaviour
 {
+    public static event Action<GameObject> OnUnitSpawned;
+    public static event Action<GameObject> OnUnitDespawned;
+
     public float moveSpeed = 5;
 
     public int harvestDamage = 10;
@@ -17,6 +22,8 @@ public class Unit : MonoBehaviour
     {
         _toolSlot = transform.Find("Tool");
         Debug.Assert(_toolSlot != null);
+
+        OnUnitSpawned?.Invoke(gameObject);
     }
 
     protected void Update()
@@ -25,6 +32,11 @@ public class Unit : MonoBehaviour
             ApplyForJob();
         else
             job.Tick();
+    }
+
+    private void OnDestroy()
+    {
+        OnUnitDespawned?.Invoke(gameObject);
     }
 
     public BlockData GetCurrentBlock()

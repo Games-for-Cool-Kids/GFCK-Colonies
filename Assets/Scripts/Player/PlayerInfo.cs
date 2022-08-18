@@ -6,16 +6,25 @@ public class PlayerInfo : MonoBehaviourSingleton<PlayerInfo>
 
     void Start()
     {
-        MilitaryUnit.OnUnitSpawned += AddUnit;
-        MilitaryUnit.OnUnitDespawned += RemoveUnit;
+        Unit.OnUnitSpawned += AddUnit;
+        Unit.OnUnitDespawned += RemoveUnit;
     }
 
     private void AddUnit(GameObject unit)
     {
-        playerFaction.MilitaryUnits.Add(unit);
+        // TODO Will need some different component, probably related with military
+        if(unit.GetComponent<ComponentSelect>())
+        {
+            playerFaction.MilitaryUnits.Add(unit);
+        }     
     }
     private void RemoveUnit(GameObject unit)
     {
-        playerFaction.MilitaryUnits.Remove(unit);
+        if(playerFaction.MilitaryUnits.Contains(unit))
+        {
+            Debug.Assert(unit.GetComponent<ComponentSelect>());
+
+            playerFaction.MilitaryUnits.Remove(unit);
+        } 
     }
 }
