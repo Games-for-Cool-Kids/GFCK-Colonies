@@ -88,6 +88,7 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
         SelectedUnits.Clear();
     }
 
+    // This function probably does some pre-mature optimizations
     private void SelectUnitsInSelectionArea()
     {
         if (_unitSelectionArea.sizeDelta.magnitude <= 0.1f)
@@ -107,10 +108,10 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
             return;
         }
 
-        // TODO Check if this is needed. Why select twice?
         Vector2 min = _unitSelectionArea.anchoredPosition - (_unitSelectionArea.sizeDelta / 2);
         Vector2 max = _unitSelectionArea.anchoredPosition + (_unitSelectionArea.sizeDelta / 2);
 
+        // TODO Do not loop over the military units. Instead, there should be a list of all ComponentMove objects. 
         foreach (var unit in PlayerInfo.Instance.playerFaction.MilitaryUnits)
         {
             Vector3 screenPosition = Camera.main.WorldToScreenPoint(unit.transform.position);
