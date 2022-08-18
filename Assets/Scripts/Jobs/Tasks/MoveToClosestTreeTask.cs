@@ -22,6 +22,7 @@ public class MoveToClosestTreeTask : MoveToObjectTask
         base.Finish();    
     }
 
+    // TODO Needs fixing! When building a new tree, gameObjectCreate() is called for the blueprint, firing this function on a dangerously invalid tree object!
     public void UpdateTargetTreeIfCloser(GameObject gameObject)
     {
         // ToDo: We should look for the closest tree that has a possible path to it.

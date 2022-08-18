@@ -28,6 +28,9 @@ public class MoveToObjectTask : Task
 
     protected void GoToTargetObject()
     {
+        Debug.Assert(TargetObject != null);
+        if (TargetObject == null) return;
+
         Vector3 targetPos = GameObjectUtil.GetObjectBottomPosition(TargetObject);
         BlockData targetBlock = GameManager.Instance.World.GetSurfaceBlockUnder(targetPos);
 
