@@ -7,12 +7,19 @@ public class MoveToClosestTreeTask : MoveToObjectTask
     public MoveToClosestTreeTask(Job job) : base(job) { }
 
     public override void Start()
-    {
-        targetObject = FindTreeNearestToBuilding();
+    { 
+        TargetObject = FindTreeNearestToBuilding();
 
         GameManager.Instance.gameObjectCreate += UpdateTargetTreeIfCloser;
 
         base.Start();
+    }
+
+    public override void Finish()
+    {
+        GameManager.Instance.gameObjectCreate -= UpdateTargetTreeIfCloser;
+
+        base.Finish();    
     }
 
     public void UpdateTargetTreeIfCloser(GameObject gameObject)
@@ -21,14 +28,14 @@ public class MoveToClosestTreeTask : MoveToObjectTask
         if (gameObject.tag == GlobalDefines.resourceNodeTag
          && gameObject.name.Contains(GlobalDefines.treeResourceNodeName))
         {
-            float currentDistance = (job.building.transform.position - targetObject.transform.position).sqrMagnitude;
+            float currentDistance = (job.building.transform.position - TargetObject.transform.position).sqrMagnitude;
             float newTreeDistance = (job.building.transform.position - gameObject.transform.position).sqrMagnitude;
             if (newTreeDistance < currentDistance)
             {
-                targetObject = gameObject;
+                TargetObject = gameObject;
 
-                ClearPath();
-                FindPath();
+                Stop();
+                GoToTargetObject();
             }
         }
     }

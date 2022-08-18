@@ -44,6 +44,8 @@ GameObject:
   - component: {fileID: 3379092869953507618}
   - component: {fileID: 1486334480539609479}
   - component: {fileID: 573605585}
+  - component: {fileID: 5489564762789896768}
+  - component: {fileID: 5493739969578951254}
   m_Layer: 7
   m_Name: Unit
   m_TagString: Unit
@@ -143,4 +145,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0c34e0d5bf9fa441b3c5f6771708820, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  moveSpeed: 5
+  harvestDamage: 10
+  harvestSpeed: 1
+--- !u!114 &5489564762789896768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5344794208990623826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3f52059ffd866e4b91dc45890e73967, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5493739969578951254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5344794208990623826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca5b6709f9d964e448c01ebae2fba8d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

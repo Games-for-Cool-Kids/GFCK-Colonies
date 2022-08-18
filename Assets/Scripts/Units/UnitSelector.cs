@@ -119,9 +119,9 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
                 screenPosition.y > min.y &&
                 screenPosition.y < max.y)
             {
-                //ComponentSelect unit = unit.GetComponent<ComponentSelect>();
-                //SelectedUnits.Add(unit);
-                //unit.Select();
+                ComponentSelect milUnit = unit.GetComponent<ComponentSelect>();
+                SelectedUnits.Add(milUnit);
+                milUnit.Select();
             }
         }
     }

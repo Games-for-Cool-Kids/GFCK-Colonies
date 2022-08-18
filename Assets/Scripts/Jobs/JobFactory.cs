@@ -51,7 +51,7 @@ public class JobFactory
     private static Task CreateMoveToJobBuildingTask(Job job)
     {
         var task = new MoveToObjectTask(job);
-        task.targetObject = job.building.gameObject;
+        task.TargetObject = job.building.gameObject;
         return task;
     }
 }
