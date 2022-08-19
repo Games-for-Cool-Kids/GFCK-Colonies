@@ -8,6 +8,9 @@ public class ComponentMove : BaseUnitComponent
     private int _pathIndex = 0;
     private LineRenderer _pathVisualization = null;
 
+    public delegate void ArrivedAtLocation();
+    private ArrivedAtLocation _onArrived;
+
     private Unit _unit;
 
     public bool lookingForPath { get; private set; } = false;
@@ -35,17 +38,23 @@ public class ComponentMove : BaseUnitComponent
         if (_path != null)
         {
             if (_pathIndex == _path.Count - 1) // We reached end of path
+            {
+                _onArrived?.Invoke(); // Needs to be called before Stop()
                 Stop();
+            }
             else
+            {
                 FollowPath();
+            }
         }
     }
 
-    public void MoveToBlock(BlockData targetBlock)
+    public void MoveToBlock(BlockData targetBlock, ArrivedAtLocation onArrived)
     {
-        PathfindMaster.Instance.RequestPathfind(_unit.GetCurrentBlock(), targetBlock, SetPath);
-
+        _onArrived = onArrived;
         lookingForPath = true;
+
+        PathfindMaster.Instance.RequestPathfind(_unit.GetCurrentBlock(), targetBlock, SetPath);
     }
 
     public void Stop()
@@ -101,6 +110,7 @@ public class ComponentMove : BaseUnitComponent
         }
 
         _pathVisualization.positionCount = 0;
+        _onArrived = null;
     }
 
     private void VisualizePath()

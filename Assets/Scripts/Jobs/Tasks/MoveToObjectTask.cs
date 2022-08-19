@@ -19,13 +19,6 @@ public class MoveToObjectTask : Task
         GoToTargetObject();
     }
 
-    public override void Finish()
-    {
-        base.Finish();
-
-        Stop();
-    }
-
     protected void GoToTargetObject()
     {
         Debug.Assert(TargetObject != null);
@@ -34,7 +27,7 @@ public class MoveToObjectTask : Task
         Vector3 targetPos = GameObjectUtil.GetObjectBottomPosition(TargetObject);
         BlockData targetBlock = GameManager.Instance.World.GetSurfaceBlockUnder(targetPos);
 
-        unitMoveComponent.MoveToBlock(targetBlock);
+        unitMoveComponent.MoveToBlock(targetBlock, Finish);
     }
 
     protected void Stop()

@@ -48,20 +48,10 @@ public class HarvestResourceTask : Task
     // This function assumes the character is already next to the node, otherwise we will finish the task.
     private ResourceNode FindResourceNode()
     {
-        string nodeName;
-        switch (_type)
-        {
-            case ResourceType.RESOURCE_WOOD:
-                nodeName = GlobalDefines.treeResourceNodeName;
-                break;
-            case ResourceType.RESOURCE_STONE:
-                nodeName = GlobalDefines.stoneResourceNodeName;
-                break;
-            case ResourceType.RESOURCE_INVALID:
-            default:
-                Debug.LogError("No implementation for resource type: " + _type);
-                return null;
-        }
+        Debug.Assert(_type != ResourceType.RESOURCE_INVALID);
+        if (_type == ResourceType.RESOURCE_INVALID) return null;
+
+        string nodeName = Resource.ResourceTypeToResourceNodeMap[_type];
 
         foreach (var node in GameObject.FindGameObjectsWithTag(GlobalDefines.resourceNodeTag))
         {
@@ -80,4 +70,6 @@ public class HarvestResourceTask : Task
 
         return null;
     }
+
+
 }
