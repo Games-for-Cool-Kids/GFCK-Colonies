@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ComponentMove : BaseUnitComponent
 {
-    private List<BlockData> _path = null;
+    private List<BlockData> _path = new List<BlockData>();
     private int _pathIndex = 0;
     private LineRenderer _pathVisualization = null;
 
@@ -23,24 +23,23 @@ public class ComponentMove : BaseUnitComponent
         Debug.Assert(_unit);
 
 #if DEBUG
-        if (_pathVisualization == null)
-        {
-            var line = new GameObject("Path");
-            _pathVisualization = line.AddComponent<LineRenderer>();
-            _pathVisualization.widthMultiplier = 0.2f;
-        }
+        Debug.Assert(_pathVisualization == null);
+
+        var line = new GameObject("Path");
+        _pathVisualization = line.AddComponent<LineRenderer>();
+        _pathVisualization.widthMultiplier = 0.2f;
 #endif
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (_path != null)
+        if (_path.Count > 0)
         {
-            if (_pathIndex == _path.Count - 1) // We reached end of path
+            if (_pathIndex >= _path.Count - 1) // We reached end of path
             {
-                _onArrived?.Invoke(); // Needs to be called before Stop()
                 Stop();
+                _onArrived?.Invoke();
             }
             else
             {
@@ -80,8 +79,7 @@ public class ComponentMove : BaseUnitComponent
 
     private void FollowPath()
     {
-        if (_path == null
-         || _path.Count == 0)
+        if (_path.Count == 0)
             return;
 
         BlockData targetBlock = _path[_pathIndex + 1];
@@ -103,14 +101,12 @@ public class ComponentMove : BaseUnitComponent
     private void ClearPath()
     {
         _pathIndex = 0;
-        if (_path != null)
+        if (_path.Count > 0)
         {
             _path.Clear();
-            _path = null;
         }
 
         _pathVisualization.positionCount = 0;
-        _onArrived = null;
     }
 
     private void VisualizePath()
