@@ -30,10 +30,10 @@ public class HarvestResourceTask : Task
     {
         base.Tick();
 
-        float timeToHarvest = 1.0f / job.unit.harvestSpeed;
+        float timeToHarvest = 1.0f / job.UnitJobComponent.harvestSpeed;
         if(_timeSinceLastHarvest >= timeToHarvest)
         {
-            if (_node.Harvest(job.unit.harvestDamage))
+            if (_node.Harvest(job.UnitJobComponent.harvestDamage))
             {
                 _node.SpawnResource();
                 Finish();
@@ -60,7 +60,7 @@ public class HarvestResourceTask : Task
                 var resourceNode = node.GetComponent<ResourceNode>();
 
                 BlockData nodeBlock = resourceNode.GetBlock();
-                BlockData unitBlock = job.unit.GetCurrentBlock();
+                BlockData unitBlock = job.UnitJobComponent.Unit.GetCurrentBlock();
 
                 float distance = (nodeBlock.worldPosition - unitBlock.worldPosition).magnitude;
                 if (distance < 1.45f) // Within one block distance. (also diagonal, see Pythagoras)

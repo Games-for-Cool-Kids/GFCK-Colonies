@@ -18,7 +18,7 @@ public enum JobType
 public class Job
 {
     public Building building { get; private set; }
-    public Unit unit = null;
+    public ComponentJob UnitJobComponent = null;
 
     public JobType type = JobType.UNEMPLOYED;
     public List<Task> tasks = new();
