@@ -13,7 +13,7 @@ public class PlayerInfo : MonoBehaviourSingleton<PlayerInfo>
     private void AddUnit(GameObject unit)
     {
         // TODO Will need some different component, probably related with military
-        if(unit.GetComponent<ComponentSelect>())
+        if(unit.GetComponent<UnitComponentSelect>())
         {
             playerFaction.MilitaryUnits.Add(unit);
         }     
@@ -22,7 +22,7 @@ public class PlayerInfo : MonoBehaviourSingleton<PlayerInfo>
     {
         if(playerFaction.MilitaryUnits.Contains(unit))
         {
-            Debug.Assert(unit.GetComponent<ComponentSelect>());
+            Debug.Assert(unit.GetComponent<UnitComponentSelect>());
 
             playerFaction.MilitaryUnits.Remove(unit);
         } 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class BaseUnitComponent : MonoBehaviour
+public abstract class BaseUnitComponent : MonoBehaviour
 {
     public Unit Unit = null;
 

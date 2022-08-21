@@ -2,7 +2,7 @@ using Pathfinding;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ComponentMove : BaseUnitComponent
+public class UnitComponentMove : BaseUnitComponent
 {
     private List<BlockData> _path = new List<BlockData>();
     private int _pathIndex = 0;

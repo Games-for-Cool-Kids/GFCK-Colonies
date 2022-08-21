@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class MoveToObjectTask : Task
 {
-    protected ComponentMove unitMoveComponent;
+    protected UnitComponentMove unitMoveComponent;
 
     public GameObject TargetObject;
 
@@ -13,7 +13,7 @@ public class MoveToObjectTask : Task
     {
         base.Start();
 
-        unitMoveComponent = GameObject.FindObjectOfType<ComponentMove>();
+        unitMoveComponent = GameObject.FindObjectOfType<UnitComponentMove>();
         Debug.Assert(unitMoveComponent != null);
 
         GoToTargetObject();

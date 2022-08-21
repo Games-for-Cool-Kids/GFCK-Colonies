@@ -26,7 +26,7 @@ public class JobManager : MonoBehaviourSingleton<JobManager>
             job.UnitJobComponent.ClearJob();
     }
 
-    public Job AssignToAvailableJob(ComponentJob employee)
+    public Job AssignToAvailableJob(UnitComponentJob employee)
     {
         if (availableJobs.Count == 0)
             return null;

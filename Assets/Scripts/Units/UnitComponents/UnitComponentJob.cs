@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ComponentJob : BaseUnitComponent
+public class UnitComponentJob : BaseUnitComponent
 {
     private Transform _toolSlot = null;
 
