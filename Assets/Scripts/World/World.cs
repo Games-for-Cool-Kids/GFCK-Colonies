@@ -193,4 +193,24 @@ public class World : MonoBehaviour
     {
         blockDig?.Invoke(block);
     }
+
+    /// <summary>Only checks y of bounds min.</summary>
+    public BlockData[,] GetContainedBlocks(Bounds bounds)
+    {
+        BlockData[,] result = new BlockData[Mathf.FloorToInt(bounds.size.x), Mathf.FloorToInt(bounds.size.z)];
+
+        int x_start = Mathf.FloorToInt(bounds.min.x);
+        int y = Mathf.FloorToInt(bounds.min.y);
+        int z_start = Mathf.FloorToInt(bounds.min.z);
+
+        for (int x = x_start; x < Mathf.FloorToInt(bounds.max.x); x++)
+        {
+            for (int z = z_start ; z < Mathf.FloorToInt(bounds.max.z); z++)
+            {
+                result[x - x_start, z - z_start] = GetBlockAt(new Vector3(x, y, z));
+            }
+        }
+
+        return result;
+    }
 }

@@ -117,7 +117,9 @@ public class BlockCode
         data.worldPosition = worldPosition;
         data.type = type;
         data.passable = true;
-        data.buildable = true;
+        data.buildable = type != BlockType.WATER
+                      && type != BlockType.SNOW
+                      && type != BlockType.AIR;
 
         return data;
     }
@@ -134,7 +136,8 @@ public class BlockCode
 
     public static bool IsBuildable(BlockData block)
     {
-        return block.buildable
+        return block != null
+            && block.buildable
             && block.type != BlockType.WATER
             && block.type != BlockType.SNOW
             && block.type != BlockType.AIR;

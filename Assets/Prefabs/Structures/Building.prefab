@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1383665135878517463}
   - component: {fileID: 7568739438462069967}
   - component: {fileID: 5098763107178394782}
+  - component: {fileID: -2833863307006237020}
   m_Layer: 0
   m_Name: Building
   m_TagString: Building
@@ -59,6 +60,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridCell: {fileID: 4110722468148160703, guid: c3aee33b048913b42a6b87b7c3e6b239, type: 3}
+  gridCellErrorMaterial: {fileID: 2100000, guid: b3958a4690949d7409c8a435cc36db3c, type: 2}
+--- !u!114 &-2833863307006237020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3054282851085057923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 469fc23bfab91984bb0c9da7df647246, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  snapToGrid: 1
 --- !u!1001 &105464778287769600
 PrefabInstance:
   m_ObjectHideFlags: 0
