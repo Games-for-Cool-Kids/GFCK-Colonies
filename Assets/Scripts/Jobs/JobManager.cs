@@ -23,16 +23,16 @@ public class JobManager : MonoBehaviourSingleton<JobManager>
         availableJobs.Remove(job);
 
         if (takenJobs.Remove(job))
-            job.unit.ClearJob();
+            job.UnitJobComponent.ClearJob();
     }
 
-    public Job AssignToAvailableJob(Unit employee)
+    public Job AssignToAvailableJob(UnitComponentJob employee)
     {
         if (availableJobs.Count == 0)
             return null;
 
         Job job = availableJobs[0];
-        job.unit = employee;
+        job.UnitJobComponent = employee;
 
         SetJobTaken(job);
         employee.AssignJob(job);

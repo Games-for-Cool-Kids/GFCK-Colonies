@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class BaseUnitComponent : MonoBehaviour
+public abstract class BaseUnitComponent : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public Unit Unit = null;
 
-    // Update is called once per frame
-    void Update()
+    // Start is called before the first frame update
+    protected virtual void Start()
     {
-        
+        Unit = GetComponent<Unit>();
+        Debug.Assert(Unit != null);
     }
 }

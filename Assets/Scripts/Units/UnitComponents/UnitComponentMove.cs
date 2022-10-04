@@ -2,7 +2,7 @@ using Pathfinding;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ComponentMove : BaseUnitComponent
+public class UnitComponentMove : BaseUnitComponent
 {
     private List<BlockData> _path = new List<BlockData>();
     private int _pathIndex = 0;
@@ -11,16 +11,12 @@ public class ComponentMove : BaseUnitComponent
     public delegate void ArrivedAtLocation();
     private ArrivedAtLocation _onArrived;
 
-    private Unit _unit;
-
     public bool lookingForPath { get; private set; } = false;
   
-
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
-        _unit = GetComponent<Unit>();
-        Debug.Assert(_unit);
+        base.Start();
 
 #if DEBUG
         Debug.Assert(_pathVisualization == null);
@@ -39,7 +35,7 @@ public class ComponentMove : BaseUnitComponent
             if (_pathIndex >= _path.Count - 1) // We reached end of path
             {
                 Stop();
-                _onArrived?.Invoke();
+                _onArrived?.Invoke(); // TODO Ideally, we "null" the delegate after this, but we can't until we guarantee that no new task will start during the calling of this event. A new task can trigger a new move event, and then it will NULL the wrong delegate
             }
             else
             {
@@ -53,7 +49,7 @@ public class ComponentMove : BaseUnitComponent
         _onArrived = onArrived;
         lookingForPath = true;
 
-        PathfindMaster.Instance.RequestPathfind(_unit.GetCurrentBlock(), targetBlock, SetPath);
+        PathfindMaster.Instance.RequestPathfind(Unit.GetCurrentBlock(), targetBlock, SetPath);
     }
 
     public void Stop()
@@ -84,14 +80,14 @@ public class ComponentMove : BaseUnitComponent
 
         BlockData targetBlock = _path[_pathIndex + 1];
 
-        Vector3 targetPos = BlockCode.GetSurfaceWorldPos(targetBlock) + GameObjectUtil.GetPivotToMeshMinOffset(_unit.gameObject);
-        Vector3 characterToTarget = targetPos - _unit.transform.position;
+        Vector3 targetPos = BlockCode.GetSurfaceWorldPos(targetBlock) + GameObjectUtil.GetPivotToMeshMinOffset(gameObject);
+        Vector3 characterToTarget = targetPos - transform.position;
         Vector3 direction = characterToTarget.normalized;
-        Vector3 move = direction * _unit.moveSpeed * Time.fixedDeltaTime;
+        Vector3 move = direction * Unit.moveSpeed * Time.fixedDeltaTime;
 
-        _unit.transform.position += move;
+        transform.position += move;
         direction.y = 0; // For rotation.
-        _unit.transform.rotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.LookRotation(direction);
 
         float distanceToTarget = characterToTarget.magnitude;
         if (distanceToTarget < 0.1f) // If distance to center of target block is this small, we're good.

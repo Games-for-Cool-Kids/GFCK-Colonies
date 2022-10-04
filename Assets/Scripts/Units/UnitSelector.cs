@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
 {
-    public List<ComponentSelect> SelectedUnits { get; } = new List<ComponentSelect>();
+    public List<UnitComponentSelect> SelectedUnits { get; } = new List<UnitComponentSelect>();
     public RectTransform _unitSelectionArea = null;
 
     private Vector2 mouseDragStartPosition;
@@ -45,7 +45,7 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
         Collider clickedCollider = CameraUtil.CastMouseRayFromCamera(mask).collider;
         if (clickedCollider != null)
         {
-            if (clickedCollider.TryGetComponent(out ComponentSelect unit))
+            if (clickedCollider.TryGetComponent(out UnitComponentSelect unit))
             {
                 SelectedUnits.Add(unit);
                 unit.Select();
@@ -97,7 +97,7 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
             if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask(GlobalDefines.characterLayerName)))
                 return;
 
-            if (!hit.collider.TryGetComponent<ComponentSelect>(out ComponentSelect unit))
+            if (!hit.collider.TryGetComponent<UnitComponentSelect>(out UnitComponentSelect unit))
                 return;
 
             SelectedUnits.Add(unit);
@@ -120,7 +120,7 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
                 screenPosition.y > min.y &&
                 screenPosition.y < max.y)
             {
-                ComponentSelect milUnit = unit.GetComponent<ComponentSelect>();
+                UnitComponentSelect milUnit = unit.GetComponent<UnitComponentSelect>();
                 SelectedUnits.Add(milUnit);
                 milUnit.Select();
             }

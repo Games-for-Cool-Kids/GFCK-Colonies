@@ -12,7 +12,7 @@ public class UnitCommander : MonoBehaviour
             {
                 foreach (var unit in UnitSelector.Instance.SelectedUnits)
                 {
-                    unit.gameObject.GetComponent<ComponentMove>().MoveToBlock(target_block, null);
+                    unit.gameObject.GetComponent<UnitComponentMove>().MoveToBlock(target_block, null);
                 }
             }
         }
