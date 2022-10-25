@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(menuName = "World/SimulationStep/Beach")]
+[CreateAssetMenu(menuName = "GameWorld/SimulationStep/Beach")]
 public class CreateBeachesStep : SimulationStep
 {
     public override BlockType GetNodeType(WorldGenBlockNode node, WorldVariable worldVar, int maxX, int maxY)

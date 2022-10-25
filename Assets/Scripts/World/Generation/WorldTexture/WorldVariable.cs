@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "World/World Variable")]
+[CreateAssetMenu(menuName = "GameWorld/GameWorld Variable")]
 public class WorldVariable : ScriptableObject
 {
     public int size { get; private set; } // square size x size.

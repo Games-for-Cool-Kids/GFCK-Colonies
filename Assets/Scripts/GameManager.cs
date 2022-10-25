@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         var worldObject = GameObject.Find(GlobalDefines.worldName);
         World = worldObject.GetComponent<World>();
         if (worldObject == null || World == null)
-            Debug.LogWarning("World not found.");
+            Debug.LogWarning("GameWorld not found.");
     }
 
     public GameObject InstantiateGameObject(GameObject obj)

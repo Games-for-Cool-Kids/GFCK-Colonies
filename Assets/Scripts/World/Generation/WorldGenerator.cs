@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.Rendering;
-using System;
 using System.Collections.Generic;
 using System.Threading;
+using World;
 
 
 public class WorldGenerator
@@ -178,9 +178,9 @@ public class WorldGenerator
         CreateMesh32(verts, normals, indices, uvs, position);
     }
 
-    private World.ChunkDimensions GetWorldChunkDimensions()
+    private GameWorld.ChunkDimensions GetWorldChunkDimensions()
     {
-        return new World.ChunkDimensions { chunkSize = this._chunkSize, worldChunkWidth = this._worldChunkWidth };
+        return new GameWorld.ChunkDimensions { chunkSize = this._chunkSize, worldChunkWidth = this._worldChunkWidth };
     }
 
     private void CreateMesh32(List<Vector3> verts, List<Vector3> normals, List<int> indices, List<Vector2> uvs,  Vector3 position)

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 // Using DiamondSquare algorithm
-[CreateAssetMenu(menuName = "World/SimulationStep/HeightMap")]
+[CreateAssetMenu(menuName = "GameWorld/SimulationStep/HeightMap")]
 public class HeightMapStep : ScriptableObject
 {
 	public float grain = 20;

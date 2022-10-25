@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Threading;
+using World.Block;
 
 namespace Pathfinding
 {

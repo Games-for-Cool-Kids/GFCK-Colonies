@@ -1,16 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
+using World;
+using World.Block;
 
 public class FindPathTest : MonoBehaviour
 {
-    private World _world;
+    private GameWorld _world;
 
     private BlockData _pathStartBlock = null;
     private BlockData _pathEndBlock = null;
 
     private void Start()
     {
-        _world = GetComponent<World>();
+        _world = GetComponent<GameWorld>();
     }
 
     void Update()

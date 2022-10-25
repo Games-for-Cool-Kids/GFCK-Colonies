@@ -33,7 +33,7 @@ public class BuildHand : MonoBehaviour
     {
         var hovered_block = GameManager.Instance.World.GetBlockUnderMouse(true);
         if (hovered_block != null)
-            _selectedStructure.transform.position = BlockCode.GetSurfaceWorldPos(hovered_block) + GameObjectUtil.GetPivotToMeshMinOffset(_selectedStructure);
+            _selectedStructure.transform.position = hovered_block.GetSurfaceWorldPos() + GameObjectUtil.GetPivotToMeshMinOffset(_selectedStructure);
 
         if (Input.GetKeyDown(KeyCode.E)
          || Mouse.current.middleButton.wasPressedThisFrame)

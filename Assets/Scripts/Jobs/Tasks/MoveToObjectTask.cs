@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using World.Block;
 
 public class MoveToObjectTask : Task
 {
@@ -90,7 +91,7 @@ public class MoveToObjectTask : Task
 
         BlockData targetBlock = _path[_pathIndex + 1];
 
-        Vector3 targetPos = BlockCode.GetSurfaceWorldPos(targetBlock) + GameObjectUtil.GetPivotToMeshMinOffset(job.unit.gameObject);
+        Vector3 targetPos = targetBlock.GetSurfaceWorldPos() + GameObjectUtil.GetPivotToMeshMinOffset(job.unit.gameObject);
         Vector3 characterToTarget = targetPos - job.unit.transform.position;
         Vector3 direction = characterToTarget.normalized;
         Vector3 move = direction * job.unit.moveSpeed * Time.fixedDeltaTime;

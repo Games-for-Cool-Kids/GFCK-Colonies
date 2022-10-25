@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using World;
+using World.Block;
 
 public class ChunkCode
 {
@@ -20,7 +22,7 @@ public class ChunkCode
         return chunk;
     }
 
-    public static void CreateMeshData(ChunkData[,] chunks, World.ChunkDimensions dimensions, ChunkData chunk)
+    public static void CreateMeshData(ChunkData[,] chunks, GameWorld.ChunkDimensions dimensions, ChunkData chunk)
     {
         chunk.meshData = new ChunkMeshData();
         chunk.meshChanged = true;
@@ -51,10 +53,10 @@ public class ChunkCode
         return block != null && block.type != BlockType.AIR;
     }
 
-    public static void CreateBlockMesh(ChunkData[,] chunks, World.ChunkDimensions dimensions, ChunkData chunk, BlockData block)
+    public static void CreateBlockMesh(ChunkData[,] chunks, GameWorld.ChunkDimensions dimensions, ChunkData chunk, BlockData block)
     {
         List<BlockAdjacency> sidesToCreate = new();
-        foreach (var direction in BlockCode.cardinalDirections)
+        foreach (var direction in BlockDirections.cardinalDirections)
         {
             if (!HasNeighbor(chunks, dimensions, block.worldPosition, direction))
                 sidesToCreate.Add(direction);
@@ -62,7 +64,7 @@ public class ChunkCode
 
         //if (HasNeighbor(_chunks, dimensions, block.worldPosition, BlockAdjacency.ABOVE))
         //{
-        //    ChunkMeshUtilities.CreateBlock(chunk.meshData, BlockCode.GetLocalPosition(block), sidesToCreate, block.type);
+        //    ChunkMeshUtilities.CreateBlock(chunk.meshData, BlockExtensions.GetLocalPosition(block), sidesToCreate, block.type);
         //    return;
         //}
         //
@@ -70,18 +72,18 @@ public class ChunkCode
         //{
         //    if (HasNeighbor(_chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[0]))
         //    {
-        //        ChunkMeshUtilities.CreateSlopeBlock(chunk.meshData, BlockCode.GetLocalPosition(block), sidesToCreate[0], block.type);
+        //        ChunkMeshUtilities.CreateSlopeBlock(chunk.meshData, BlockExtensions.GetLocalPosition(block), sidesToCreate[0], block.type);
         //        return;
         //    }
         //}
         //else if (sidesToCreate.Count == 2)
         //{
-        //    BlockAdjacency ordinal = BlockCode.GetOrdinalDirection(sidesToCreate[0], sidesToCreate[1]);
-        //    if (BlockCode.ordinalDirections.Contains(ordinal)
+        //    BlockAdjacency ordinal = BlockExtensions.GetOrdinalDirection(sidesToCreate[0], sidesToCreate[1]);
+        //    if (BlockExtensions.ordinalDirections.Contains(ordinal)
         //     && HasNeighbor(_chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[0])
         //     && HasNeighbor(_chunks, dimensions, block.worldPosition + Vector3.down, sidesToCreate[1]))
         //    {
-        //        ChunkMeshUtilities.CreateCornerSlopeBlock(chunk.meshData, BlockCode.GetLocalPosition(block), BlockCode.GetOrdinalDirection(sidesToCreate[0], sidesToCreate[1]), block.type);
+        //        ChunkMeshUtilities.CreateCornerSlopeBlock(chunk.meshData, BlockExtensions.GetLocalPosition(block), BlockExtensions.GetOrdinalDirection(sidesToCreate[0], sidesToCreate[1]), block.type);
         //        return;
         //    }
         //}
@@ -89,10 +91,10 @@ public class ChunkCode
         if (!HasNeighbor(chunks, dimensions, block.worldPosition, BlockAdjacency.ABOVE))
             sidesToCreate.Add(BlockAdjacency.ABOVE);
 
-        ChunkMeshUtilities.CreateBlock(chunk.meshData, BlockCode.GetLocalPosition(block), sidesToCreate, block.type);
+        ChunkMeshUtilities.CreateBlock(chunk.meshData, block.GetLocalPosition(), sidesToCreate, block.type);
     }
 
-    public static bool HasNeighbor(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 blockPos, BlockAdjacency direction)
+    public static bool HasNeighbor(ChunkData[,] chunks, GameWorld.ChunkDimensions dimensions, Vector3 blockPos, BlockAdjacency direction)
     {
         Vector3 offset = Vector3.zero;
         switch (direction)
@@ -146,7 +148,7 @@ public class ChunkCode
         return GetBlock(chunk, blockX, blockY, blockZ);
     }
 
-    public static BlockData GetBlockAt(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 worldPos)
+    public static BlockData GetBlockAt(ChunkData[,] chunks, GameWorld.ChunkDimensions dimensions, Vector3 worldPos)
     {
         ChunkData chunk = GetChunkAt(chunks, dimensions, worldPos);
 
@@ -156,7 +158,7 @@ public class ChunkCode
         return GetBlockAt(chunk, worldPos);
     }
 
-    public static BlockData GetSurfaceBlockUnder(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 worldPos)
+    public static BlockData GetSurfaceBlockUnder(ChunkData[,] chunks, GameWorld.ChunkDimensions dimensions, Vector3 worldPos)
     {
         ChunkData chunk = GetChunkAt(chunks, dimensions, worldPos);
 
@@ -317,14 +319,14 @@ public class ChunkCode
 
         for (int y = block.y - 1; y >= block.y - amount; y--)
         {
-            BlockData newBlock = BlockCode.CreateBlockData(x, y, z,
+            BlockData newBlock = BlockExtensions.CreateBlock(x, y, z,
                                        type,
                                        new Vector3(block.worldPosition.x, y, block.worldPosition.z));
             SetBlock(chunk, newBlock);
         }
     }
 
-    public static void FillNeighboringEdge(ChunkData[,] chunks, World.ChunkDimensions dimensions, int x, int z, BlockAdjacency direction)
+    public static void FillNeighboringEdge(ChunkData[,] chunks, GameWorld.ChunkDimensions dimensions, int x, int z, BlockAdjacency direction)
     {
         ChunkData current = chunks[x, z];
         ChunkData neighbor = null;
@@ -376,14 +378,14 @@ public class ChunkCode
             {
                 for (int y = currentBlock.y - 1; y >= currentBlock.y - blocksToFill; y--)
                 {
-                    BlockData fill = BlockCode.CreateBlockData(currentBlock.x, y, currentBlock.z, BlockType.ROCK, new Vector3(currentBlock.x, y, currentBlock.z));
+                    BlockData fill = BlockExtensions.CreateBlock(currentBlock.x, y, currentBlock.z, BlockType.ROCK, new Vector3(currentBlock.x, y, currentBlock.z));
                     ChunkCode.SetBlock(current, fill);
                 }
             }
         }
     }
 
-    public static void AddBlock(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 worldPos)
+    public static void AddBlock(ChunkData[,] chunks, GameWorld.ChunkDimensions dimensions, Vector3 worldPos)
     {
         ChunkData chunk = GetChunkAt(chunks, dimensions, worldPos);
 
@@ -392,7 +394,7 @@ public class ChunkCode
         int y = Mathf.FloorToInt(localPos.y);
         int z = Mathf.FloorToInt(localPos.z);
 
-        BlockData newBlock = BlockCode.CreateBlockData(localPos, BlockType.GROUND, worldPos);
+        BlockData newBlock = BlockExtensions.CreateBlock(localPos, BlockType.GROUND, worldPos);
         chunk.blocks[x, y, z] = newBlock;
 
         ChunkCode.CreateMeshData(chunks, dimensions, chunk); // Update mesh.
@@ -414,14 +416,14 @@ public class ChunkCode
         GameManager.Instance.World.InvokeBlockDigEvent(block);
     }
 
-    public static void DigBlock(ChunkData[,] chunks, World.ChunkDimensions dimensions, BlockData block)
+    public static void DigBlock(ChunkData[,] chunks, GameWorld.ChunkDimensions dimensions, BlockData block)
     {
         ChunkData chunk = GetChunkAt(chunks, dimensions, block.worldPosition);
         DigBlock(chunk, block);
         CreateMeshData(chunks, dimensions, chunk); // Update mesh.
     }
 
-    public static ChunkData GetChunkAt(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 worldPos)
+    public static ChunkData GetChunkAt(ChunkData[,] chunks, GameWorld.ChunkDimensions dimensions, Vector3 worldPos)
     {
         Vector3 relativePos = worldPos + new Vector3(0.5f, 0.5f, 0.5f); // We need offset of half a block. Origin is middle of first block.
 
@@ -445,7 +447,7 @@ public class ChunkCode
             && block.type != BlockType.WATER; // Determines if it can be used for pathfinding.
     }
 
-    public static List<BlockData> GetSurroundingBlocks(ChunkData[,] chunks, World.ChunkDimensions dimensions, Vector3 worldPos, bool diagonal = true, bool includeAir = false)
+    public static List<BlockData> GetSurroundingBlocks(ChunkData[,] chunks, GameWorld.ChunkDimensions dimensions, Vector3 worldPos, bool diagonal = true, bool includeAir = false)
     {
         List<BlockData> neighbors = new List<BlockData>();
 
