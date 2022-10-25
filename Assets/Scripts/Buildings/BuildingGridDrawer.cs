@@ -20,7 +20,7 @@ public class BuildingGridDrawer : MonoBehaviour
         _building = gameObject.GetComponent<Building>();
         Debug.Assert(_building != null);
 
-        _gridCellMaterial = gridCell.GetComponent<MeshRenderer>().sharedMaterial;
+        _gridCellMaterial = gridCell.GetComponentInChildren<MeshRenderer>().sharedMaterial;
     }
 
     void Update()
@@ -75,9 +75,9 @@ public class BuildingGridDrawer : MonoBehaviour
         var cellBlock = GameManager.Instance.World.GetBlockAt(cellCenter - _cellDrawOffset * 2);
 
         if (BlockCode.IsBuildable(cellBlock))
-            cellObject.GetComponent<MeshRenderer>().material = _gridCellMaterial;
+            cellObject.GetComponentInChildren<MeshRenderer>().material = _gridCellMaterial;
         else
-            cellObject.GetComponent<MeshRenderer>().material = gridCellErrorMaterial;
+            cellObject.GetComponentInChildren<MeshRenderer>().material = gridCellErrorMaterial;
     }
 
     private void Clear()
