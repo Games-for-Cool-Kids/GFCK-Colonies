@@ -12,6 +12,8 @@ public class Building : MonoBehaviour
 
     public List<Job> jobs = new List<Job>();
 
+    private bool _firstUpdate = true;
+
     public virtual void Start()
     {
         foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
@@ -20,8 +22,18 @@ public class Building : MonoBehaviour
         }
 
         ShowResourceDisplay(false);
+    }
 
-        CreateBuildGrid();
+    private void Update()
+    {
+        // Set grid after first update, because bounding box of renderer is only correct after first render.
+        if (_firstUpdate)
+        {
+            Debug.Log("1" + GameObjectUtil.GetGridBounds(gameObject).size);
+            CreateBuildGrid();
+            _firstUpdate = false;
+        }
+        Debug.Log("2" + GameObjectUtil.GetGridBounds(gameObject).size);
     }
 
     // Can be done by player-hand, or by villager
@@ -74,7 +86,6 @@ public class Building : MonoBehaviour
     private void CreateBuildGrid()
     {
         var bounds = GameObjectUtil.GetGridBounds(gameObject);
-
         buildGrid.ResizeGrid(Mathf.FloorToInt(bounds.size.x), Mathf.FloorToInt(bounds.size.z));
     }
 }
