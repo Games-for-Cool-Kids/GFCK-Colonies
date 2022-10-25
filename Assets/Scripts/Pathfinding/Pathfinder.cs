@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using PathFinding;
+using World;
+using World.Block;
 
 //for more on A* visit
 //https://en.wikipedia.org/wiki/A*_search_algorithm

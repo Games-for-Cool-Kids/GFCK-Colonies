@@ -1,16 +1,20 @@
 ﻿using UnityEngine;
+using World.Block;
 
-public class ChunkData
+namespace World.Chunk
 {
-    public int x;
-    public int z;
-    public Vector3 origin;
+    public class ChunkData
+    {
+        public int x;
+        public int z;
+        public Vector3 origin;
 
-    public int MaxX;
-    public int MaxY;
-    public int MaxZ;
-    public BlockData[,,] blocks; // Data
+        public int MaxX;
+        public int MaxY;
+        public int MaxZ;
+        public BlockData[,,] blocks; // Data
 
-    public ChunkMeshData meshData;
-    public bool meshChanged;
+        public ChunkMeshData meshData;
+        public bool meshChanged;
+    }
 }

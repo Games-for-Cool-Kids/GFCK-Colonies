@@ -1,8 +1,10 @@
 using UnityEngine;
+using World;
+using World.Block;
 
 public class ShowHoveredBlock : MonoBehaviour
 {
-    private World _world;
+    private GameWorld _world;
     private GameObject _testCube;
 
     public Material material;
@@ -10,7 +12,7 @@ public class ShowHoveredBlock : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _world = GetComponent<World>();
+        _world = GetComponent<GameWorld>();
 
         _testCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         _testCube.name = "HoveredBlock";

@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
 
-public enum BlockType
+namespace World.Block
 {
-    AIR,
-    GROUND,
-    GRASS,
-    WATER,
-    SAND,
-    SNOW,
-    ROCK,
-}
+    public enum BlockType
+    {
+        AIR,
+        GROUND,
+        GRASS,
+        WATER,
+        SAND,
+        SNOW,
+        ROCK,
+    }
 
 public class BlockData
 {

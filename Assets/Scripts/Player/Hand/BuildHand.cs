@@ -33,9 +33,9 @@ public class BuildHand : MonoBehaviour
     {
         var hovered_block = GameManager.Instance.World.GetBlockUnderMouse(true);
         if (hovered_block != null
-         && BlockCode.IsBuildable(hovered_block))
+         && BlockCode.IsBuildable(hovered_block))
         {
-            MoveBuildingTo(hovered_block);
+            MoveBuildingTo(hovered_block);
         }
 
         if (Input.GetKeyDown(KeyCode.E)
@@ -47,7 +47,7 @@ public class BuildHand : MonoBehaviour
 
     private void PlaceStructure()
     {
-        if (_selectedStructure.TryGetComponent<Building>(out var building))
+        if (_selectedStructure.TryGetComponent<Building>(out var building))
             building.RegisterJobs();
 
         RestoreStructureProperties();
@@ -92,41 +92,41 @@ public class BuildHand : MonoBehaviour
         _selectedStructure = null;
 
         BuildCanceled.Invoke(this, null);
-    }
-
-    private void MoveBuildingTo(BlockData block)
-    {
-        if (_selectedStructure.TryGetComponent<Building>(out var building)
+    }
+
+    private void MoveBuildingTo(BlockData block)
+    {
+        if (_selectedStructure.TryGetComponent<Building>(out var building)
          && !DoesStructureFit(building.buildGrid))
             return;
-
-
-        Vector3 offset = Vector3.right / 2 + Vector3.forward / 2;
-        _selectedStructure.transform.position = BlockCode.GetSurfaceWorldPos(block) + GameObjectUtil.GetPivotToMeshMinOffset(_selectedStructure) + offset;
-    }
-
-    private bool DoesStructureFit(BuildingGrid buildingGrid)
-    {
-        //var bounds = GameObjectUtil.GetGridBounds(_selectedStructure);
-        //var structureBlocks = GameManager.Instance.World.GetContainedBlocks(bounds);
-
-        //Debug.Assert(structureBlocks.Length == buildingGrid.grid.Length);
-
-        //for (int x = 0; x < structureBlocks.GetLength(0); x++)
-        //{
-        //    for (int z = 0; z < structureBlocks.GetLength(1); z++)
-        //    {
-        //        var block = structureBlocks[x, z];
-
-        //        if (block == null)
-        //            return false;
-
-        //        if (buildingGrid.grid[x, z] != BuildingGrid.Cell.FREE
-        //         && !BlockCode.IsBuildable(block))
-        //            return false;
-        //    }
-        //}
-
-        return true;
+
+
+        Vector3 offset = Vector3.right / 2 + Vector3.forward / 2;
+        _selectedStructure.transform.position = BlockCode.GetSurfaceWorldPos(block) + GameObjectUtil.GetPivotToMeshMinOffset(_selectedStructure) + offset;
+    }
+
+    private bool DoesStructureFit(BuildingGrid buildingGrid)
+    {
+        //var bounds = GameObjectUtil.GetGridBounds(_selectedStructure);
+        //var structureBlocks = GameManager.Instance.World.GetContainedBlocks(bounds);
+
+        //Debug.Assert(structureBlocks.Length == buildingGrid.grid.Length);
+
+        //for (int x = 0; x < structureBlocks.GetLength(0); x++)
+        //{
+        //    for (int z = 0; z < structureBlocks.GetLength(1); z++)
+        //    {
+        //        var block = structureBlocks[x, z];
+
+        //        if (block == null)
+        //            return false;
+
+        //        if (buildingGrid.grid[x, z] != BuildingGrid.Cell.FREE
+        //         && !BlockCode.IsBuildable(block))
+        //            return false;
+        //    }
+        //}
+
+        return true;
     }
 }

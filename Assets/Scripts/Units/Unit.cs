@@ -1,24 +1,22 @@
 using System;
 using UnityEngine;
-using UnityEngine.Events;
-using System.Collections;
-using System.Collections.Generic;
+using World.Block;
 
 public class Unit : MonoBehaviour
-{
+{
     public static event Action<GameObject> OnUnitSpawned;
     public static event Action<GameObject> OnUnitDespawned;
 
     public float moveSpeed = 5;
 
-    private void Start()
-    {
-        OnUnitSpawned?.Invoke(gameObject);
+    private void Start()
+    {
+        OnUnitSpawned?.Invoke(gameObject);
     }
 
-    private void OnDestroy()
-    {
-        OnUnitDespawned?.Invoke(gameObject);
+    private void OnDestroy()
+    {
+        OnUnitDespawned?.Invoke(gameObject);
     }
 
     public BlockData GetCurrentBlock()

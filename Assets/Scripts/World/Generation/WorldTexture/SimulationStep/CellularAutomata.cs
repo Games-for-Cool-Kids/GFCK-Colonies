@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using World.Block;
 
-[CreateAssetMenu(menuName = "World/SimulationStep/Cellular Automata")]
+[CreateAssetMenu(menuName = "GameWorld/SimulationStep/Cellular Automata")]
 public class CellularAutomata : SimulationStep
 {
     public int death = 3;

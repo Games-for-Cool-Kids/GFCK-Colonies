@@ -1,4 +1,6 @@
 using UnityEngine;
+using Pathfinding;
+using World.Block;
 
 public class MoveToObjectTask : Task
 {
