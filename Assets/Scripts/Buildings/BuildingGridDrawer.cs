@@ -13,7 +13,7 @@ public class BuildingGridDrawer : MonoBehaviour
 
     private List<GameObject> _cells = new();
 
-    private static Vector3 _cellDrawOffset = Vector3.up * 0.1f;
+    private static Vector3 _cellHeightOffset = Vector3.up * 0.1f;
 
     private void Start()
     {
@@ -49,11 +49,11 @@ public class BuildingGridDrawer : MonoBehaviour
         {
             for (int z = 0; z < buildGrid.length; z++)
             {
-                Vector3 meshPivotOffset = Vector3.forward; // Mesh pivot is not in center
-                Vector3 offset = x * Vector3.right + z * Vector3.forward + meshPivotOffset;
+                Vector3 halfBlockOffset = Vector3.forward / 2 + Vector3.right / 2; // Mesh pivot is not in center
+                Vector3 offset = x * Vector3.right + z * Vector3.forward + halfBlockOffset;
 
                 var cellObject = _cells[x + z * buildGrid.width];
-                cellObject.transform.position = bounds.min + offset + _cellDrawOffset;
+                cellObject.transform.position = bounds.min + offset + _cellHeightOffset;
                 UpdateCellMaterial(cellObject);
             }
         }
@@ -71,8 +71,7 @@ public class BuildingGridDrawer : MonoBehaviour
 
     private void UpdateCellMaterial(GameObject cellObject)
     {
-        Vector3 cellCenter = cellObject.transform.position - Vector3.forward / 2 + Vector3.right / 2;
-        var cellBlock = GameManager.Instance.World.GetBlockAt(cellCenter - _cellDrawOffset * 2);
+        var cellBlock = GameManager.Instance.World.GetBlockAt(cellObject.transform.position - _cellHeightOffset * 2);
 
         if (BlockCode.IsBuildable(cellBlock))
             cellObject.GetComponentInChildren<MeshRenderer>().material = _gridCellMaterial;
