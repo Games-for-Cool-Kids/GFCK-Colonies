@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using World;
-using World.Block;
 
 public class FindPathTest : MonoBehaviour
 {

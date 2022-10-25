@@ -1,4 +1,5 @@
 using UnityEngine;
+using World;
 
 public class ChunkGenerator
 {
@@ -41,7 +42,7 @@ public class ChunkGenerator
                 int y = Mathf.FloorToInt(height * _chunkStats.height);
 
                 Vector3 blockWorldPos = _chunkStats.origin + new Vector3(x, y, z);
-                BlockData newBlock = BlockExtensions.CreateBlock(x, y, z, _chunkStats.nodeGrid[x, z].type, blockWorldPos);
+                BlockData newBlock = BlockFactory.CreateBlock(x, y, z, _chunkStats.nodeGrid[x, z].type, blockWorldPos);
                 ChunkCode.SetBlock(_generatedChunk, newBlock);
 
                 ChunkCode.CreateBlocksUnder(_generatedChunk, newBlock, y);

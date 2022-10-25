@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-namespace World.Block
+namespace World
 {
     public enum BlockAdjacency
     {

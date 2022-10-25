@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using World.Block;
+using World;
 
 public static class ChunkMeshUtilities
 {

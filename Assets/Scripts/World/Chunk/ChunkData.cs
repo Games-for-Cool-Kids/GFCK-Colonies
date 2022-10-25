@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using World.Block;
 
-namespace World.Chunk
+namespace World
 {
     public class ChunkData
     {

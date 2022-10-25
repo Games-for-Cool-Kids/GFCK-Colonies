@@ -1,5 +1,5 @@
 using UnityEngine;
-using World.Block;
+using World;
 
 [CreateAssetMenu(menuName = "GameWorld/SimulationStep/HeightToBlockType")]
 public class HeightToBlockTypeStep : SimulationStep

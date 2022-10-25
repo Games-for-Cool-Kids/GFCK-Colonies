@@ -1,5 +1,5 @@
 using UnityEngine;
-using World.Block;
+using World;
 
 public class ResourceNode : MonoBehaviour
 {

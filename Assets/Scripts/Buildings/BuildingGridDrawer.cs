@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using World;
 
 public class BuildingGridDrawer : MonoBehaviour
 {
@@ -73,7 +74,7 @@ public class BuildingGridDrawer : MonoBehaviour
     {
         var cellBlock = GameManager.Instance.World.GetBlockAt(cellObject.transform.position - _cellHeightOffset * 2);
 
-        if (BlockCode.IsBuildable(cellBlock))
+        if (cellBlock.IsBuildable())
             cellObject.GetComponentInChildren<MeshRenderer>().material = _gridCellMaterial;
         else
             cellObject.GetComponentInChildren<MeshRenderer>().material = gridCellErrorMaterial;

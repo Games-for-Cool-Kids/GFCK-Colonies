@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using World;
-using World.Block;
 
 public class ChunkCode
 {
@@ -319,7 +318,7 @@ public class ChunkCode
 
         for (int y = block.y - 1; y >= block.y - amount; y--)
         {
-            BlockData newBlock = BlockExtensions.CreateBlock(x, y, z,
+            BlockData newBlock = BlockFactory.CreateBlock(x, y, z,
                                        type,
                                        new Vector3(block.worldPosition.x, y, block.worldPosition.z));
             SetBlock(chunk, newBlock);
@@ -378,7 +377,7 @@ public class ChunkCode
             {
                 for (int y = currentBlock.y - 1; y >= currentBlock.y - blocksToFill; y--)
                 {
-                    BlockData fill = BlockExtensions.CreateBlock(currentBlock.x, y, currentBlock.z, BlockType.ROCK, new Vector3(currentBlock.x, y, currentBlock.z));
+                    BlockData fill = BlockFactory.CreateBlock(currentBlock.x, y, currentBlock.z, BlockType.ROCK, new Vector3(currentBlock.x, y, currentBlock.z));
                     ChunkCode.SetBlock(current, fill);
                 }
             }
@@ -394,7 +393,7 @@ public class ChunkCode
         int y = Mathf.FloorToInt(localPos.y);
         int z = Mathf.FloorToInt(localPos.z);
 
-        BlockData newBlock = BlockExtensions.CreateBlock(localPos, BlockType.GROUND, worldPos);
+        BlockData newBlock = BlockFactory.CreateBlock(localPos, BlockType.GROUND, worldPos);
         chunk.blocks[x, y, z] = newBlock;
 
         ChunkCode.CreateMeshData(chunks, dimensions, chunk); // Update mesh.

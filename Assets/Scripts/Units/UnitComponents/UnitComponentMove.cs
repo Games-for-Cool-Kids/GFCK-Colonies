@@ -1,6 +1,7 @@
-using Pathfinding;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
+using World;
 
 public class UnitComponentMove : BaseUnitComponent
 {
@@ -80,7 +81,7 @@ public class UnitComponentMove : BaseUnitComponent
 
         BlockData targetBlock = _path[_pathIndex + 1];
 
-        Vector3 targetPos = BlockCode.GetSurfaceWorldPos(targetBlock) + GameObjectUtil.GetPivotToMeshMinOffset(gameObject);
+        Vector3 targetPos = targetBlock.GetSurfaceWorldPos() + GameObjectUtil.GetPivotToMeshMinOffset(gameObject);
         Vector3 characterToTarget = targetPos - transform.position;
         Vector3 direction = characterToTarget.normalized;
         Vector3 move = direction * Unit.moveSpeed * Time.fixedDeltaTime;

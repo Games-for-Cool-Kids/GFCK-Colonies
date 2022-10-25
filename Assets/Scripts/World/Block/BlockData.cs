@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace World.Block
+namespace World
 {
     public enum BlockType
     {
@@ -13,11 +13,12 @@ namespace World.Block
         ROCK,
     }
 
-public class BlockData
-{
-    public int x, y, z; // Local position in chunk.
-    public Vector3 worldPosition;
-    public BlockType type;
-    public bool passable;
-    public bool buildable;
+    public class BlockData
+    {
+        public int x, y, z; // Local position in chunk.
+        public Vector3 worldPosition;
+        public BlockType type;
+        public bool passable;
+        public bool buildable;
+    }
 }

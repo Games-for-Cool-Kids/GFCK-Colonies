@@ -1,5 +1,6 @@
 using UnityEngine;
-using World.Block;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 namespace World
 {
@@ -21,6 +22,9 @@ namespace World
         public GameObject[,] chunkObjects;
 
         private WorldGenerator worldGenerator = null;
+
+        public delegate void WorldGenerationEvent();
+        public event WorldGenerationEvent WorldGenerationDone;
 
         public delegate void BlockEvent(BlockData block);
         public event BlockEvent blockAdd; // ToDo: update paths that intersect this block. (also diagonal)
@@ -65,6 +69,8 @@ namespace World
             }
 
             worldGenerator = null; // Stops generator from running.
+
+            WorldGenerationDone?.Invoke();
         }
 
         private void CreateChunkObject(ChunkData chunk)
@@ -175,9 +181,9 @@ namespace World
                 UpdateChunkMesh(chunk);
         }
 
-        private GameWorld.ChunkDimensions GetWorldChunkDimensions()
+        private ChunkDimensions GetWorldChunkDimensions()
         {
-            return new GameWorld.ChunkDimensions { chunkSize = this.chunkSize, worldChunkWidth = this.worldChunkWidth };
+            return new ChunkDimensions { chunkSize = this.chunkSize, worldChunkWidth = this.worldChunkWidth };
         }
 
         public void InvokeBlockAddEvent(BlockData block)
@@ -188,6 +194,26 @@ namespace World
         public void InvokeBlockDigEvent(BlockData block)
         {
             blockDig?.Invoke(block);
+        }
+
+        /// <summary>Only checks y of bounds min.</summary>
+        public BlockData[,] GetContainedBlocks(Bounds bounds)
+        {
+            BlockData[,] result = new BlockData[Mathf.FloorToInt(bounds.size.x), Mathf.FloorToInt(bounds.size.z)];
+
+            int x_start = Mathf.FloorToInt(bounds.min.x);
+            int y = Mathf.FloorToInt(bounds.min.y);
+            int z_start = Mathf.FloorToInt(bounds.min.z);
+
+            for (int x = x_start; x < Mathf.FloorToInt(bounds.max.x); x++)
+            {
+                for (int z = z_start; z < Mathf.FloorToInt(bounds.max.z); z++)
+                {
+                    result[x - x_start, z - z_start] = GetBlockAt(new Vector3(x, y, z));
+                }
+            }
+
+            return result;
         }
     }
 }

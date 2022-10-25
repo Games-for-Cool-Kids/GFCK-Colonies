@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace World.Block
+namespace World
 {
     public static class BlockExtensions
     {
@@ -12,6 +12,15 @@ namespace World.Block
         public static Vector3 GetSurfaceWorldPos(this BlockData block)
         {
             return block.worldPosition + Vector3.up / 2;
+        }
+
+        public static bool IsBuildable(this BlockData block)
+        {
+            return block != null
+                && block.buildable
+                && block.type != BlockType.WATER
+                && block.type != BlockType.SNOW
+                && block.type != BlockType.AIR;
         }
     }
 }

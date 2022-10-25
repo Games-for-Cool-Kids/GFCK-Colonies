@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using World;
 
 public class BuildHand : MonoBehaviour
 {
@@ -33,9 +34,9 @@ public class BuildHand : MonoBehaviour
     {
         var hovered_block = GameManager.Instance.World.GetBlockUnderMouse(true);
         if (hovered_block != null
-         && BlockCode.IsBuildable(hovered_block))
+         && hovered_block.IsBuildable())
         {
-            MoveBuildingTo(hovered_block);
+            MoveBuildingTo(hovered_block);
         }
 
         if (Input.GetKeyDown(KeyCode.E)
@@ -102,13 +103,13 @@ public class BuildHand : MonoBehaviour
 
 
         Vector3 offset = Vector3.right / 2 + Vector3.forward / 2;
-        _selectedStructure.transform.position = BlockCode.GetSurfaceWorldPos(block) + GameObjectUtil.GetPivotToMeshMinOffset(_selectedStructure) + offset;
+        _selectedStructure.transform.position = block.GetSurfaceWorldPos() + GameObjectUtil.GetPivotToMeshMinOffset(_selectedStructure) + offset;
     }
 
     private bool DoesStructureFit(BuildingGrid buildingGrid)
     {
         //var bounds = GameObjectUtil.GetGridBounds(_selectedStructure);
-        //var structureBlocks = GameManager.Instance.World.GetContainedBlocks(bounds);
+        //var structureBlocks = GameManager.Instance.GameWorld.GetContainedBlocks(bounds);
 
         //Debug.Assert(structureBlocks.Length == buildingGrid.grid.Length);
 

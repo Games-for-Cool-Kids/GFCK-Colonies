@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using World;
 
 [CreateAssetMenu(menuName = "GameWorld/SimulationStep/Beach")]
 public class CreateBeachesStep : SimulationStep

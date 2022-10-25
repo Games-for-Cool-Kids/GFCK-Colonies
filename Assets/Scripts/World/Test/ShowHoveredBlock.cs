@@ -1,6 +1,5 @@
 using UnityEngine;
 using World;
-using World.Block;
 
 public class ShowHoveredBlock : MonoBehaviour
 {

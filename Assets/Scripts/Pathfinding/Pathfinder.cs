@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using PathFinding;
 using World;
-using World.Block;
 
 //for more on A* visit
 //https://en.wikipedia.org/wiki/A*_search_algorithm
@@ -46,7 +45,7 @@ namespace Pathfinding
         public volatile bool executionFinished = false;
         public PathfindMaster.PathFindingThreadComplete completedCallback;
 
-        public Pathfinder(World world, BlockData start, BlockData target, PathfindMaster.PathFindingThreadComplete completedCallback)
+        public Pathfinder(GameWorld world, BlockData start, BlockData target, PathfindMaster.PathFindingThreadComplete completedCallback)
         {
             this._startBlock = start;
             this._targetBlock = target;

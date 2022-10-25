@@ -1,4 +1,5 @@
 using UnityEngine;
+using World;
 
 public class CreateObjectOnClick : MonoBehaviour
 {

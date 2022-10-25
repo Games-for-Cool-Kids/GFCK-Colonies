@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using World.Block;
+using World;
 
 [CreateAssetMenu(menuName = "GameWorld/SimulationStep/Cellular Automata")]
 public class CellularAutomata : SimulationStep

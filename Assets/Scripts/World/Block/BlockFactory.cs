@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace World.Block
+namespace World
 {
     internal class BlockFactory
     {
