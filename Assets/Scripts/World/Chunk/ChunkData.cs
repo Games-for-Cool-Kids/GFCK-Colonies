@@ -2,7 +2,7 @@
 
 namespace World
 {
-    public class ChunkData
+    public partial class ChunkData
     {
         public int x;
         public int z;
