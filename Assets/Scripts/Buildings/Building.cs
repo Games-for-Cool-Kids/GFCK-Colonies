@@ -30,11 +30,9 @@ public class Building : MonoBehaviour
         // Set grid after first update, because bounding box of renderer is only correct after first render.
         if (_firstUpdate)
         {
-            Debug.Log("1" + GameObjectUtil.GetGridBounds(gameObject).size);
             CreateBuildGrid();
             _firstUpdate = false;
         }
-        Debug.Log("2" + GameObjectUtil.GetGridBounds(gameObject).size);
     }
 
     // Can be done by player-hand, or by villager
