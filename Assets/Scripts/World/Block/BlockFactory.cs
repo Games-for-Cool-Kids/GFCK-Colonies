@@ -21,9 +21,10 @@ namespace World
             data.z = z;
             data.worldPosition = worldPosition;
             data.type = type;
+            data.passable = true;
+            data.buildable = true;
 
             return data;
         }
-
     }
 }
