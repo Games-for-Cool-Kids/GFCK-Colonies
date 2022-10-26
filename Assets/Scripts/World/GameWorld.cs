@@ -30,20 +30,6 @@ namespace World
         {
             if (worldGenerator != null)
                 RunWorldGeneration();
-
-            Terraform();
-        }
-
-        public void Terraform()
-        {
-            var block = GetBlockUnderMouse();
-            if (block == null)
-                return;
-
-            if (Input.GetMouseButtonDown(0))
-                DigBlock(block);
-            else if (Input.GetMouseButtonDown(1))
-                AddBlock(block.worldPosition + Vector3.up);
         }
 
         public void StartCreateWorld()
