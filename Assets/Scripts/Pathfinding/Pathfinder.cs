@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using PathFinding;
@@ -50,11 +50,11 @@ namespace Pathfinding
             this._startBlock = start;
             this._targetBlock = target;
             this.completedCallback = completedCallback;
-            this.worldChunkWidth = world.worldChunkWidth;
-            this.chunkSize = world.chunkSize;
+            this.worldChunkWidth = world.worldChunks.worldChunkWidth;
+            this.chunkSize = world.worldChunks.chunkSize;
             this.maxY = world.worldVariable.height;
 
-            GenerateWalkableChunkNodeGrids(world.chunks);
+            GenerateWalkableChunkNodeGrids(world.worldChunks.chunks);
         }
 
         private void GenerateWalkableChunkNodeGrids(ChunkData[,] chunks)
@@ -69,7 +69,7 @@ namespace Pathfinding
 
                     _chunkNodeGrids[x, z] = new NodeGrid();
                     _chunkNodeGrids[x, z].grid = new PathNode[currentChunk.MaxX, currentChunk.MaxY, currentChunk.MaxZ];
-                    foreach (BlockData block in ChunkCode.GetWalkableBlocks(currentChunk))
+                    foreach (BlockData block in currentChunk.GetWalkableBlocks())
                     {
                         _chunkNodeGrids[x, z].grid[block.x, block.y, block.z] = new PathNode(block);
                     }

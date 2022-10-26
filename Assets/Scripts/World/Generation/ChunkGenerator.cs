@@ -15,7 +15,7 @@ public class ChunkGenerator
     public ChunkGenerator(int x, int z, ChunkGeneratorStats stats, ChunkGenerationCallback generationCallback)
     {
         _chunkStats = stats;
-        _generatedChunk = ChunkCode.CreateChunk(x, z, stats.origin, stats.chunkSize, stats.height);
+        _generatedChunk = ChunkFactory.CreateChunk(x, z, stats.origin, stats.chunkSize, stats.height);
 
         finishCallback = generationCallback;
     }
@@ -43,9 +43,9 @@ public class ChunkGenerator
 
                 Vector3 blockWorldPos = _chunkStats.origin + new Vector3(x, y, z);
                 BlockData newBlock = BlockFactory.CreateBlock(x, y, z, _chunkStats.nodeGrid[x, z].type, blockWorldPos);
-                ChunkCode.SetBlock(_generatedChunk, newBlock);
+                _generatedChunk.SetBlock(newBlock);
 
-                ChunkCode.CreateBlocksUnder(_generatedChunk, newBlock, y);
+                _generatedChunk.CreateBlocksUnder(newBlock, y);
             }
         }
     }

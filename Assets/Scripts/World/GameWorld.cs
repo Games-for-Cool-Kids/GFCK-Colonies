@@ -1,24 +1,15 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
 namespace World
 {
     public class GameWorld : MonoBehaviour
     {
-        public class ChunkDimensions
-        {
-            public int chunkSize;
-            public int worldChunkWidth; // Number of chunks in x/z direction.
-        }
-
-        public int chunkSize = 32;
-        public int worldChunkWidth { get; private set; } // Nr of chunkGrid in worldChunkWidth and length, as world is a square.
+        public GameWorldChunkData worldChunks = new();
 
         public Material material;
 
         public WorldVariable worldVariable;
-        public ChunkData[,] chunks;
         public GameObject[,] chunkObjects;
 
         private WorldGenerator worldGenerator = null;
@@ -39,15 +30,30 @@ namespace World
         {
             if (worldGenerator != null)
                 RunWorldGeneration();
+
+            Terraform();
+        }
+
+        public void Terraform()
+        {
+            var block = GetBlockUnderMouse();
+            if (block == null)
+                return;
+
+            if (Input.GetMouseButtonDown(0))
+                DigBlock(block);
+            else if (Input.GetMouseButtonDown(1))
+                AddBlock(block.worldPosition + Vector3.up);
         }
 
         public void StartCreateWorld()
         {
             ResetWorld();
 
-            worldChunkWidth = Mathf.FloorToInt(worldVariable.size / chunkSize);
+            worldChunks.worldChunkWidth = Mathf.FloorToInt(worldVariable.size / worldChunks.chunkSize);
+            worldChunks.blockHeight = worldVariable.height;
 
-            worldGenerator = new(chunkSize, worldChunkWidth, material, worldVariable, TakeGeneratedWorld); // Creates world using multithreading. We need to wait for it to finish to use the world.
+            worldGenerator = new(material, worldVariable, TakeGeneratedWorld); // Creates world using multithreading. We need to wait for it to finish to use the world.
         }
 
         public void RunWorldGeneration()
@@ -60,8 +66,8 @@ namespace World
 
         private void TakeGeneratedWorld(ChunkData[,] generatedChunks)
         {
-            chunks = generatedChunks;
-            chunkObjects = new GameObject[worldChunkWidth, worldChunkWidth];
+            worldChunks.chunks = generatedChunks;
+            chunkObjects = new GameObject[worldChunks.worldChunkWidth, worldChunks.worldChunkWidth];
 
             foreach (var chunk in generatedChunks)
             {
@@ -83,7 +89,7 @@ namespace World
             chunkObjects[chunk.x, chunk.z] = newChunkObject;
 
             MeshFilter meshFilter = newChunkObject.AddComponent<MeshFilter>();
-            meshFilter.mesh = ChunkCode.TakeMesh(chunk);
+            meshFilter.mesh = chunk.TakeMesh();
 
             MeshRenderer renderer = newChunkObject.AddComponent<MeshRenderer>();
             renderer.material = material;
@@ -93,7 +99,7 @@ namespace World
 
         private void ResetWorld()
         {
-            chunks = null;
+            worldChunks.chunks = null;
 
             foreach (Transform child in transform)
             {
@@ -110,22 +116,7 @@ namespace World
         /// <summary>Expects a position inside of the block.</summary>
         public BlockData GetBlockAt(Vector3 worldPos)
         {
-            var chunk = ChunkCode.GetChunkAt(chunks, GetWorldChunkDimensions(), worldPos);
-            if (chunk == null)
-            {
-                return null;
-            }
-
-            return ChunkCode.GetBlockAt(chunk, worldPos);
-        }
-
-        public ChunkData GetChunk(int x, int z)
-        {
-            if (x < 0 || x >= worldChunkWidth
-            || z < 0 || z >= worldChunkWidth)
-                return null;
-
-            return chunks[x, z];
+            return worldChunks.GetBlockAt(worldPos);
         }
 
         public BlockData GetBlockUnderMouse(bool ignoreOtherLayers = false)
@@ -143,24 +134,32 @@ namespace World
             return null;
         }
 
-        public BlockData GetSurfaceBlockUnder(Vector3 worldPos)
-        {
-            return ChunkCode.GetSurfaceBlockUnder(chunks, GetWorldChunkDimensions(), worldPos);
-        }
-
         public void DigBlock(BlockData block)
         {
-            ChunkCode.DigBlock(chunks, GetWorldChunkDimensions(), block);
+            if (block.y <= 0) // Cannot destroy bottom-most block.
+                return;
 
-            UpdateChangedChunkMeshes();
+            ChunkData chunk = worldChunks.GetChunkAt(block.worldPosition);
+            chunk.RemoveBlock(block, worldChunks);
+
+            InvokeBlockDigEvent(block);
+
+            UpdateChunkMesh(chunk);
         }
 
         public void AddBlock(Vector3 worldPos)
         {
-            var chunkDimensions = GetWorldChunkDimensions();
-            ChunkCode.AddBlock(chunks, chunkDimensions, worldPos);
+            ChunkData chunk = worldChunks.GetChunkAt(worldPos);
 
-            ChunkData chunk = ChunkCode.GetChunkAt(chunks, chunkDimensions, worldPos);
+            Vector3 localPos = chunk.GetLocalPos(worldPos);
+            if (localPos.y > worldChunks.blockHeight - 1)
+                return;
+
+            BlockData newBlock = BlockFactory.CreateBlock(localPos, BlockType.GROUND, worldPos);
+            chunk.AddBlock(newBlock, worldChunks);
+
+            InvokeBlockAddEvent(newBlock);
+
             UpdateChunkMesh(chunk);
         }
 
@@ -169,21 +168,16 @@ namespace World
             if (chunk.meshChanged)
             {
                 GameObject chunkObject = chunkObjects[chunk.x, chunk.z];
-                Mesh chunkMesh = ChunkCode.TakeMesh(chunk);
+                Mesh chunkMesh = chunk.TakeMesh();
                 chunkObject.GetComponent<MeshFilter>().mesh = chunkMesh;
                 chunkObject.GetComponent<MeshCollider>().sharedMesh = chunkMesh;
             }
         }
 
-        private void UpdateChangedChunkMeshes()
+        private void UpdateChangedChunkMeshes(BlockData block)
         {
-            foreach (var chunk in chunks)
+            foreach (var chunk in worldChunks.chunks)
                 UpdateChunkMesh(chunk);
-        }
-
-        private ChunkDimensions GetWorldChunkDimensions()
-        {
-            return new ChunkDimensions { chunkSize = this.chunkSize, worldChunkWidth = this.worldChunkWidth };
         }
 
         public void InvokeBlockAddEvent(BlockData block)
@@ -214,6 +208,60 @@ namespace World
             }
 
             return result;
+        }
+
+        public BlockData GetSurfaceBlockUnder(Vector3 worldPos)
+        {
+            ChunkData chunk = worldChunks.GetChunkAt(worldPos);
+
+            if (chunk == null)
+                return null;
+
+            Vector3 localBlockPos = worldPos - chunk.origin;
+            int x = Mathf.FloorToInt(localBlockPos.x);
+            int startY = Mathf.FloorToInt(worldPos.y); // Start at given y, in case there is overlap.
+            int z = Mathf.FloorToInt(localBlockPos.z);
+
+            for (int y = startY; y > 0; y--) // Search from top-down until we hit a surface block.
+            {
+                BlockData block = chunk.GetBlock(x, y, z);
+                if (block.IsSolidBlock())
+                    return block;
+            }
+
+            return null;
+
+        }
+
+        public List<BlockData> GetSurroundingBlocks(Vector3 worldPos, bool diagonal = true, bool includeAir = false)
+        {
+            List<BlockData> neighbors = new List<BlockData>();
+
+            for (int x = -1; x <= 1; x++)
+            {
+                for (int z = -1; z <= 1; z++)
+                {
+                    if (x == 0 && z == 0) // Skip self.
+                        continue;
+
+                    if (!diagonal // Skip diagonal blocks.
+                     && Mathf.Abs(x) == 1
+                     && Mathf.Abs(z) == 1)
+                        continue;
+
+                    Vector3 searchPos = worldPos + new Vector3(x, 0, z);
+                    BlockData neighbor = GetBlockAt(searchPos);
+                    if (neighbor != null)
+                    {
+                        if (!includeAir
+                         && neighbor.type == BlockType.AIR)
+                            continue;
+
+                        neighbors.Add(neighbor);
+                    }
+                }
+            }
+            return neighbors;
         }
     }
 }

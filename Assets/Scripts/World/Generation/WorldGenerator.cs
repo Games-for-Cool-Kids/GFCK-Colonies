@@ -11,12 +11,9 @@ public class WorldGenerator
     private List<ChunkGenerator> _toDoWorkers = new List<ChunkGenerator>();
     private List<ChunkGenerator> _currentWorkers = new List<ChunkGenerator>();
 
-    private int _chunkSize;
-    private int _worldChunkWidth;
-
     private Material _material;
 
-    private WorldVariable worldVariable;
+    private WorldVariable _worldVariable;
 
     private Marching _marching = new MarchingCubes();
 
@@ -27,25 +24,29 @@ public class WorldGenerator
     public volatile bool worldGenCompleted = false;
 
     // Output
-    private ChunkData[,] _chunks;
+    private GameWorldChunkData _worldChunks = new();
 
     // Finished callback
     public delegate void WorldGenerationFinishedCallBack(ChunkData[,] chunks);
     private WorldGenerationFinishedCallBack _worldGenFinishedCallback;
 
+    // Fields
+    private int _chunkSize
+    { get => _worldChunks.chunkSize; }
+    private int _worldChunkWidth
+    { get => _worldChunks.worldChunkWidth; }
 
-    public WorldGenerator(int chunkSize,
-                          int worldChunkWidth,
-                          Material material,
+
+    public WorldGenerator(Material material,
                           WorldVariable worldVariable,
                           WorldGenerationFinishedCallBack worldGenerationFinishedCallback)
     {
-        this._chunkSize = chunkSize;
-        this._worldChunkWidth = worldChunkWidth;
-        this.worldVariable = worldVariable;
-        _material = material;
+        this._worldChunks.worldChunkWidth = Mathf.FloorToInt(worldVariable.size / _worldChunks.chunkSize);
+        this._worldChunks.blockHeight = worldVariable.height;
+        this._worldVariable = worldVariable;
+        this._material = material;
         this._worldGenFinishedCallback = worldGenerationFinishedCallback;
-        this._voxels = new VoxelArray(chunkSize * worldChunkWidth, worldVariable.height + 1, chunkSize * worldChunkWidth);
+        this._voxels = new VoxelArray(_worldChunks.chunkSize * _worldChunks.worldChunkWidth, worldVariable.height + 1, _worldChunks.chunkSize * _worldChunks.worldChunkWidth);
 
         CreateChunks();
     }
@@ -99,12 +100,12 @@ public class WorldGenerator
 
     public void NotifyCompleted()
     {
-        _worldGenFinishedCallback(_chunks);
+        _worldGenFinishedCallback(_worldChunks.chunks);
     }
 
     private void CreateChunks()
     {
-        _chunks = new ChunkData[_worldChunkWidth, _worldChunkWidth];
+        _worldChunks.chunks = new ChunkData[_worldChunkWidth, _worldChunkWidth];
 
         for (int x = 0; x < _worldChunkWidth; x++)
         {
@@ -129,16 +130,16 @@ public class WorldGenerator
     {
         return new ChunkGeneratorStats
         {
-            chunkSize = this._chunkSize,
-            height = worldVariable.height,
+            chunkSize = _chunkSize,
+            height = _worldVariable.height,
             origin = position,
-            nodeGrid = worldVariable.GetChunkNodeGrid(x, z, _chunkSize),
+            nodeGrid = _worldVariable.GetChunkNodeGrid(x, z, _chunkSize),
         };
     }
 
     private void AddChunk(ChunkData chunk)
     {
-        _chunks[chunk.x, chunk.z] = chunk; // Store generated chunk
+        _worldChunks.chunks[chunk.x, chunk.z] = chunk; // Store generated chunk
     }
 
     private void FillHoles()
@@ -147,19 +148,77 @@ public class WorldGenerator
         {
             for (int c_z = 0; c_z < _worldChunkWidth; c_z++)
             {
-                ChunkCode.FillNeighboringEdge(_chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.NORTH);
-                ChunkCode.FillNeighboringEdge(_chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.SOUTH);
-                ChunkCode.FillNeighboringEdge(_chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.EAST);
-                ChunkCode.FillNeighboringEdge(_chunks, GetWorldChunkDimensions(), c_x, c_z, BlockAdjacency.WEST);
+                FillNeighboringEdge(c_x, c_z, BlockAdjacency.NORTH);
+                FillNeighboringEdge(c_x, c_z, BlockAdjacency.SOUTH);
+                FillNeighboringEdge(c_x, c_z, BlockAdjacency.EAST);
+                FillNeighboringEdge(c_x, c_z, BlockAdjacency.WEST);
+            }
+        }
+    }
+
+    public void FillNeighboringEdge(int x, int z, BlockAdjacency direction)
+    {
+        ChunkData current = _worldChunks.chunks[x, z];
+        ChunkData neighbor = null;
+        switch (direction)
+        {
+            case BlockAdjacency.NORTH:
+                neighbor = _worldChunks.GetChunk(x, z + 1);
+                break;
+            case BlockAdjacency.SOUTH:
+                neighbor = _worldChunks.GetChunk(x, z - 1);
+                break;
+            case BlockAdjacency.EAST:
+                neighbor = _worldChunks.GetChunk(x + 1, z);
+                break;
+            case BlockAdjacency.WEST:
+                neighbor = _worldChunks.GetChunk(x - 1, z);
+                break;
+        }
+        if (neighbor == null)
+            return;
+
+        for (int i = 0; i < _chunkSize; i++)
+        {
+            BlockData currentBlock = null;
+            BlockData neighborBlock = null;
+            switch (direction)
+            {
+                case BlockAdjacency.NORTH:
+                    currentBlock = current.GetSurfaceBlock(i, _chunkSize - 1);
+                    neighborBlock = neighbor.GetSurfaceBlock(i, 0);
+                    break;
+                case BlockAdjacency.SOUTH:
+                    currentBlock = current.GetSurfaceBlock(i, 0);
+                    neighborBlock = neighbor.GetSurfaceBlock(i, _chunkSize - 1);
+                    break;
+                case BlockAdjacency.EAST:
+                    currentBlock = current.GetSurfaceBlock(_chunkSize - 1, i);
+                    neighborBlock = neighbor.GetSurfaceBlock(0, i);
+                    break;
+                case BlockAdjacency.WEST:
+                    currentBlock = current.GetSurfaceBlock(0, i);
+                    neighborBlock = neighbor.GetSurfaceBlock(_chunkSize - 1, i);
+                    break;
+            }
+
+            int blocksToFill = currentBlock.y - neighborBlock.y - 1;
+            if (blocksToFill > 0)
+            {
+                for (int y = currentBlock.y - 1; y >= currentBlock.y - blocksToFill; y--)
+                {
+                    BlockData fill = BlockFactory.CreateBlock(currentBlock.x, y, currentBlock.z, BlockType.ROCK, new Vector3(currentBlock.x, y, currentBlock.z));
+                    current.SetBlock(fill);
+                }
             }
         }
     }
 
     private void CreateChunkMeshes()
     {
-        foreach(var chunk in _chunks)
+        foreach(var chunk in _worldChunks.chunks)
         {
-            ChunkCode.CreateMeshData(_chunks, GetWorldChunkDimensions(), chunk);
+            chunk.CreateMeshData(_worldChunks);
         }
     }
 
@@ -175,11 +234,6 @@ public class WorldGenerator
         var position = new Vector3(-_worldChunkWidth / 2, -_worldChunkWidth / 2, -_chunkSize / 2);
 
         CreateMesh32(verts, normals, indices, uvs, position);
-    }
-
-    private GameWorld.ChunkDimensions GetWorldChunkDimensions()
-    {
-        return new GameWorld.ChunkDimensions { chunkSize = this._chunkSize, worldChunkWidth = this._worldChunkWidth };
     }
 
     private void CreateMesh32(List<Vector3> verts, List<Vector3> normals, List<int> indices, List<Vector2> uvs,  Vector3 position)
