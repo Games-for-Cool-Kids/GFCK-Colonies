@@ -12,7 +12,7 @@ namespace World
         public WorldVariable worldVariable;
         public GameObject[,] chunkObjects;
 
-        private WorldGenerator worldGenerator = null;
+        private WorldGenerator worldGenerator = null; // ToDo: Maybe only create world after generation is finished, so that we can separate generator from world.
 
         public delegate void WorldGenerationEvent();
         public event WorldGenerationEvent WorldGenerationDone;
