@@ -180,8 +180,8 @@ public class WorldGenerator
 
         for (int i = 0; i < _chunkSize; i++)
         {
-            BlockData currentBlock = null;
-            BlockData neighborBlock = null;
+            Block currentBlock = null;
+            Block neighborBlock = null;
             switch (direction)
             {
                 case BlockAdjacency.NORTH:
@@ -207,7 +207,7 @@ public class WorldGenerator
             {
                 for (int y = currentBlock.y - 1; y >= currentBlock.y - blocksToFill; y--)
                 {
-                    BlockData fill = BlockFactory.CreateBlock(currentBlock.x, y, currentBlock.z, BlockType.ROCK, new Vector3(currentBlock.x, y, currentBlock.z));
+                    Block fill = BlockFactory.CreateBlock(currentBlock.x, y, currentBlock.z, BlockType.ROCK, new Vector3(currentBlock.x, y, currentBlock.z));
                     current.SetBlock(fill);
                 }
             }

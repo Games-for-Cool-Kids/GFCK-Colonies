@@ -42,7 +42,7 @@ public class ChunkGenerator
                 int y = Mathf.FloorToInt(height * _chunkStats.height);
 
                 Vector3 blockWorldPos = _chunkStats.origin + new Vector3(x, y, z);
-                BlockData newBlock = BlockFactory.CreateBlock(x, y, z, _chunkStats.nodeGrid[x, z].type, blockWorldPos);
+                Block newBlock = BlockFactory.CreateBlock(x, y, z, _chunkStats.nodeGrid[x, z].type, blockWorldPos);
                 _generatedChunk.SetBlock(newBlock);
 
                 _generatedChunk.CreateBlocksUnder(newBlock, y);

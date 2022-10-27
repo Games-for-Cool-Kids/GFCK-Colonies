@@ -6,8 +6,8 @@ public class FindPathTest : MonoBehaviour
 {
     private GameWorld _world;
 
-    private BlockData _pathStartBlock = null;
-    private BlockData _pathEndBlock = null;
+    private Block _pathStartBlock = null;
+    private Block _pathEndBlock = null;
 
     private void Start()
     {
@@ -35,7 +35,7 @@ public class FindPathTest : MonoBehaviour
             }
         }
     }
-    void ShowPath(List<BlockData> path)
+    void ShowPath(List<Block> path)
     {
         if (path.Count == 0)
         {

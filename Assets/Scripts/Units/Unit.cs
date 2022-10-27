@@ -19,7 +19,7 @@ public class Unit : MonoBehaviour
         OnUnitDespawned?.Invoke(gameObject);
     }
 
-    public BlockData GetCurrentBlock()
+    public Block GetCurrentBlock()
     {
         Vector3 blockPos = GameObjectUtil.GetObjectBottomPosition(gameObject) - Vector3.up / 2; // Offset with half a block.
         return GameManager.Instance.World.GetSurfaceBlockUnder(blockPos);

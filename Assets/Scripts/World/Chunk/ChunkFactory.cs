@@ -14,7 +14,7 @@ namespace World
             chunk.MaxX = size;
             chunk.MaxY = maxY;
             chunk.MaxZ = size;
-            chunk.blocks = new BlockData[size, maxY, size];
+            chunk.blocks = new Block[size, maxY, size];
             chunk.meshData = new ChunkMeshData();
             chunk.meshChanged = false;
 

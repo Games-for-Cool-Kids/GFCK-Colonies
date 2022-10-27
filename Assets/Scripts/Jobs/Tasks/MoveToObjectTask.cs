@@ -27,7 +27,7 @@ public class MoveToObjectTask : Task
         if (TargetObject == null) return;
 
         Vector3 targetPos = GameObjectUtil.GetObjectBottomPosition(TargetObject);
-        BlockData targetBlock = GameManager.Instance.World.GetSurfaceBlockUnder(targetPos);
+        Block targetBlock = GameManager.Instance.World.GetSurfaceBlockUnder(targetPos);
 
         unitMoveComponent.MoveToBlock(targetBlock, Finish);
     }

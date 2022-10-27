@@ -4,23 +4,23 @@ namespace World
 {
     public static class BlockExtensions
     {
-        public static Vector3 GetLocalPosition(this BlockData block)
+        public static Vector3 GetLocalPosition(this Block block)
         {
             return new Vector3(block.x, block.y, block.z);
         }
 
-        public static Vector3 GetSurfaceWorldPos(this BlockData block)
+        public static Vector3 GetSurfaceWorldPos(this Block block)
         {
             return block.worldPosition + Vector3.up / 2;
         }
 
-        public static bool IsSolidBlock(this BlockData block)
+        public static bool IsSolidBlock(this Block block)
         {
             return block != null
                 && block.type != BlockType.AIR;
         }
 
-        public static bool IsBuildable(this BlockData block)
+        public static bool IsBuildable(this Block block)
         {
             return block != null
                 && block.buildable
@@ -29,7 +29,7 @@ namespace World
                 && block.type != BlockType.AIR;
         }
 
-        public static bool HasNeighbor(this BlockData block, GameWorldChunkData worldChunks, BlockAdjacency direction)
+        public static bool HasNeighbor(this Block block, GameWorldChunkData worldChunks, BlockAdjacency direction)
         {
             Vector3 offset = Vector3.zero;
             switch (direction)
@@ -58,14 +58,14 @@ namespace World
             return neighbor.IsSolidBlock();
         }
 
-        public static bool IsSurfaceBlock(this BlockData block, ChunkData chunk)
+        public static bool IsSurfaceBlock(this Block block, ChunkData chunk)
         {
-            BlockData blockAbove = chunk.GetBlockAdjacentTo(block, BlockAdjacency.ABOVE);
+            Block blockAbove = chunk.GetBlockAdjacentTo(block, BlockAdjacency.ABOVE);
             return blockAbove == null
                 || blockAbove.type == BlockType.AIR;
         }
 
-        public static bool IsWalkable(this BlockData block, ChunkData chunk)
+        public static bool IsWalkable(this Block block, ChunkData chunk)
         {
             return block.IsSurfaceBlock(chunk)
                 && block.type != BlockType.AIR

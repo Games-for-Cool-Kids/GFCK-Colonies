@@ -12,7 +12,7 @@ namespace Pathfinding
         public int MaxThreads = 3;
 
         //Delegates are a variable that points to a function
-        public delegate void PathFindingThreadComplete(List<BlockData> path);
+        public delegate void PathFindingThreadComplete(List<Block> path);
 
         private List<Pathfinder> currentThreads;
         private List<Pathfinder> todoThreads;
@@ -57,7 +57,7 @@ namespace Pathfinding
             }
         }
 
-        public void RequestPathfind(BlockData start, BlockData target, PathFindingThreadComplete completeCallback)
+        public void RequestPathfind(Block start, Block target, PathFindingThreadComplete completeCallback)
         {
             if(start == null
             || target == null)

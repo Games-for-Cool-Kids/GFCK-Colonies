@@ -77,7 +77,7 @@ public class Building : MonoBehaviour
         jobs.Add(job);
     }
 
-    public BlockData GetCurrentBlock()
+    public Block GetCurrentBlock()
     {
         return GameManager.Instance.World.GetBlockAt(transform.position + Vector3.down / 2);
     }

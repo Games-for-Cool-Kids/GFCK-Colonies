@@ -24,7 +24,7 @@ namespace World
         }
 
         /// <summary>Expects a position inside of the block.</summary>
-        public static BlockData GetBlockAt(this GameWorldChunkData worldChunks, Vector3 worldPos)
+        public static Block GetBlockAt(this GameWorldChunkData worldChunks, Vector3 worldPos)
         {
             var chunk = worldChunks.GetChunkAt(worldPos);
             if (chunk == null)

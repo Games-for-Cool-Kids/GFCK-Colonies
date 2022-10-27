@@ -11,7 +11,7 @@ namespace World
         public int MaxX;
         public int MaxY;
         public int MaxZ;
-        public BlockData[,,] blocks; // Data
+        public Block[,,] blocks; // Data
 
         public ChunkMeshData meshData;
         public bool meshChanged;

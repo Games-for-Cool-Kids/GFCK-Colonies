@@ -96,7 +96,7 @@ public class BuildHand : MonoBehaviour
 
         BuildCanceled.Invoke(this, null);
     }
-    private void MoveBuildingTo(BlockData block)    {        if (_selectedStructure.TryGetComponent<Building>(out var building)         && !DoesStructureFit(building.buildGrid))
+    private void MoveBuildingTo(Block block)    {        if (_selectedStructure.TryGetComponent<Building>(out var building)         && !DoesStructureFit(building.buildGrid))
             return;
 
         Vector3 offset = Vector3.right / 2 + Vector3.forward / 2;        _selectedStructure.transform.position = block.GetSurfaceWorldPos() + GameObjectUtil.GetPivotToMeshMinOffset(_selectedStructure) + offset;    }

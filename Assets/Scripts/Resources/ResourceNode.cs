@@ -44,7 +44,7 @@ public class ResourceNode : MonoBehaviour
         Debug.Assert(droppedComponent);
         return droppedComponent;
     }
-    public BlockData GetBlock()
+    public Block GetBlock()
     {
         Vector3 blockPos = GameObjectUtil.GetObjectBottomPosition(gameObject) - Vector3.up / 2; // Offset with half a block.
         return GameManager.Instance.World.GetSurfaceBlockUnder(blockPos);

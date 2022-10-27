@@ -10,7 +10,7 @@ namespace World
             chunk.meshData = new ChunkMeshData();
             chunk.meshChanged = true;
 
-            foreach (BlockData filledBlock in chunk.GetFilledBlocks())
+            foreach (Block filledBlock in chunk.GetFilledBlocks())
             {
                 chunk.CreateBlockMesh(filledBlock, worldChunks);
             }
@@ -31,7 +31,7 @@ namespace World
             return chunkMesh;
         }
 
-        public static void CreateBlockMesh(this ChunkData chunk, BlockData block, GameWorldChunkData worldChunks)
+        public static void CreateBlockMesh(this ChunkData chunk, Block block, GameWorldChunkData worldChunks)
         {
             List<BlockAdjacency> sidesToCreate = new();
             foreach (var direction in BlockDirections.cardinalDirections)
@@ -74,7 +74,7 @@ namespace World
             ChunkMeshUtilities.CreateBlock(chunk.meshData, block.GetLocalPosition(), sidesToCreate, block.type);
         }
 
-        public static void SetBlock(this ChunkData chunk, BlockData block)
+        public static void SetBlock(this ChunkData chunk, Block block)
         {
             chunk.blocks[block.x, block.y, block.z] = block;
         }
@@ -95,7 +95,7 @@ namespace World
             && x < chunk.MaxX && y < chunk.MaxY && z < chunk.MaxZ;
         }
 
-        public static BlockData GetBlock(this ChunkData chunk, int x, int y, int z)
+        public static Block GetBlock(this ChunkData chunk, int x, int y, int z)
         {
             if (!chunk.InBounds(x, y, z))
                 return null;
@@ -103,7 +103,7 @@ namespace World
             return chunk.blocks[x, y, z];
         }
 
-        public static BlockData GetBlockAt(this ChunkData chunk, Vector3 worldPos)
+        public static Block GetBlockAt(this ChunkData chunk, Vector3 worldPos)
         {
             worldPos -= chunk.origin; // Make relative to chunk.
 
@@ -114,7 +114,7 @@ namespace World
             return chunk.GetBlock(blockX, blockY, blockZ);
         }
 
-        public static BlockData GetSurfaceBlock(this ChunkData chunk, int x, int z)
+        public static Block GetSurfaceBlock(this ChunkData chunk, int x, int z)
         {
             if (x < 0 || z < 0
             || x >= chunk.MaxX || z >= chunk.MaxZ)
@@ -122,7 +122,7 @@ namespace World
 
             for (int y = chunk.MaxY - 1; y > 0; y--) // Search from top-down until we hit a surface block.
             {
-                BlockData block = chunk.GetBlock(x, y, z);
+                Block block = chunk.GetBlock(x, y, z);
                 if (block.IsSolidBlock())
                     return block;
             }
@@ -130,7 +130,7 @@ namespace World
             return null;
         }
 
-        public static BlockData GetBlockAdjacentTo(this ChunkData chunk, BlockData sourceBlock, BlockAdjacency adjacency)
+        public static Block GetBlockAdjacentTo(this ChunkData chunk, Block sourceBlock, BlockAdjacency adjacency)
         {
             int x = sourceBlock.x;
             int y = sourceBlock.y;
@@ -155,18 +155,18 @@ namespace World
             return chunk.GetBlock(x, y, z);
         }
 
-        public static List<BlockData> GetSurfaceNeighbors(this ChunkData chunk, int x, int y, int z, bool diagonal = true)
+        public static List<Block> GetSurfaceNeighbors(this ChunkData chunk, int x, int y, int z, bool diagonal = true)
         {
-            BlockData block = chunk.GetBlock(x, y, z);
+            Block block = chunk.GetBlock(x, y, z);
             if (block != null)
                 return chunk.GetNeighborSurfaceBlocks(block);
 
-            return new List<BlockData>(); // empty list
+            return new List<Block>(); // empty list
         }
 
-        public static List<BlockData> GetNeighborSurfaceBlocks(this ChunkData chunk, BlockData source, bool diagonal = true)
+        public static List<Block> GetNeighborSurfaceBlocks(this ChunkData chunk, Block source, bool diagonal = true)
         {
-            List<BlockData> neighbors = new List<BlockData>();
+            List<Block> neighbors = new List<Block>();
 
             for (int x = source.x - 1; x <= source.x + 1; x++)
             {
@@ -182,7 +182,7 @@ namespace World
                          && Mathf.Abs(z - source.z) == 1)
                             continue;
 
-                        BlockData neighbor = chunk.GetBlock(x, y, z);
+                        Block neighbor = chunk.GetBlock(x, y, z);
                         if (neighbor.IsSolidBlock())
                         {
                             neighbors.Add(neighbor);
@@ -195,9 +195,9 @@ namespace World
             return neighbors;
         }
 
-        public static List<BlockData> GetFilledBlocks(this ChunkData chunk)
+        public static List<Block> GetFilledBlocks(this ChunkData chunk)
         {
-            List<BlockData> filledBlocks = new();
+            List<Block> filledBlocks = new();
 
             for (int x = 0; x < chunk.MaxX; x++)
             {
@@ -205,7 +205,7 @@ namespace World
                 {
                     for (int z = 0; z < chunk.MaxZ; z++)
                     {
-                        BlockData block = chunk.blocks[x, y, z];
+                        Block block = chunk.blocks[x, y, z];
                         if (block.IsSolidBlock())
                             filledBlocks.Add(chunk.GetBlock(x, y, z));
                     }
@@ -215,9 +215,9 @@ namespace World
             return filledBlocks;
         }
 
-        public static List<BlockData> GetWalkableBlocks(this ChunkData chunk)
+        public static List<Block> GetWalkableBlocks(this ChunkData chunk)
         {
-            List<BlockData> walkableBlocks = new();
+            List<Block> walkableBlocks = new();
 
             for (int x = 0; x < chunk.MaxX; x++)
             {
@@ -225,7 +225,7 @@ namespace World
                 {
                     for (int z = 0; z < chunk.MaxZ; z++)
                     {
-                        BlockData block = chunk.blocks[x, y, z];
+                        Block block = chunk.blocks[x, y, z];
                         if (block != null
                          && block.IsWalkable(chunk))
                             walkableBlocks.Add(chunk.GetBlock(x, y, z));
@@ -236,21 +236,21 @@ namespace World
             return walkableBlocks;
         }
 
-        public static void CreateBlocksUnder(this ChunkData chunk, BlockData block, int amount, BlockType type = BlockType.ROCK)
+        public static void CreateBlocksUnder(this ChunkData chunk, Block block, int amount, BlockType type = BlockType.ROCK)
         {
             int x = block.x;
             int z = block.z;
 
             for (int y = block.y - 1; y >= block.y - amount; y--)
             {
-                BlockData newBlock = BlockFactory.CreateBlock(x, y, z,
+                Block newBlock = BlockFactory.CreateBlock(x, y, z,
                                            type,
                                            new Vector3(block.worldPosition.x, y, block.worldPosition.z));
                 chunk.SetBlock(newBlock);
             }
         }
 
-        public static void AddBlock(this ChunkData chunk, BlockData newBlock, GameWorldChunkData worldChunks)
+        public static void AddBlock(this ChunkData chunk, Block newBlock, GameWorldChunkData worldChunks)
         {
             if (!chunk.InBounds(newBlock.x, newBlock.y, newBlock.z))
                 return;
@@ -260,7 +260,7 @@ namespace World
             chunk.CreateMeshData(worldChunks); // Update mesh.
         }
 
-        public static void RemoveBlock(this ChunkData chunk, BlockData block, GameWorldChunkData worldChunks)
+        public static void RemoveBlock(this ChunkData chunk, Block block, GameWorldChunkData worldChunks)
         {
             if (block.y <= 0) // Cannot destroy bottom-most block.
                 return;

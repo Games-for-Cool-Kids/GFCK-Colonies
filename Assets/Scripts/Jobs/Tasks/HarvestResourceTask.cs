@@ -60,8 +60,8 @@ public class HarvestResourceTask : Task
             {
                 var resourceNode = node.GetComponent<ResourceNode>();
 
-                BlockData nodeBlock = resourceNode.GetBlock();
-                BlockData unitBlock = job.UnitJobComponent.Unit.GetCurrentBlock();
+                Block nodeBlock = resourceNode.GetBlock();
+                Block unitBlock = job.UnitJobComponent.Unit.GetCurrentBlock();
 
                 float distance = (nodeBlock.worldPosition - unitBlock.worldPosition).magnitude;
                 if (distance < 1.45f) // Within one block distance. (also diagonal, see Pythagoras)

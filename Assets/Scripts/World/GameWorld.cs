@@ -17,7 +17,7 @@ namespace World
         public delegate void WorldGenerationEvent();
         public event WorldGenerationEvent WorldGenerationDone;
 
-        public delegate void BlockEvent(BlockData block);
+        public delegate void BlockEvent(Block block);
         public event BlockEvent blockAdd; // ToDo: update paths that intersect this block. (also diagonal)
         public event BlockEvent blockDig; // ToDo: update paths that intersect this block. (also diagonal)
 
@@ -93,19 +93,19 @@ namespace World
             }
         }
 
-        public BlockData GetBlockFromRayHit(RaycastHit hit)
+        public Block GetBlockFromRayHit(RaycastHit hit)
         {
             // Rays intersect with surface. Because the surface is touching, but not inside the box, we need to use the normal to check the position inside the block.
             return GetBlockAt(hit.point - hit.normal * 0.1f);
         }
 
         /// <summary>Expects a position inside of the block.</summary>
-        public BlockData GetBlockAt(Vector3 worldPos)
+        public Block GetBlockAt(Vector3 worldPos)
         {
             return worldChunks.GetBlockAt(worldPos);
         }
 
-        public BlockData GetBlockUnderMouse(bool ignoreOtherLayers = false)
+        public Block GetBlockUnderMouse(bool ignoreOtherLayers = false)
         {
             if (UIUtil.IsMouseOverUI()) // Always ignore UI
                 return null;
@@ -120,7 +120,7 @@ namespace World
             return null;
         }
 
-        public void DigBlock(BlockData block)
+        public void DigBlock(Block block)
         {
             if (block.y <= 0) // Cannot destroy bottom-most block.
                 return;
@@ -141,7 +141,7 @@ namespace World
             if (localPos.y > worldChunks.blockHeight - 1)
                 return;
 
-            BlockData newBlock = BlockFactory.CreateBlock(localPos, BlockType.GROUND, worldPos);
+            Block newBlock = BlockFactory.CreateBlock(localPos, BlockType.GROUND, worldPos);
             chunk.AddBlock(newBlock, worldChunks);
 
             InvokeBlockAddEvent(newBlock);
@@ -160,26 +160,26 @@ namespace World
             }
         }
 
-        private void UpdateChangedChunkMeshes(BlockData block)
+        private void UpdateChangedChunkMeshes(Block block)
         {
             foreach (var chunk in worldChunks.chunks)
                 UpdateChunkMesh(chunk);
         }
 
-        public void InvokeBlockAddEvent(BlockData block)
+        public void InvokeBlockAddEvent(Block block)
         {
             blockAdd?.Invoke(block);
         }
 
-        public void InvokeBlockDigEvent(BlockData block)
+        public void InvokeBlockDigEvent(Block block)
         {
             blockDig?.Invoke(block);
         }
 
         /// <summary>Only checks y of bounds min.</summary>
-        public BlockData[,] GetContainedBlocks(Bounds bounds)
+        public Block[,] GetContainedBlocks(Bounds bounds)
         {
-            BlockData[,] result = new BlockData[Mathf.FloorToInt(bounds.size.x), Mathf.FloorToInt(bounds.size.z)];
+            Block[,] result = new Block[Mathf.FloorToInt(bounds.size.x), Mathf.FloorToInt(bounds.size.z)];
 
             int x_start = Mathf.FloorToInt(bounds.min.x);
             int y = Mathf.FloorToInt(bounds.min.y);
@@ -196,7 +196,7 @@ namespace World
             return result;
         }
 
-        public BlockData GetSurfaceBlockUnder(Vector3 worldPos)
+        public Block GetSurfaceBlockUnder(Vector3 worldPos)
         {
             ChunkData chunk = worldChunks.GetChunkAt(worldPos);
 
@@ -210,7 +210,7 @@ namespace World
 
             for (int y = startY; y > 0; y--) // Search from top-down until we hit a surface block.
             {
-                BlockData block = chunk.GetBlock(x, y, z);
+                Block block = chunk.GetBlock(x, y, z);
                 if (block.IsSolidBlock())
                     return block;
             }
@@ -219,9 +219,9 @@ namespace World
 
         }
 
-        public List<BlockData> GetSurroundingBlocks(Vector3 worldPos, bool diagonal = true, bool includeAir = false)
+        public List<Block> GetSurroundingBlocks(Vector3 worldPos, bool diagonal = true, bool includeAir = false)
         {
-            List<BlockData> neighbors = new List<BlockData>();
+            List<Block> neighbors = new List<Block>();
 
             for (int x = -1; x <= 1; x++)
             {
@@ -236,7 +236,7 @@ namespace World
                         continue;
 
                     Vector3 searchPos = worldPos + new Vector3(x, 0, z);
-                    BlockData neighbor = GetBlockAt(searchPos);
+                    Block neighbor = GetBlockAt(searchPos);
                     if (neighbor != null)
                     {
                         if (!includeAir
