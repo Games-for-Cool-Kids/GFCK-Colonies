@@ -84,7 +84,7 @@ public class Building : MonoBehaviour
 
     private void CreateBuildGrid()
     {
-        var bounds = GameObjectUtil.GetGridBounds(gameObject);
+        var bounds = gameObject.GetGridBounds();
         buildGrid.ResizeGrid(Mathf.FloorToInt(bounds.size.x), Mathf.FloorToInt(bounds.size.z));
     }
 }

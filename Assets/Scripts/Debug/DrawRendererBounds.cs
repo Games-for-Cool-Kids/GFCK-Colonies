@@ -9,7 +9,7 @@ public class DrawRendererBounds : MonoBehaviour
         {
             var bounds = renderer.bounds;
 
-            var gridBounds = GameObjectUtil.GetGridBounds(gameObject);
+            var gridBounds = gameObject.GetGridBounds();
 
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireCube(bounds.center, bounds.size);

@@ -45,7 +45,7 @@ public class BuildingGridDrawer : MonoBehaviour
         _lastBuildingPos = _building.transform.position;
 
         BuildingGrid buildGrid = _building.buildGrid;
-        Bounds bounds = GameObjectUtil.GetGridBounds(_building.gameObject);
+        Bounds bounds = _building.gameObject.GetGridBounds();
         for (int x = 0; x < buildGrid.width; x++)
         {
             for (int z = 0; z < buildGrid.length; z++)

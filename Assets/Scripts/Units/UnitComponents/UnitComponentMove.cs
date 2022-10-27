@@ -81,7 +81,7 @@ public class UnitComponentMove : BaseUnitComponent
 
         Block targetBlock = _path[_pathIndex + 1];
 
-        Vector3 targetPos = targetBlock.GetSurfaceWorldPos() + GameObjectUtil.GetPivotToMeshMinOffset(gameObject);
+        Vector3 targetPos = targetBlock.GetSurfaceWorldPos() + gameObject.GetPivotToMeshMinOffset();
         Vector3 characterToTarget = targetPos - transform.position;
         Vector3 direction = characterToTarget.normalized;
         Vector3 move = direction * Unit.moveSpeed * Time.fixedDeltaTime;
