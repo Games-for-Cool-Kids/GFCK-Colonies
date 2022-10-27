@@ -4,7 +4,7 @@ namespace World
 {
     public static class GameWorldDataExtensions
     {
-        public static ChunkData GetChunk(this GameWorldChunkData worldChunks, int x, int z)
+        public static Chunk GetChunk(this GameWorldChunkData worldChunks, int x, int z)
         {
             if (x < 0 || x >= worldChunks.worldChunkWidth
             || z < 0 || z >= worldChunks.worldChunkWidth)
@@ -13,7 +13,7 @@ namespace World
             return worldChunks.chunks[x, z];
         }
 
-        public static ChunkData GetChunkAt(this GameWorldChunkData worldChunks, Vector3 worldPos)
+        public static Chunk GetChunkAt(this GameWorldChunkData worldChunks, Vector3 worldPos)
         {
             Vector3 relativePos = worldPos + new Vector3(0.5f, 0.5f, 0.5f); // We need offset of half a block. Origin is middle of first block.
 

@@ -58,14 +58,14 @@ namespace World
             return neighbor.IsSolidBlock();
         }
 
-        public static bool IsSurfaceBlock(this Block block, ChunkData chunk)
+        public static bool IsSurfaceBlock(this Block block, Chunk chunk)
         {
             Block blockAbove = chunk.GetBlockAdjacentTo(block, BlockAdjacency.ABOVE);
             return blockAbove == null
                 || blockAbove.type == BlockType.AIR;
         }
 
-        public static bool IsWalkable(this Block block, ChunkData chunk)
+        public static bool IsWalkable(this Block block, Chunk chunk)
         {
             return block.IsSurfaceBlock(chunk)
                 && block.type != BlockType.AIR

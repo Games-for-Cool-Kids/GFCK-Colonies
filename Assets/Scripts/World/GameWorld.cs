@@ -50,7 +50,7 @@ namespace World
                 worldGenerator.Run();
         }
 
-        private void TakeGeneratedWorld(ChunkData[,] generatedChunks)
+        private void TakeGeneratedWorld(Chunk[,] generatedChunks)
         {
             worldChunks.chunks = generatedChunks;
             chunkObjects = new GameObject[worldChunks.worldChunkWidth, worldChunks.worldChunkWidth];
@@ -65,9 +65,9 @@ namespace World
             WorldGenerationDone?.Invoke();
         }
 
-        private void CreateChunkObject(ChunkData chunk)
+        private void CreateChunkObject(Chunk chunk)
         {
-            GameObject newChunkObject = new GameObject("ChunkData" + chunk.origin.ToString());
+            GameObject newChunkObject = new GameObject("Chunk" + chunk.origin.ToString());
             newChunkObject.isStatic = true;
             newChunkObject.layer = LayerMask.NameToLayer(GlobalDefines.worldLayerName);
             newChunkObject.transform.parent = transform;
@@ -125,7 +125,7 @@ namespace World
             if (block.y <= 0) // Cannot destroy bottom-most block.
                 return;
 
-            ChunkData chunk = worldChunks.GetChunkAt(block.worldPosition);
+            Chunk chunk = worldChunks.GetChunkAt(block.worldPosition);
             chunk.RemoveBlock(block, worldChunks);
 
             InvokeBlockDigEvent(block);
@@ -135,7 +135,7 @@ namespace World
 
         public void AddBlock(Vector3 worldPos)
         {
-            ChunkData chunk = worldChunks.GetChunkAt(worldPos);
+            Chunk chunk = worldChunks.GetChunkAt(worldPos);
 
             Vector3 localPos = chunk.GetLocalPos(worldPos);
             if (localPos.y > worldChunks.blockHeight - 1)
@@ -149,7 +149,7 @@ namespace World
             UpdateChunkMesh(chunk);
         }
 
-        private void UpdateChunkMesh(ChunkData chunk)
+        private void UpdateChunkMesh(Chunk chunk)
         {
             if (chunk.meshChanged)
             {
@@ -198,7 +198,7 @@ namespace World
 
         public Block GetSurfaceBlockUnder(Vector3 worldPos)
         {
-            ChunkData chunk = worldChunks.GetChunkAt(worldPos);
+            Chunk chunk = worldChunks.GetChunkAt(worldPos);
 
             if (chunk == null)
                 return null;

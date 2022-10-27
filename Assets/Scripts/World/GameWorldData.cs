@@ -7,6 +7,6 @@ namespace World
         public int worldChunkWidth; // Number of chunks in x/z direction.
         public int blockHeight;
 
-        public ChunkData[,] chunks;
+        public Chunk[,] chunks;
     }
 }

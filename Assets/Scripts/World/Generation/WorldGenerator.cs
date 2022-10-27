@@ -27,7 +27,7 @@ public class WorldGenerator
     private GameWorldChunkData _worldChunks = new();
 
     // Finished callback
-    public delegate void WorldGenerationFinishedCallBack(ChunkData[,] chunks);
+    public delegate void WorldGenerationFinishedCallBack(Chunk[,] chunks);
     private WorldGenerationFinishedCallBack _worldGenFinishedCallback;
 
     // Fields
@@ -105,7 +105,7 @@ public class WorldGenerator
 
     private void CreateChunks()
     {
-        _worldChunks.chunks = new ChunkData[_worldChunkWidth, _worldChunkWidth];
+        _worldChunks.chunks = new Chunk[_worldChunkWidth, _worldChunkWidth];
 
         for (int x = 0; x < _worldChunkWidth; x++)
         {
@@ -137,7 +137,7 @@ public class WorldGenerator
         };
     }
 
-    private void AddChunk(ChunkData chunk)
+    private void AddChunk(Chunk chunk)
     {
         _worldChunks.chunks[chunk.x, chunk.z] = chunk; // Store generated chunk
     }
@@ -158,8 +158,8 @@ public class WorldGenerator
 
     public void FillNeighboringEdge(int x, int z, BlockAdjacency direction)
     {
-        ChunkData current = _worldChunks.chunks[x, z];
-        ChunkData neighbor = null;
+        Chunk current = _worldChunks.chunks[x, z];
+        Chunk neighbor = null;
         switch (direction)
         {
             case BlockAdjacency.NORTH:

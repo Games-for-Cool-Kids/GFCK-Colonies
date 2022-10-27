@@ -4,9 +4,9 @@ namespace World
 {
     public class ChunkFactory
     {
-        public static ChunkData CreateChunk(int x, int z, Vector3 position, int size, int maxY)
+        public static Chunk CreateChunk(int x, int z, Vector3 position, int size, int maxY)
         {
-            ChunkData chunk = new ChunkData();
+            Chunk chunk = new Chunk();
 
             chunk.x = x;
             chunk.z = z;

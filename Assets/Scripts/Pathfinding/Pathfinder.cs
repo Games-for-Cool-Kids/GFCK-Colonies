@@ -57,7 +57,7 @@ namespace Pathfinding
             GenerateWalkableChunkNodeGrids(world.worldChunks.chunks);
         }
 
-        private void GenerateWalkableChunkNodeGrids(ChunkData[,] chunks)
+        private void GenerateWalkableChunkNodeGrids(Chunk[,] chunks)
         {
             _chunkNodeGrids = new NodeGrid[worldChunkWidth, worldChunkWidth];
 
