@@ -176,8 +176,8 @@ namespace World
             blockDig?.Invoke(block);
         }
 
-        /// <summary>Only checks y of bounds min.</summary>
-        public Block[,] GetContainedBlocks(Bounds bounds)
+        /// <summary>Returns all blocks on the min-y of the bounds.</summary>
+        public Block[,] GetBlocksWithinBoundsFloor(Bounds bounds)
         {
             Block[,] result = new Block[Mathf.FloorToInt(bounds.size.x), Mathf.FloorToInt(bounds.size.z)];
 
