@@ -5,12 +5,12 @@ using UnityEngine;
 
 public abstract class BaseUnitComponent : MonoBehaviour
 {
-    public Unit Unit = null;
+    public Unit Owner = null;
 
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        Unit = GetComponent<Unit>();
-        Debug.Assert(Unit != null);
+        Owner = GetComponent<Unit>();
+        Debug.Assert(Owner != null);
     }
 }

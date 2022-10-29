@@ -26,6 +26,9 @@ public class JobManager : MonoBehaviourSingleton<JobManager>
             job.UnitJobComponent.ClearJob();
     }
 
+    // Bit of a weird thing. This class hold the job, but then passes ownership to the unit. This class could either
+    // 1. Hold just JobData, and the unit (JobComponent) could start and maintain the job, or (better)
+    // 2. This class keeps the ownership over the job and handles creation, destruction and ticking
     public Job AssignToAvailableJob(UnitComponentJob employee)
     {
         if (availableJobs.Count == 0)

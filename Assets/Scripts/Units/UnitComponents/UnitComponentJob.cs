@@ -6,7 +6,7 @@ public class UnitComponentJob : BaseUnitComponent
 {
     private Transform _toolSlot = null;
 
-    public Job job = null;
+    protected Job job = null;
 
     // TODO Too specific
     public int harvestDamage = 10;
@@ -24,6 +24,7 @@ public class UnitComponentJob : BaseUnitComponent
     // Update is called once per frame
     void Update()
     {
+        // TODO We should probably avoid polling. Let the JobManager look for an available Unit when a new job becomes available
         if (job == null)
             ApplyForJob();
         else
@@ -39,7 +40,6 @@ public class UnitComponentJob : BaseUnitComponent
     {
         job = null;
     }
-
 
     public void FireFromJob()
     {
