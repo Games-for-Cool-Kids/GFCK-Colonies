@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using World;
 
 public class Building : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class Building : MonoBehaviour
 
     public List<Job> jobs = new List<Job>();
 
+    private bool _firstUpdate = true;
+
     public virtual void Start()
     {
         foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
@@ -20,8 +23,16 @@ public class Building : MonoBehaviour
         }
 
         ShowResourceDisplay(false);
+    }
 
-        CreateBuildGrid();
+    private void Update()
+    {
+        // Set grid after first update, because bounding box of renderer is only correct after first render.
+        if (_firstUpdate)
+        {
+            CreateBuildGrid();
+            _firstUpdate = false;
+        }
     }
 
     // Can be done by player-hand, or by villager
@@ -66,15 +77,14 @@ public class Building : MonoBehaviour
         jobs.Add(job);
     }
 
-    public BlockData GetCurrentBlock()
+    public Block GetCurrentBlock()
     {
         return GameManager.Instance.World.GetBlockAt(transform.position + Vector3.down / 2);
     }
 
     private void CreateBuildGrid()
     {
-        var bounds = GameObjectUtil.GetGridBounds(gameObject);
-
+        var bounds = gameObject.GetGridBounds();
         buildGrid.ResizeGrid(Mathf.FloorToInt(bounds.size.x), Mathf.FloorToInt(bounds.size.z));
     }
 }

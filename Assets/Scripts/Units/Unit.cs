@@ -1,29 +1,27 @@
 using System;
 using UnityEngine;
-using UnityEngine.Events;
-using System.Collections;
-using System.Collections.Generic;
+using World;
 
 public class Unit : MonoBehaviour
-{
+{
     public static event Action<GameObject> OnUnitSpawned;
     public static event Action<GameObject> OnUnitDespawned;
 
     public float moveSpeed = 5;
 
-    private void Start()
-    {
-        OnUnitSpawned?.Invoke(gameObject);
+    private void Start()
+    {
+        OnUnitSpawned?.Invoke(gameObject);
     }
 
-    private void OnDestroy()
-    {
-        OnUnitDespawned?.Invoke(gameObject);
+    private void OnDestroy()
+    {
+        OnUnitDespawned?.Invoke(gameObject);
     }
 
-    public BlockData GetCurrentBlock()
+    public Block GetCurrentBlock()
     {
-        Vector3 blockPos = GameObjectUtil.GetObjectBottomPosition(gameObject) - Vector3.up / 2; // Offset with half a block.
+        Vector3 blockPos = gameObject.GetObjectBottomPosition() - Vector3.up / 2; // Offset with half a block.
         return GameManager.Instance.World.GetSurfaceBlockUnder(blockPos);
     }
 }

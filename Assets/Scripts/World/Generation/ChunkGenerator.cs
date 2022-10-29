@@ -1,20 +1,21 @@
 using UnityEngine;
+using World;
 
 public class ChunkGenerator
 {
     private ChunkGeneratorStats _chunkStats;
 
-    private ChunkData _generatedChunk = null;
+    private Chunk _generatedChunk = null;
 
     public volatile bool GenerationCompleted;
 
-    public delegate void ChunkGenerationCallback(ChunkData chunk);
+    public delegate void ChunkGenerationCallback(Chunk chunk);
     ChunkGenerationCallback finishCallback;
 
     public ChunkGenerator(int x, int z, ChunkGeneratorStats stats, ChunkGenerationCallback generationCallback)
     {
         _chunkStats = stats;
-        _generatedChunk = ChunkCode.CreateChunk(x, z, stats.origin, stats.chunkSize, stats.height);
+        _generatedChunk = ChunkFactory.CreateChunk(x, z, stats.origin, stats.chunkSize, stats.height);
 
         finishCallback = generationCallback;
     }
@@ -41,10 +42,10 @@ public class ChunkGenerator
                 int y = Mathf.FloorToInt(height * _chunkStats.height);
 
                 Vector3 blockWorldPos = _chunkStats.origin + new Vector3(x, y, z);
-                BlockData newBlock = BlockCode.CreateBlockData(x, y, z, _chunkStats.nodeGrid[x, z].type, blockWorldPos);
-                ChunkCode.SetBlock(_generatedChunk, newBlock);
+                Block newBlock = BlockFactory.CreateBlock(x, y, z, _chunkStats.nodeGrid[x, z].type, blockWorldPos);
+                _generatedChunk.SetBlock(newBlock);
 
-                ChunkCode.CreateBlocksUnder(_generatedChunk, newBlock, y);
+                _generatedChunk.CreateBlocksUnder(newBlock, y);
             }
         }
     }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using World;
 
 public class PlayerCamera : MonoBehaviour
 {
@@ -57,7 +58,7 @@ public class PlayerCamera : MonoBehaviour
         RaycastHit focusPointHit;
         Physics.Raycast(_blockFocusPoint.position, -Vector3.up, out focusPointHit, 1000, LayerMask.GetMask(GlobalDefines.worldLayerName));
 
-        BlockData focusBlock = GameManager.Instance.World.GetBlockFromRayHit(focusPointHit);
+        Block focusBlock = GameManager.Instance.World.GetBlockFromRayHit(focusPointHit);
         Debug.Assert(focusBlock != null);
 
         if (focusBlock == null)

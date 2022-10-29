@@ -44,10 +44,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8949228526120178112}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05183713e9a9f3940a0dac72dbdf053e, type: 3}
+  m_Script: {fileID: 11500000, guid: 2cee874eaa43465488da3408be8d03b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chunkSize: 32
   material: {fileID: 2100000, guid: cfa4251079c9db54eb415deae520b548, type: 2}
   worldVariable: {fileID: 11400000, guid: dcb761a78047c944790678bd7027d5e9, type: 2}
 --- !u!114 &1920009736
@@ -62,7 +61,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc56a312ab425b740afde328dde37447, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxJobs: 3
+  MaxThreads: 3
 --- !u!114 &1920009739
 MonoBehaviour:
   m_ObjectHideFlags: 0

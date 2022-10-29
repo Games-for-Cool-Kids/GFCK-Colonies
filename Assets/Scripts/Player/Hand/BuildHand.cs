@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using World;
 
 public class BuildHand : MonoBehaviour
 {
@@ -19,30 +20,23 @@ public class BuildHand : MonoBehaviour
 
     void Update()
     {
-        if(_selectedStructure != null)
-            MoveStructureToMousePos();
-
-        if (Input.GetMouseButtonDown(0))
-            PlaceStructure();
-
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1)) // right mouse btn
             CancelBuilding();
-    }
 
-    private void MoveStructureToMousePos()
-    {
         var hovered_block = GameManager.Instance.World.GetBlockUnderMouse(true);
-        if (hovered_block != null
-         && BlockCode.IsBuildable(hovered_block))
+        if (hovered_block == null
+         || !hovered_block.IsBuildable())
+            return;
+
+        if (_selectedStructure != null)
         {
             MoveBuildingTo(hovered_block);
+
+            RotateStructureOnInput();
         }
 
-        if (Input.GetKeyDown(KeyCode.E)
-         || Mouse.current.middleButton.wasPressedThisFrame)
-            _selectedStructure.transform.Rotate(Vector3.up, 90, Space.World);
-        if (Input.GetKeyDown(KeyCode.Q))
-            _selectedStructure.transform.Rotate(Vector3.up, -90, Space.World);
+        if (Input.GetMouseButtonDown(0)) // left mouse btn
+            PlaceStructure();
     }
 
     private void PlaceStructure()
@@ -69,6 +63,15 @@ public class BuildHand : MonoBehaviour
         SetTemporaryStructureProperties();
     }
 
+    private void RotateStructureOnInput()
+    {
+        if (Input.GetKeyDown(KeyCode.E)
+         || Mouse.current.middleButton.wasPressedThisFrame)
+            _selectedStructure.transform.Rotate(Vector3.up, 90, Space.World);
+        if (Input.GetKeyDown(KeyCode.Q))
+            _selectedStructure.transform.Rotate(Vector3.up, -90, Space.World);
+    }
+
     public void SetTemporaryStructureProperties()
     {
         // Set preview material
@@ -92,12 +95,15 @@ public class BuildHand : MonoBehaviour
         _selectedStructure = null;
 
         BuildCanceled.Invoke(this, null);
-    }
-    
-    private void MoveBuildingTo(BlockData block)
-    {
-        Vector3 offset = Vector3.right / 2 + Vector3.forward / 2;
-        _selectedStructure.transform.position = BlockCode.GetSurfaceWorldPos(block) + GameObjectUtil.GetPivotToMeshMinOffset(_selectedStructure) + offset;
-    }
-        
+    }
+    private void MoveBuildingTo(Block block)    {        if (_selectedStructure.TryGetComponent<Building>(out var building)         && !DoesStructureFit(building.buildGrid))
+            return;
+
+        Vector3 offset = Vector3.right / 2 + Vector3.forward / 2;        _selectedStructure.transform.position = block.GetSurfaceWorldPos() + _selectedStructure.GetPivotToMeshMinOffset() + offset;    }
+    private bool DoesStructureFit(BuildingGrid buildingGrid)    {        //var bounds = _selectedStructure.GetGridBounds();        //var structureBlocks = GameManager.Instance.GameWorld.GetContainedBlocks(bounds);
+        //Debug.Assert(structureBlocks.Length == buildingGrid.grid.Length);
+        //for (int x = 0; x < structureBlocks.GetLength(0); x++)        //{        //    for (int z = 0; z < structureBlocks.GetLength(1); z++)        //    {        //        var block = structureBlocks[x, z];
+        //        if (block == null)        //            return false;
+        //        if (buildingGrid.grid[x, z] != BuildingGrid.Cell.FREE        //         && !BlockCode.IsBuildable(block))        //            return false;        //    }        //}
+        return true;    }
 }

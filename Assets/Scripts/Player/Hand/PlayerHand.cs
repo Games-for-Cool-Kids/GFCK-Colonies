@@ -44,6 +44,7 @@ public class PlayerHand : MonoBehaviour
             case PlayerHandState.GRABBING:
                 Debug.Assert(_selectedObject != null);
 
+                // TODO: Physics forces should be applied in FixedUpdate instead of Update.
                 DragSelectedObject();
 
                 if (Input.GetMouseButtonUp(0))

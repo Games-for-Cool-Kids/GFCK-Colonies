@@ -1,11 +1,12 @@
 using UnityEngine;
+using World;
 
 public class GameManager : MonoBehaviourSingleton<GameManager>
 {
     public PlayerCamera PlayerCamera { get; private set; }
     public HandController HandController { get; private set; }
 
-    public World World { get; private set; }
+    public GameWorld World { get; private set; }
 
     public delegate void GameObjectEvent(GameObject gameObject);
     public event GameObjectEvent gameObjectCreate;
@@ -35,9 +36,9 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 
         // Store world.
         var worldObject = GameObject.Find(GlobalDefines.worldName);
-        World = worldObject.GetComponent<World>();
+        World = worldObject.GetComponent<GameWorld>();
         if (worldObject == null || World == null)
-            Debug.LogWarning("World not found.");
+            Debug.LogWarning("GameWorld not found.");
     }
 
     public GameObject InstantiateGameObject(GameObject obj)

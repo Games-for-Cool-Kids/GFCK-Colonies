@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using World;
 
 public abstract class SimulationStep : ScriptableObject
 {
-	public abstract BlockType GetNodeType(WorldGenBlockNode node, WorldVariable worldVar, int maxX, int maxY);
+	public abstract World.BlockType GetNodeType(WorldGenBlockNode node, WorldVariable worldVar, int maxX, int maxY);
 
 	protected WorldGenBlockNode GetNodeFromGrid(int x, int y, WorldGenBlockNode[,] grid, int maxX, int maxY)
 	{

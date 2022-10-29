@@ -1,6 +1,7 @@
 using UnityEngine;
+using World;
 
-[CreateAssetMenu(menuName = "World/SimulationStep/HeightToBlockType")]
+[CreateAssetMenu(menuName = "GameWorld/SimulationStep/HeightToBlockType")]
 public class HeightToBlockTypeStep : SimulationStep
 {
     public float waterLevel = 0.2f;
