@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Economy;
 
 public class ResourceDisplay : MonoBehaviour
 {
-    private Building _building;
+    private Inventory _linkedInventory;
 
     [Serializable]
     public class ResourceDictionary : UDictionary<ResourceType, Sprite> { }
@@ -16,16 +17,16 @@ public class ResourceDisplay : MonoBehaviour
 
     private void Start()
     {
-        _building = gameObject.GetComponentInParent<Building>();
-        _building.ResourceAdded += AddResource;
+        _linkedInventory = gameObject.GetComponentInParent<StorageEntity>().inventory;
+        _linkedInventory.ResourceChanged += UpdateResource;
     }
 
-    private void AddResource(object sender, ResourceType resource)
+    private void UpdateResource(object sender, ResourceType resource)
     {
         if (!ResourceCountIconElements.ContainsKey(resource)) // Only add if not created yet.
             CreateResourceUIElement(resource);
 
-        ResourceCountIconElements[resource].setCount(_building.StoredResources[resource]);
+        ResourceCountIconElements[resource].setCount(_linkedInventory.GetResource(resource));
     }
 
     void CreateResourceUIElement(ResourceType resource)
