@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 6456415736538556250}
   - component: {fileID: 6456415736538556249}
   - component: {fileID: 6456415736538556247}
-  - component: {fileID: 4123883670569800836}
   - component: {fileID: 5833919263182616088}
   m_Layer: 9
   m_Name: WoodenLog
@@ -49,7 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bde1b50e8785d67458e159fa874dce37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 0
+  type: 0
+  maxLifeTime: 20
 --- !u!33 &6456415736538556250
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -117,19 +117,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4123883670569800836
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6456415736538556246}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bde1b50e8785d67458e159fa874dce37, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Type: 0
 --- !u!136 &5833919263182616088
 CapsuleCollider:
   m_ObjectHideFlags: 0
