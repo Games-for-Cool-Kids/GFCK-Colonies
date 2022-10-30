@@ -50,7 +50,7 @@ public class UnitComponentMove : BaseUnitComponent
         _onArrived = onArrived;
         lookingForPath = true;
 
-        PathfindMaster.Instance.RequestPathfind(Unit.GetCurrentBlock(), targetBlock, SetPath);
+        PathfindMaster.Instance.RequestPathfind(Owner.GetCurrentBlock(), targetBlock, SetPath);
     }
 
     public void Stop()
@@ -84,7 +84,7 @@ public class UnitComponentMove : BaseUnitComponent
         Vector3 targetPos = targetBlock.GetSurfaceWorldPos() + gameObject.GetPivotToMeshMinOffset();
         Vector3 characterToTarget = targetPos - transform.position;
         Vector3 direction = characterToTarget.normalized;
-        Vector3 move = direction * Unit.moveSpeed * Time.fixedDeltaTime;
+        Vector3 move = direction * Owner.moveSpeed * Time.fixedDeltaTime;
 
         transform.position += move;
         direction.y = 0; // For rotation.

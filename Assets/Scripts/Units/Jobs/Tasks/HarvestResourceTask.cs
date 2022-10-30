@@ -63,8 +63,8 @@ namespace Jobs
                 {
                     var resourceNode = node.GetComponent<ResourceNode>();
 
-                    Block nodeBlock = resourceNode.GetBlock();
-                    Block unitBlock = job.UnitJobComponent.Unit.GetCurrentBlock();
+                var nodeBlock = resourceNode.GetBlock();
+                var unitBlock = job.UnitJobComponent.Owner.GetCurrentBlock();
 
                     // TODO: distance should be calculated on bounding boxes.
                     float distance = (nodeBlock.worldPosition - unitBlock.worldPosition).magnitude;
