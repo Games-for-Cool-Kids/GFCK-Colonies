@@ -2,14 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum JobType
+
 {
-    UNEMPLOYED, // :(
-    COURIER,
-    LUMBERJACK,
-    MINER,
-    SOLDIER,
-}
 
 
 // ToDo: First time unit starts a job it should have a task to go the job building, to take a tool and start.
