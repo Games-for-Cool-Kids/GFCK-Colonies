@@ -17,10 +17,12 @@ public class HarvestResourceTask : Task
     {
         base.Start();
 
+        // This task assumes the character is already next to the node.
+        // Otherwise we will finish the task unsuccesfully.
         _node = FindResourceNode();
         if (_node == null)
         {
-            Debug.LogError("No node found next to unit! Cannot complete task.");
+            Debug.LogError("No node found next to unit! Task failed.");
             Finish();
         }
 
@@ -46,7 +48,6 @@ public class HarvestResourceTask : Task
         }
     }
 
-    // This function assumes the character is already next to the node, otherwise we will finish the task.
     private ResourceNode FindResourceNode()
     {
         Debug.Assert(_type != ResourceType.RESOURCE_INVALID);
@@ -63,6 +64,7 @@ public class HarvestResourceTask : Task
                 Block nodeBlock = resourceNode.GetBlock();
                 Block unitBlock = job.UnitJobComponent.Unit.GetCurrentBlock();
 
+                // TODO: distance should be calculated on bounding boxes.
                 float distance = (nodeBlock.worldPosition - unitBlock.worldPosition).magnitude;
                 if (distance < 1.45f) // Within one block distance. (also diagonal, see Pythagoras)
                     return resourceNode;
@@ -71,6 +73,4 @@ public class HarvestResourceTask : Task
 
         return null;
     }
-
-
 }
