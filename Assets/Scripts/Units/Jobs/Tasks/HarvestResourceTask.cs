@@ -52,11 +52,11 @@ public class HarvestResourceTask : Task
         Debug.Assert(_type != ResourceType.RESOURCE_INVALID);
         if (_type == ResourceType.RESOURCE_INVALID) return null;
 
-        string nodeName = Resource.ResourceTypeToResourceNodeMap[_type];
+        string nodeTag = Conversions.ResourceNodeTagForType(_type);
 
         foreach (var node in GameObject.FindGameObjectsWithTag(GlobalDefines.resourceNodeTag))
         {
-            if (node.name.Contains(nodeName))
+            if (node.name.Contains(nodeTag))
             {
                 var resourceNode = node.GetComponent<ResourceNode>();
 
