@@ -26,6 +26,8 @@ public class BuildingEditor : Editor
     {
         DrawDefaultInspector();
 
+        var inventory = _building.inventory;
+        InventoryEditor.DrawInventory(inventory);
 
         _showGrid = EditorGUILayout.Foldout(_showGrid, "Grid");
         if (_showGrid)
@@ -56,7 +58,7 @@ public class BuildingEditor : Editor
             }
             EditorGUILayout.EndVertical();
 
-            //serializedObject.Update();
+            serializedObject.Update();
         }
     }
 }
