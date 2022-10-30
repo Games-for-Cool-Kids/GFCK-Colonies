@@ -2,38 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Task
+namespace Jobs
 {
-    protected Job job; // Parent job
-    protected bool _forceStop = false;
-
-    public delegate void TaskEvent();
-    public event TaskEvent Finished;
-
-    public Task(Job job)
+    public class Task
     {
-        this.job = job;
-    }
+        protected Job job; // Parent job
+        protected bool _forceStop = false;
 
-    public virtual void Start()
-    {
+        public delegate void TaskEvent();
+        public event TaskEvent Finished;
 
-    }
-    public virtual void Tick()
-    {
-        if (_forceStop)
+        public Task(Job job)
         {
-            Finish();
-            return;
+            this.job = job;
         }
-    }
-    public virtual void Finish()
-    {
-        Finished?.Invoke();
-    }
 
-    public virtual void ForceStop()
-    {
-        _forceStop = true;
+        public virtual void Start()
+        {
+
+        }
+        public virtual void Tick()
+        {
+            if (_forceStop)
+            {
+                Finish();
+                return;
+            }
+        }
+        public virtual void Finish()
+        {
+            Finished?.Invoke();
+        }
+
+        public virtual void ForceStop()
+        {
+            _forceStop = true;
+        }
     }
 }

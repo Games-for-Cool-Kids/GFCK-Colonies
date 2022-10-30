@@ -1,76 +1,79 @@
 using UnityEngine;
 using World;
 
-public class HarvestResourceTask : Task
+namespace Jobs
 {
-    private ResourceType _type;
-    private ResourceNode _node;
-
-    private float _timeSinceLastHarvest = 0;
-
-    public HarvestResourceTask(Job job, ResourceType type) : base(job)
+    public class HarvestResourceTask : Task
     {
-        this._type = type;
-    }
+        private ResourceType _type;
+        private ResourceNode _node;
 
-    public override void Start()
-    {
-        base.Start();
+        private float _timeSinceLastHarvest = 0;
 
-        // This task assumes the character is already next to the node.
-        // Otherwise we will finish the task unsuccesfully.
-        _node = FindResourceNode();
-        if (_node == null)
+        public HarvestResourceTask(Job job, ResourceType type) : base(job)
         {
-            Debug.LogError("No node found next to unit! Task failed.");
-            Finish();
+            this._type = type;
         }
 
-        _timeSinceLastHarvest = 0;
-    }
-
-    public override void Tick()
-    {
-        base.Tick();
-
-        float timeToHarvest = 1.0f / job.UnitJobComponent.harvestSpeed;
-        if(_timeSinceLastHarvest >= timeToHarvest)
+        public override void Start()
         {
-            if (_node.Harvest(job.UnitJobComponent.harvestDamage))
+            base.Start();
+
+            // This task assumes the character is already next to the node.
+            // Otherwise we will finish the task unsuccesfully.
+            _node = FindResourceNode();
+            if (_node == null)
             {
-                _node.SpawnResource();
+                Debug.LogError("No node found next to unit! Task failed.");
                 Finish();
             }
+
+            _timeSinceLastHarvest = 0;
         }
-        else
+
+        public override void Tick()
         {
-            _timeSinceLastHarvest += Time.deltaTime;
-        }
-    }
+            base.Tick();
 
-    private ResourceNode FindResourceNode()
-    {
-        Debug.Assert(_type != ResourceType.RESOURCE_INVALID);
-        if (_type == ResourceType.RESOURCE_INVALID) return null;
-
-        string nodeTag = Conversions.ResourceNodeTagForType(_type);
-
-        foreach (var node in GameObject.FindGameObjectsWithTag(GlobalDefines.resourceNodeTag))
-        {
-            if (node.name.Contains(nodeTag))
+            float timeToHarvest = 1.0f / job.UnitJobComponent.harvestSpeed;
+            if (_timeSinceLastHarvest >= timeToHarvest)
             {
-                var resourceNode = node.GetComponent<ResourceNode>();
-
-                Block nodeBlock = resourceNode.GetBlock();
-                Block unitBlock = job.UnitJobComponent.Unit.GetCurrentBlock();
-
-                // TODO: distance should be calculated on bounding boxes.
-                float distance = (nodeBlock.worldPosition - unitBlock.worldPosition).magnitude;
-                if (distance < 1.45f) // Within one block distance. (also diagonal, see Pythagoras)
-                    return resourceNode;
+                if (_node.Harvest(job.UnitJobComponent.harvestDamage))
+                {
+                    _node.SpawnResource();
+                    Finish();
+                }
+            }
+            else
+            {
+                _timeSinceLastHarvest += Time.deltaTime;
             }
         }
 
-        return null;
+        private ResourceNode FindResourceNode()
+        {
+            Debug.Assert(_type != ResourceType.RESOURCE_INVALID);
+            if (_type == ResourceType.RESOURCE_INVALID) return null;
+
+            string nodeTag = Conversions.ResourceNodeTagForType(_type);
+
+            foreach (var node in GameObject.FindGameObjectsWithTag(GlobalDefines.resourceNodeTag))
+            {
+                if (node.name.Contains(nodeTag))
+                {
+                    var resourceNode = node.GetComponent<ResourceNode>();
+
+                    Block nodeBlock = resourceNode.GetBlock();
+                    Block unitBlock = job.UnitJobComponent.Unit.GetCurrentBlock();
+
+                    // TODO: distance should be calculated on bounding boxes.
+                    float distance = (nodeBlock.worldPosition - unitBlock.worldPosition).magnitude;
+                    if (distance < 1.45f) // Within one block distance. (also diagonal, see Pythagoras)
+                        return resourceNode;
+                }
+            }
+
+            return null;
+        }
     }
 }

@@ -2,38 +2,41 @@ using UnityEngine;
 using Pathfinding;
 using World;
 
-public class MoveToObjectTask : Task
+namespace Jobs
 {
-    protected UnitComponentMove unitMoveComponent;
-
-    public GameObject TargetObject;
-
-    public MoveToObjectTask(Job job) : base(job) { }
-
-
-    public override void Start()
+    public class MoveToObjectTask : Task
     {
-        base.Start();
+        protected UnitComponentMove unitMoveComponent;
 
-        unitMoveComponent = GameObject.FindObjectOfType<UnitComponentMove>();
-        Debug.Assert(unitMoveComponent != null);
+        public GameObject TargetObject;
 
-        GoToTargetObject();
-    }
+        public MoveToObjectTask(Job job) : base(job) { }
 
-    protected void GoToTargetObject()
-    {
-        Debug.Assert(TargetObject != null);
-        if (TargetObject == null) return;
 
-        Vector3 targetPos = TargetObject.GetObjectBottomPosition();
-        Block targetBlock = GameManager.Instance.World.GetSurfaceBlockUnder(targetPos);
+        public override void Start()
+        {
+            base.Start();
 
-        unitMoveComponent.MoveToBlock(targetBlock, Finish);
-    }
+            unitMoveComponent = GameObject.FindObjectOfType<UnitComponentMove>();
+            Debug.Assert(unitMoveComponent != null);
 
-    protected void Stop()
-    {
-        unitMoveComponent.Stop();
+            GoToTargetObject();
+        }
+
+        protected void GoToTargetObject()
+        {
+            Debug.Assert(TargetObject != null);
+            if (TargetObject == null) return;
+
+            Vector3 targetPos = TargetObject.GetObjectBottomPosition();
+            Block targetBlock = GameManager.Instance.World.GetSurfaceBlockUnder(targetPos);
+
+            unitMoveComponent.MoveToBlock(targetBlock, Finish);
+        }
+
+        protected void Stop()
+        {
+            unitMoveComponent.Stop();
+        }
     }
 }

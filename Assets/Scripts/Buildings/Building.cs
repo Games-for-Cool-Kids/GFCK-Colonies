@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using World;
+using Jobs;
 
 public class Building : MonoBehaviour
 {
@@ -40,9 +41,9 @@ public class Building : MonoBehaviour
     {
         ShowResourceDisplay(true);
 
-        StoredResources[resource.Type] += 1;
+        StoredResources[resource.type] += 1;
 
-        ResourceAdded.Invoke(this, resource.Type);
+        ResourceAdded.Invoke(this, resource.type);
 
         ResourceManager.Instance.RemoveResourceFromWorld(resource); // Call last since it also destroys the object.
     }
