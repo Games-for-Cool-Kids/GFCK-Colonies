@@ -143,6 +143,9 @@ public class PlayerHand : MonoBehaviour
 
         Vector3 force = targetPosition - currentPosition; // Don't normalize force, points closer, smaller force, further larger. 
         GetSelectedObjectRigidBody().AddForce(force * HandDragForce);
+
+        var resource = _selectedObject.GetComponent<Resource>();
+        resource.Touch();
     }
 
     private Vector3 CalculateDragTargetPosition()

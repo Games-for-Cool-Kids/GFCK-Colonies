@@ -35,14 +35,13 @@ public class ResourceManager : MonoBehaviourSingleton<ResourceManager>
 
     public void RemoveResourceFromWorld(Resource resourceInWorld)
     {
+        List<Resource> container;
         if(_resourcesInWorldClaimed.Contains(resourceInWorld))
-        {
-            RemoveResourceFromContainer(resourceInWorld, _resourcesInWorldClaimed);
-        }
+            container = _resourcesInWorldClaimed;
         else
-        {
-            RemoveResourceFromContainer(resourceInWorld, _resourcesInWorldUnclaimed);
-        }
+            container = _resourcesInWorldUnclaimed;
+
+        RemoveResourceFromContainer(resourceInWorld, container);
 
         Destroy(resourceInWorld.gameObject);
     }
