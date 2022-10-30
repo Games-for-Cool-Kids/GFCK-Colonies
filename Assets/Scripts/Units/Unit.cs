@@ -1,23 +1,17 @@
+using Economy;
 using System;
 using UnityEngine;
 using World;
 
-public class Unit : MonoBehaviour
-{
-    public static event Action<GameObject> OnUnitSpawned;
+public class Unit : StorageEntity
+{    public static event Action<GameObject> OnUnitSpawned;
     public static event Action<GameObject> OnUnitDespawned;
 
     public float moveSpeed = 5;
 
-    private void Start()
-    {
-        OnUnitSpawned?.Invoke(gameObject);
-    }
+    private void Start()    {        OnUnitSpawned?.Invoke(gameObject);    }
 
-    private void OnDestroy()
-    {
-        OnUnitDespawned?.Invoke(gameObject);
-    }
+    private void OnDestroy()    {        OnUnitDespawned?.Invoke(gameObject);    }
 
     public Block GetCurrentBlock()
     {

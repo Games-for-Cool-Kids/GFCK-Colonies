@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using World;
 using Jobs;
+using Economy;
 
-public class Building : MonoBehaviour
+public class Building : StorageEntity // Need to add derived classes to BuildingEditor.
 {
-    public BuildingGrid buildGrid = new(); // Need to add derived classes to BuildingEditor.
-
-    public Dictionary<ResourceType, int> StoredResources = new Dictionary<ResourceType, int>();
-
-    public event EventHandler<ResourceType> ResourceAdded;
+    public BuildingGrid buildGrid = new();
 
     public List<Job> jobs = new List<Job>();
 
@@ -18,11 +15,6 @@ public class Building : MonoBehaviour
 
     public virtual void Start()
     {
-        foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
-        {
-            StoredResources.Add(type, 0);
-        }
-
         ShowResourceDisplay(false);
     }
 
@@ -41,22 +33,9 @@ public class Building : MonoBehaviour
     {
         ShowResourceDisplay(true);
 
-        StoredResources[resource.type] += 1;
-
-        ResourceAdded.Invoke(this, resource.type);
+        inventory.AddResource(resource.type);
 
         ResourceManager.Instance.RemoveResourceFromWorld(resource); // Call last since it also destroys the object.
-    }
-
-    public bool HasResources()
-    {
-        foreach (int storedAmount in StoredResources.Values)
-        {
-            if (storedAmount > 0)
-                return true;
-        }
-
-        return false;
     }
 
     private void ShowResourceDisplay(bool show)
