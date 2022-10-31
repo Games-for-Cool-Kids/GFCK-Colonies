@@ -40,7 +40,7 @@ namespace Jobs
             {
                 if (_node.Harvest(job.UnitJobComponent.harvestDamage))
                 {
-                    _node.SpawnResource();
+                    job.UnitJobComponent.Owner.inventory.AddResource(_node.type);
                     Finish();
                 }
             }
@@ -63,8 +63,8 @@ namespace Jobs
                 {
                     var resourceNode = node.GetComponent<ResourceNode>();
 
-                var nodeBlock = resourceNode.GetBlock();
-                var unitBlock = job.UnitJobComponent.Owner.GetCurrentBlock();
+                    var nodeBlock = resourceNode.GetBlock();
+                    var unitBlock = job.UnitJobComponent.Owner.GetCurrentBlock();
 
                     // TODO: distance should be calculated on bounding boxes.
                     float distance = (nodeBlock.worldPosition - unitBlock.worldPosition).magnitude;
