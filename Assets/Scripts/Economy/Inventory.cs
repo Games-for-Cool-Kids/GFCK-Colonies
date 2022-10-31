@@ -17,7 +17,7 @@ namespace Economy
                 _storedResources.Add(type, 0);
         }
 
-        public int GetResource(ResourceType resource)
+        public int GetCount(ResourceType resource)
         {
             return _storedResources[resource];
         }
@@ -55,7 +55,7 @@ namespace Economy
             { 
                 s += type.ToString();
                 s += "-";
-                s += GetResource(type);
+                s += GetCount(type);
                 s += ", ";
             }
             return s;

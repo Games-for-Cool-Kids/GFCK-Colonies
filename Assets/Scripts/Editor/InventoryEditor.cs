@@ -39,7 +39,7 @@ public class InventoryEditor : Editor
         {
             int value = EditorGUILayout.IntField(
                 type.ToString(),
-                inventory.GetResource(type));
+                inventory.GetCount(type));
 
             if (value <= 0)
                 value = 0;
