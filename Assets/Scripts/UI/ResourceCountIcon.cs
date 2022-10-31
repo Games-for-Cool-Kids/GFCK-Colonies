@@ -13,4 +13,9 @@ public class ResourceCountIcon : MonoBehaviour
     {
         gameObject.GetComponentInChildren<TextMeshProUGUI>().text = amount.ToString();
     }
+
+    public void SetVisible(bool visible)
+    {
+        gameObject.SetActive(visible);
+    }
 }

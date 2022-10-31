@@ -13,11 +13,6 @@ public class Building : StorageEntity // Need to add derived classes to Building
 
     private bool _firstUpdate = true;
 
-    public virtual void Start()
-    {
-        ShowResourceDisplay(false);
-    }
-
     private void Update()
     {
         // Set grid after first update, because bounding box of renderer is only correct after first render.
@@ -31,16 +26,9 @@ public class Building : StorageEntity // Need to add derived classes to Building
     // Can be done by player-hand, or by villager
     public void DropOffResource(Resource resource)
     {
-        ShowResourceDisplay(true);
-
         inventory.AddResource(resource.type);
 
         ResourceManager.Instance.RemoveResourceFromWorld(resource); // Call last since it also destroys the object.
-    }
-
-    private void ShowResourceDisplay(bool show)
-    {
-        gameObject.GetComponentInChildren<Canvas>().enabled = show; // First child canvas component can be used to show/hide display.
     }
 
     public void RegisterJobs()

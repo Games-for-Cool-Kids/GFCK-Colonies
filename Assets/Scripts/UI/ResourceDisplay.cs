@@ -18,25 +18,34 @@ public class ResourceDisplay : MonoBehaviour
     private void Start()
     {
         _linkedInventory = gameObject.GetComponentInParent<StorageEntity>().inventory;
-        _linkedInventory.ResourceChanged += UpdateResource;
-    }
+        _linkedInventory.ResourceChanged += UpdateUIVisibility;
 
-    private void UpdateResource(object sender, ResourceType resource)
-    {
-        if (!ResourceCountIconElements.ContainsKey(resource)) // Only add if not created yet.
+        foreach (ResourceType resource in Enum.GetValues(typeof(ResourceType)))
             CreateResourceUIElement(resource);
-
-        ResourceCountIconElements[resource].setCount(_linkedInventory.GetResource(resource));
     }
 
-    void CreateResourceUIElement(ResourceType resource)
+    private void UpdateUIVisibility(object sender, ResourceType resource)
     {
-        Debug.Assert(transform.GetChild(0).GetComponent<HorizontalLayoutGroup>());
+        SetVisible(_linkedInventory.HasResources());
+
+        int resourceCount = _linkedInventory.GetCount(resource);
+        ResourceCountIconElements[resource].setCount(resourceCount);
+        ResourceCountIconElements[resource].SetVisible(resourceCount > 0);
+    }
+
+    private void CreateResourceUIElement(ResourceType resource)
+    {
         GameObject newResourceCountIcon = Instantiate(ResourceCountIconPrefab, transform.GetChild(0)); // Add to first child which is the layout.
 
-        ResourceCountIcon icon = newResourceCountIcon.GetComponentInChildren<ResourceCountIcon>();
-        icon.SetIcon(ResourceIcons[resource]);
+        ResourceCountIcon resourceIcon = newResourceCountIcon.GetComponentInChildren<ResourceCountIcon>();
+        resourceIcon.SetIcon(ResourceIcons[resource]);
+        resourceIcon.SetVisible(false); // Hidden by default, until specific resource is added.
 
-        ResourceCountIconElements.Add(resource, icon);
+        ResourceCountIconElements.Add(resource, resourceIcon);
+    }
+
+    private void SetVisible(bool visible)
+    {
+        GetComponent<Canvas>().enabled = visible; // Use Canvas to toggle visibility.
     }
 }
