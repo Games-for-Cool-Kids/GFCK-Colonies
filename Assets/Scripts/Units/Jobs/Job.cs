@@ -73,5 +73,13 @@ namespace Jobs
 
             currentTask.Start();
         }
+
+        public Unit GetAssignedUnit()
+        {
+            if (UnitJobComponent == null)
+                return null;
+
+            return UnitJobComponent.Owner;
+        }
     }
 }
