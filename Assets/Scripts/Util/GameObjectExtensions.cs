@@ -1,5 +1,7 @@
+using Jobs;
 using System;
 using UnityEngine;
+using World;
 
 public static class GameObjectExtensions
 {
@@ -51,5 +53,27 @@ public static class GameObjectExtensions
         gridBounds.min = snappedMin;
         gridBounds.max = snappedMax;
         return gridBounds;
+    }
+
+    /// <summary>Squared distance between bounding box of this GameObject and bounding box of other GameObject.</summary>
+    public static float GetSqrBBDistanceToObject(this GameObject gameObject, GameObject other)
+    {
+        var thisBB = gameObject.GetGridBounds();
+        var otherBB = gameObject.GetGridBounds();
+
+        var p1 = thisBB.ClosestPoint(other.transform.position);
+        var p2 = otherBB.ClosestPoint(gameObject.transform.position);
+
+        return (p2 - p1).sqrMagnitude;
+    }
+
+    /// <summary>The block that is outside of this objects' BB, closest to point.</summary>
+    public static Block GetClosestNeighboringBlock(this GameObject gameObject, Vector3 point)
+    {
+        var bounds = gameObject.GetGridBounds();
+        var closestPoint = bounds.ClosestPoint(point);
+
+        Vector3 direction = (point - closestPoint).normalized / 2.0f;
+        return GameManager.Instance.World.GetSurfaceBlockUnder(closestPoint + direction);
     }
 }
