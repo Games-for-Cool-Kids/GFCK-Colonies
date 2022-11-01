@@ -28,8 +28,8 @@ namespace Jobs
             Debug.Assert(TargetObject != null);
             if (TargetObject == null) return;
 
-            Vector3 targetPos = TargetObject.GetObjectBottomPosition();
-            Block targetBlock = GameManager.Instance.World.GetSurfaceBlockUnder(targetPos);
+            Vector3 unitPos = job.GetAssignedUnit().transform.position;
+            Block targetBlock = TargetObject.gameObject.GetClosestNeighboringBlock(unitPos);
 
             unitMoveComponent.MoveToBlock(targetBlock, Finish);
         }

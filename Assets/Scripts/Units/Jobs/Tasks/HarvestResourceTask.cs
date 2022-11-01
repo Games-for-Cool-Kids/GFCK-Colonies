@@ -40,7 +40,7 @@ namespace Jobs
             {
                 if (_node.Harvest(job.UnitJobComponent.harvestDamage))
                 {
-                    job.UnitJobComponent.Owner.inventory.AddResource(_node.type);
+                    job.GetAssignedUnit().inventory.AddResource(_node.type);
                     Finish();
                 }
             }
@@ -63,12 +63,8 @@ namespace Jobs
                 {
                     var resourceNode = node.GetComponent<ResourceNode>();
 
-                    var nodeBlock = resourceNode.GetBlock();
-                    var unitBlock = job.UnitJobComponent.Owner.GetCurrentBlock();
-
-                    // TODO: distance should be calculated on bounding boxes.
-                    float distance = (nodeBlock.worldPosition - unitBlock.worldPosition).magnitude;
-                    if (distance < 1.45f) // Within one block distance. (also diagonal, see Pythagoras)
+                    float sqr_distance = job.GetAssignedUnit().gameObject.GetSqrBBDistanceToObject(resourceNode.gameObject);
+                    if(sqr_distance <= MathUtil.SQRD_DIAG_DIST_BETWEEN_BLOCKS)
                         return resourceNode;
                 }
             }
