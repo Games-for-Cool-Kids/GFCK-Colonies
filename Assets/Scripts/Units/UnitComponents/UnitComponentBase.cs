@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-public abstract class BaseUnitComponent : MonoBehaviour
+public abstract class UnitComponentBase : MonoBehaviour
 {
     public Unit Owner = null;
 

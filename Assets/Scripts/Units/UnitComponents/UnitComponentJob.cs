@@ -1,7 +1,7 @@
 using UnityEngine;
 using Jobs;
 
-public class UnitComponentJob : BaseUnitComponent
+public class UnitComponentJob : UnitComponentBase
 {
     private Transform _toolSlot = null;
 

@@ -3,7 +3,7 @@ using UnityEngine;
 using Pathfinding;
 using World;
 
-public class UnitComponentMove : BaseUnitComponent
+public class UnitComponentMove : UnitComponentBase
 {
     private List<Block> _path = new List<Block>();
     private int _pathIndex = 0;
