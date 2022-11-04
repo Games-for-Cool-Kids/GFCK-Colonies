@@ -34,6 +34,25 @@ namespace Jobs
             currentTask = tasks[0];
             currentTask.Start();
         }
+
+        public void AddTask(Task newTask, int index = -1)
+        {
+            newTask.Finished += StartNextTask;
+
+            if (index == -1) // -1 to add at end.
+                tasks.Add(newTask);
+            else
+                tasks.Insert(index, newTask);
+        }
+
+        public void RemoveTask(Task task)
+        {
+            if(currentTask == task)
+                StartNextTask();
+
+            task.Finished -= StartNextTask;
+        }
+
         public virtual void Tick()
         {
             if (_forceStop)
@@ -44,6 +63,7 @@ namespace Jobs
 
             currentTask.Tick();
         }
+
         public virtual void Finish()
         {
             currentTask = null;
