@@ -11,7 +11,8 @@ public class UnitComponentJob : UnitComponentBase
     public int harvestDamage = 10;
     public float harvestSpeed = 1; // Amount of times per second.
 
-    // Start is called before the first frame update
+    public float transferSpeed = 1; // Resources transferred per second.
+
     protected override void Start()
     {
         base.Start();
@@ -20,7 +21,6 @@ public class UnitComponentJob : UnitComponentBase
         Debug.Assert(_toolSlot != null);
     }
 
-    // Update is called once per frame
     void Update()
     {
         // TODO We should probably avoid polling. Let the JobManager look for an available Unit when a new job becomes available
