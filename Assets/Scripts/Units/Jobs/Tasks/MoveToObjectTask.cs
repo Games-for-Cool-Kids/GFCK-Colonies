@@ -10,7 +10,7 @@ namespace Jobs
 
         public GameObject TargetObject;
 
-        public MoveToObjectTask(Job job) : base(job) { }
+        public MoveToObjectTask(Job job, bool oneTime = false) : base(job, oneTime) { }
 
 
         public override void Start()
