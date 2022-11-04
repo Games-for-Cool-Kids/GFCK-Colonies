@@ -35,19 +35,28 @@ namespace Jobs
         {
             base.Tick();
 
+
             float timeToHarvest = 1.0f / job.UnitJobComponent.harvestSpeed;
             if (_timeSinceLastHarvest >= timeToHarvest)
             {
-                if (_node.Harvest(job.UnitJobComponent.harvestDamage))
+                if (TryHarvest())
                 {
-                    job.GetAssignedUnit().inventory.AddResource(_node.type);
                     Finish();
                 }
             }
             else
-            {
                 _timeSinceLastHarvest += Time.deltaTime;
+        }
+
+        private bool TryHarvest()
+        {
+            if (_node.Harvest(job.UnitJobComponent.harvestDamage))
+            {
+                job.GetAssignedUnit().inventory.AddResource(_node.type);
+                return true;
             }
+
+            return false;
         }
 
         private ResourceNode FindResourceNode()
@@ -64,7 +73,7 @@ namespace Jobs
                     var resourceNode = node.GetComponent<ResourceNode>();
 
                     float sqr_distance = job.GetAssignedUnit().gameObject.GetSqrBBDistanceToObject(resourceNode.gameObject);
-                    if(sqr_distance <= MathUtil.SQRD_DIAG_DIST_BETWEEN_BLOCKS)
+                    if (sqr_distance <= MathUtil.SQRD_DIAG_DIST_BETWEEN_BLOCKS)
                         return resourceNode;
                 }
             }
