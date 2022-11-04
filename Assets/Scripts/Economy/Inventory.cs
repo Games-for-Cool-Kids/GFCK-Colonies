@@ -3,10 +3,11 @@ using System.Collections.Generic;
 
 namespace Economy
 {
+    [Serializable]
+    public class ResourceDictionary : UDictionary<ResourceType, int> { }
+
     public class Inventory
     {
-        [Serializable]
-        public class ResourceDictionary : UDictionary<ResourceType, int> { }
         private ResourceDictionary _storedResources = new();
 
         public event EventHandler<ResourceType> ResourceChanged;
