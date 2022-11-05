@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Economy
@@ -10,7 +10,8 @@ namespace Economy
     {
         public ResourceDictionary storedResources = new();
 
-        public event EventHandler<ResourceType> ResourceChanged;
+        public delegate void ResourceAmountChangedEvent(ResourceType resource, int changeAmount);
+        public ResourceAmountChangedEvent ResourceChanged;
 
         public Inventory()
         {
@@ -26,19 +27,20 @@ namespace Economy
         public void SetResource(ResourceType resource, int amount)
         {
             int oldAmount = storedResources[resource];
-            ResourceChanged?.Invoke(this, resource);
+
             storedResources[resource] = amount;
+            ResourceChanged?.Invoke(resource, amount - oldAmount);
         }
 
         public void AddResource(ResourceType resource, int amount = 1)
         {
             storedResources[resource] += amount;
-            ResourceChanged?.Invoke(this, resource);
+            ResourceChanged?.Invoke(resource, amount);
         }
         public void RemoveResource(ResourceType resource, int amount = 1)
         {
             storedResources[resource] -= amount;
-            ResourceChanged?.Invoke(this, resource);
+            ResourceChanged?.Invoke(resource, -amount);
         }
 
         public bool HasResources()
