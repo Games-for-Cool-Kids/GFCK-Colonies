@@ -1,4 +1,4 @@
-using Economy;
+﻿using Economy;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,13 +19,23 @@ namespace Jobs
         {
             base.Tick();
 
+            // Check that we are next to the target. 
+            float sqr_distance_to_target = job.GetAssignedUnit().gameObject.GetSqrBBDistanceToObject(targetStorage.gameObject);
+            if (sqr_distance_to_target > MathUtil.SQRD_DIAG_DIST_BETWEEN_BLOCKS)
+            {
+                Debug.LogError("Unit is too far to transfer resources. Check if pathfinding or job are configured correctly!");
+                Finish();
+                return;
+            }
+
+            // Transfer resources.
             _timeSinceLastTransfer += Time.deltaTime;
             if (_timeSinceLastTransfer >= job.UnitJobComponent.transferSpeed)
             {
                 _timeSinceLastTransfer = 0;
                 TransferFirstResourceInList();
             }
-
+            // No more resources to transfer.
             if (resourcesToTransfer.Count == 0)
             {
                 Finish();
