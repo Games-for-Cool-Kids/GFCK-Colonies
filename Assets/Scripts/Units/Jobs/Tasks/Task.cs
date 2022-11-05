@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace Jobs
 {
     public class Task
@@ -9,15 +5,15 @@ namespace Jobs
         protected Job job; // Parent job
         protected bool _forceStop = false;
 
-        private bool _oneTime; // Remove task from job on finish.
+        private TaskFlag _flags; // Remove task from job on finish.
 
         public delegate void TaskEvent();
         public event TaskEvent Finished;
-
-        public Task(Job job, bool oneTime)
+         
+        public Task(Job job, TaskFlag flags)
         {
             this.job = job;
-            _oneTime = oneTime;
+            this._flags = flags;
         }
 
         public virtual void Start()
@@ -37,7 +33,7 @@ namespace Jobs
         {
             Finished?.Invoke();
 
-            if (_oneTime)
+            if ((_flags & TaskFlag.OneTime) == TaskFlag.OneTime)
                 job.tasks.Remove(this);
         }
 

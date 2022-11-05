@@ -1,4 +1,4 @@
-﻿using Economy;
+using Economy;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,7 +12,7 @@ namespace Jobs
 
         private float _timeSinceLastTransfer = 0;
 
-        public TransferResourcesTask(Job job, bool oneTime = false) : base(job, oneTime)
+        public TransferResourcesTask(Job job, TaskFlag flags = TaskFlag.None) : base(job, flags)
         { }
 
         public override void Tick()

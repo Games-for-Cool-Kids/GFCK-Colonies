@@ -10,7 +10,7 @@ namespace Jobs
 
         private float _timeSinceLastHarvest = 0;
 
-        public HarvestResourceTask(Job job, ResourceType type, bool oneTime = false) : base(job, oneTime)
+        public HarvestResourceTask(Job job, ResourceType type, TaskFlag flags = TaskFlag.None) : base(job, flags)
         {
             this._type = type;
         }
