@@ -9,7 +9,6 @@ public class CreateBeachesStep : SimulationStep
         if (node.type == BlockType.WATER)
             return node.type;
 
-        bool neighboringWater = false;
         for (int x = -1; x <= 1; x++)
         {
             for (int y = -1; y <= 1; y++)
@@ -26,20 +25,14 @@ public class CreateBeachesStep : SimulationStep
                 int nodeY = Mathf.FloorToInt(node.height * worldVar.height);
                 int neighborY = Mathf.FloorToInt(neighbor.height * worldVar.height);
 
-                if (neighbor.type == BlockType.WATER
-                 && nodeY - neighborY == 1)
+                if (neighbor.type == BlockType.WATER && nodeY - neighborY == 0)
                 {
-                    neighboringWater = true;
-                    goto ApplyResult;
+                    return BlockType.SAND;
                 }
             }
         }
 
-        ApplyResult: // from goto
-        if (neighboringWater)
-            return BlockType.SAND;
-        else
-            return node.type;
+        return node.type;
     }
 }
 
