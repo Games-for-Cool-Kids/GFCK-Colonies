@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -861,6 +861,7 @@ MonoBehaviour:
   heightToBlockStep: {fileID: 11400000, guid: 1450b651feb4255498a7f8ae3f96fdff, type: 2}
   beachStep: {fileID: 11400000, guid: cd4462f9e0e8c4749b2b483d8dcfab88, type: 2}
   worldVariable: {fileID: 11400000, guid: dcb761a78047c944790678bd7027d5e9, type: 2}
+  Seed: -1
 --- !u!4 &1143179998
 Transform:
   m_ObjectHideFlags: 0

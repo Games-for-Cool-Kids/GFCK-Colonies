@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -22,6 +23,8 @@ public class WorldTextureGenerator : MonoBehaviour
 
     public WorldVariable worldVariable;
 
+    public int Seed = -1;
+
     delegate void StepLogic(int x, int y);
 
 
@@ -32,6 +35,11 @@ public class WorldTextureGenerator : MonoBehaviour
 
     public void Generate()
     {
+        if (Seed >= 0)
+        {
+            UnityEngine.Random.InitState(Seed);
+        }
+
         worldVariable.Init(textureSize, maxHeight);
 
         InitImageInScene();
@@ -45,6 +53,11 @@ public class WorldTextureGenerator : MonoBehaviour
         ScanWorld(ApplyBeachStep);
 
         DrawWorld();
+
+        if(Seed >= 0)
+        {
+            UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
+        }
     }
 
     private void InitImageInScene()
