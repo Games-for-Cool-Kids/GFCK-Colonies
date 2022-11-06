@@ -22,10 +22,13 @@ public class CreateBeachesStep : SimulationStep
                 if (neighbor == null)
                     continue;
 
+                if (neighbor.type != BlockType.WATER)
+                    continue;
+
                 int nodeY = Mathf.FloorToInt(node.height * worldVar.height);
                 int neighborY = Mathf.FloorToInt(neighbor.height * worldVar.height);
 
-                if (neighbor.type == BlockType.WATER && nodeY - neighborY == 0)
+                if (nodeY - neighborY == 0)
                 {
                     return BlockType.SAND;
                 }
