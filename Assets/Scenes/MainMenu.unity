@@ -857,9 +857,11 @@ MonoBehaviour:
   snow: {r: 0.7983268, g: 0.8679245, b: 0.8665753, a: 1}
   textureSize: 512
   maxHeight: 5
+  NoiseScale: 10
   heightMapStep: {fileID: 11400000, guid: cfa8fafd15815dc468987d56abfe2fca, type: 2}
   heightToBlockStep: {fileID: 11400000, guid: 1450b651feb4255498a7f8ae3f96fdff, type: 2}
   beachStep: {fileID: 11400000, guid: cd4462f9e0e8c4749b2b483d8dcfab88, type: 2}
+  ResourcesStep: {fileID: 11400000, guid: 555a1648dbe2f144eac6c49f0fedb7d5, type: 2}
   worldVariable: {fileID: 11400000, guid: dcb761a78047c944790678bd7027d5e9, type: 2}
   Seed: -1
 --- !u!4 &1143179998

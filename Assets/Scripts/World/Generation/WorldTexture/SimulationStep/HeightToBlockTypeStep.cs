@@ -2,7 +2,7 @@ using UnityEngine;
 using World;
 
 [CreateAssetMenu(menuName = "GameWorld/SimulationStep/HeightToBlockType")]
-public class HeightToBlockTypeStep : SimulationStep
+public class HeightToBlockTypeStep : SimulationStepBlockNode
 {
     public float waterLevel = 0.2f;
     public float snowLevel = 0.8f;

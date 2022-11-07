@@ -2,7 +2,7 @@
 using World;
 
 [CreateAssetMenu(menuName = "GameWorld/SimulationStep/Beach")]
-public class CreateBeachesStep : SimulationStep
+public class CreateBeachesStep : SimulationStepBlockNode
 {
     public override BlockType GetNodeType(WorldGenBlockNode node, WorldVariable worldVar, int maxX, int maxY)
     {
