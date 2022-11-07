@@ -32,22 +32,48 @@ public class WorldTextureGenerator : MonoBehaviour
 
     public WorldVariable worldVariable;
 
-    public int Seed = -1;
+    private const int _noSeed = -1;
+    public int Seed = _noSeed;
 
     delegate void StepLogic(int x, int y);
 
 
     private void Start()
     {
-        _noiseTex = new Texture2D(textureSize, textureSize);
-
         GenerateNoiseTexture();
 
         Generate();
     }
 
+    private void Generate()
+    {
+        SetSeed();
+
+        // Init
+        worldVariable.Init(textureSize, maxHeight);
+        InitImageInScene();
+
+        // Height
+        GenerateHeightMap();
+
+        // Block types
+        ScanWorld(ApplyBaseBlockTypeStep);
+        SetWaterBlocksToCorrectLevel();
+        ScanWorld(ApplyBeachStep);
+
+        // Resources
+        ScanWorld(ApplyResourcesStep);
+
+        // Apply
+        DrawWorld();
+
+        RestoreEngineSeed();
+    }
+
     private void GenerateNoiseTexture()
     {
+        _noiseTex = new Texture2D(textureSize, textureSize);
+
         Color[] pixels = new Color[_noiseTex.width * _noiseTex.height];
 
         // For each pixel in the texture...
@@ -70,35 +96,6 @@ public class WorldTextureGenerator : MonoBehaviour
         // Copy the pixel data to the texture and load it into the GPU.
         _noiseTex.SetPixels(pixels);
         _noiseTex.Apply();
-    }    
-
-    private void Generate()
-    {
-        if (Seed >= 0)
-        {
-            UnityEngine.Random.InitState(Seed);
-        }
-
-        worldVariable.Init(textureSize, maxHeight);
-
-        InitImageInScene();
-
-        GenerateHeightMap();
-
-        ScanWorld(ApplyBaseStep);
-
-        SetWaterBlocksToCorrectLevel();
-
-        ScanWorld(ApplyBeachStep);
-
-        ScanWorld(ApplyResourcesStep);
-
-        DrawWorld();
-
-        if(Seed >= 0)
-        {
-            UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
-        }
     }
 
     private void InitImageInScene()
@@ -122,7 +119,7 @@ public class WorldTextureGenerator : MonoBehaviour
         heightMapStep.ApplyTo(worldVariable);
     }
 
-    private void ApplyBaseStep(int x, int y)
+    private void ApplyBaseBlockTypeStep(int x, int y)
     {
         WorldGenBlockNode node = worldVariable.grid[x, y];
         node.type = heightToBlockStep.GetNodeType(node, worldVariable, textureSize, textureSize);
@@ -233,5 +230,21 @@ public class WorldTextureGenerator : MonoBehaviour
         float h = height * worldVariable.height;
         h = Mathf.Floor(h);
         return h / worldVariable.height;
+    }
+
+    private void SetSeed()
+    {
+        if (Seed != _noSeed)
+        {
+            UnityEngine.Random.InitState(Seed);
+        }
+    }
+
+    private void RestoreEngineSeed()
+    {
+        if (Seed != _noSeed)
+        {
+            UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
+        }
     }
 }
