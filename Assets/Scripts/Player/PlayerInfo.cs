@@ -12,19 +12,30 @@ public class PlayerInfo : MonoBehaviourSingleton<PlayerInfo>
 
     private void AddUnit(GameObject unit)
     {
+        if(playerFaction.Population.Count >= playerFaction.MaxPopulation)
+        {
+            Destroy(unit);
+            Debug.LogError("Trying to spawn more units than population cap allows!");
+            return;
+        }
+
+        playerFaction.Population.Add(unit);
+
         // TODO Will need some different component, probably related with military
-        if(unit.GetComponent<UnitComponentSelect>())
+        if (unit.GetComponent<UnitComponentSelect>())
         {
             playerFaction.MilitaryUnits.Add(unit);
-        }     
+        }
     }
     private void RemoveUnit(GameObject unit)
     {
-        if(playerFaction.MilitaryUnits.Contains(unit))
+        playerFaction.Population.Remove(unit);
+
+        if (playerFaction.MilitaryUnits.Contains(unit))
         {
             Debug.Assert(unit.GetComponent<UnitComponentSelect>());
 
             playerFaction.MilitaryUnits.Remove(unit);
-        } 
+        }
     }
 }

@@ -8,6 +8,9 @@ public class LumberMillEditor : BuildingEditor
 [CustomEditor(typeof(Stockpile))]
 public class StockpileEditor : BuildingEditor
 { public override void OnInspectorGUI() { base.OnInspectorGUI(); } }
+[CustomEditor(typeof(TownCenter))]
+public class TownCenterEditor : BuildingEditor
+{ public override void OnInspectorGUI() { base.OnInspectorGUI(); } }
 
 
 [CustomEditor(typeof(Building))]
