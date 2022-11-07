@@ -192,8 +192,8 @@ public class WorldTextureGenerator : MonoBehaviour
 
                 if(nodeResource.type == ResourceType.RESOURCE_WOOD)
                 {
-                    pixel.r = 0.0f;
-                    pixel.b = 0.0f;
+                    //pixel.r = 0.0f;
+                    //pixel.b = 0.0f;
                     pixel.g = 1.0f;
                 }
 

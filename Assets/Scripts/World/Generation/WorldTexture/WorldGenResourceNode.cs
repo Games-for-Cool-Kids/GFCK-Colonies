@@ -5,7 +5,6 @@ using UnityEngine;
 public class WorldGenResourceNode
 {
     public int x, y;
-    public float height;
     public ResourceType type;
 
     public WorldGenResourceNode(int x, int y)

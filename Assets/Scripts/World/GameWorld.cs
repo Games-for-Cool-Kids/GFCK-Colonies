@@ -9,6 +9,8 @@ namespace World
 
         public Material material;
 
+        public GameObject TreePrefab; // Is this the place to put this? :/
+
         public WorldVariable worldVariable;
         public GameObject[,] chunkObjects;
 
@@ -39,7 +41,7 @@ namespace World
             worldChunks.worldChunkWidth = Mathf.FloorToInt(worldVariable.size / worldChunks.chunkSize);
             worldChunks.blockHeight = worldVariable.height;
 
-            worldGenerator = new(material, worldVariable, TakeGeneratedWorld); // Creates world using multithreading. We need to wait for it to finish to use the world.
+            worldGenerator = new(material, TreePrefab, worldVariable, TakeGeneratedWorld); // Creates world using multithreading. We need to wait for it to finish to use the world.
         }
 
         public void RunWorldGeneration()
