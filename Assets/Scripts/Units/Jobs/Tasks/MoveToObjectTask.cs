@@ -37,5 +37,10 @@ namespace Jobs
         {
             unitMoveComponent.Stop();
         }
+
+        public override string GetTaskDebugDescription()
+        {
+            return "I am moving to an entity";
+        }
     }
 }

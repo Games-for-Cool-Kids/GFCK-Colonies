@@ -62,5 +62,10 @@ namespace Jobs
         {
             resourcesToTransfer.Add(new(resource, amount));
         }
+
+        public override string GetTaskDebugDescription()
+        {
+            return "I am transferring " + resourcesToTransfer.Count + " resources";
+        }
     }
 }

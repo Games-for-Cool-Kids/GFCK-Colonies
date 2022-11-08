@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using World;
@@ -16,35 +18,84 @@ public class WorldTextureGenerator : MonoBehaviour
     public int textureSize = 256; // Always a square.
     public int maxHeight = 50;
 
+    public float NoiseScale = 1.0f;
+    private Texture2D _noiseTex;
+
+    // Block nodes
     public HeightMapStep heightMapStep;
     public HeightToBlockTypeStep heightToBlockStep;
-    public SimulationStep beachStep;
+    public CreateBeachesStep beachStep;
+
+    // Surface stuff
+    // Resource nodes
+    public CreateResourcesStep ResourcesStep;
 
     public WorldVariable worldVariable;
+
+    private const int _noSeed = -1;
+    public int Seed = _noSeed;
 
     delegate void StepLogic(int x, int y);
 
 
     private void Start()
     {
+        GenerateNoiseTexture();
+
         Generate();
     }
 
-    public void Generate()
+    private void Generate()
     {
-        worldVariable.Init(textureSize, maxHeight);
+        SetSeed();
 
+        // Init
+        worldVariable.Init(textureSize, maxHeight);
         InitImageInScene();
 
+        // Height
         GenerateHeightMap();
 
-        ScanWorld(ApplyBaseStep);
-
+        // Block types
+        ScanWorld(ApplyBaseBlockTypeStep);
         SetWaterBlocksToCorrectLevel();
-
         ScanWorld(ApplyBeachStep);
 
+        // Resources
+        ScanWorld(ApplyResourcesStep);
+
+        // Apply
         DrawWorld();
+
+        RestoreEngineSeed();
+    }
+
+    private void GenerateNoiseTexture()
+    {
+        _noiseTex = new Texture2D(textureSize, textureSize);
+
+        Color[] pixels = new Color[_noiseTex.width * _noiseTex.height];
+
+        // For each pixel in the texture...
+        float y = 0.0F;
+
+        while (y < _noiseTex.height)
+        {
+            float x = 0.0F;
+            while (x < _noiseTex.width)
+            {
+                float xCoord = x / _noiseTex.width * NoiseScale;
+                float yCoord = y / _noiseTex.height * NoiseScale;
+                float sample = Mathf.PerlinNoise(xCoord, yCoord);
+                pixels[(int)y * _noiseTex.width + (int)x] = new Color(sample, sample, sample);
+                x++;
+            }
+            y++;
+        }
+
+        // Copy the pixel data to the texture and load it into the GPU.
+        _noiseTex.SetPixels(pixels);
+        _noiseTex.Apply();
     }
 
     private void InitImageInScene()
@@ -52,7 +103,7 @@ public class WorldTextureGenerator : MonoBehaviour
         imageObject.GetComponent<Image>().sprite = worldVariable.worldSprite;
     }
 
-    void ScanWorld(StepLogic logic)
+    private void ScanWorld(StepLogic logic)
     {
         for (int x = 0; x < textureSize; x++)
         {
@@ -68,7 +119,7 @@ public class WorldTextureGenerator : MonoBehaviour
         heightMapStep.ApplyTo(worldVariable);
     }
 
-    private void ApplyBaseStep(int x, int y)
+    private void ApplyBaseBlockTypeStep(int x, int y)
     {
         WorldGenBlockNode node = worldVariable.grid[x, y];
         node.type = heightToBlockStep.GetNodeType(node, worldVariable, textureSize, textureSize);
@@ -78,6 +129,14 @@ public class WorldTextureGenerator : MonoBehaviour
     {
         WorldGenBlockNode node = worldVariable.grid[x, y];
         node.type = beachStep.GetNodeType(node, worldVariable, textureSize, textureSize);
+    }
+
+    private void ApplyResourcesStep(int x, int y)
+    {
+        WorldGenBlockNode node = worldVariable.grid[x, y];
+        WorldGenResourceNode nodeResource = worldVariable.gridResources[x, y];
+
+        nodeResource.type = ResourcesStep.GetResourceType(node, worldVariable, _noiseTex, textureSize, textureSize);
     }
 
     private void SetWaterBlocksToCorrectLevel()
@@ -105,6 +164,7 @@ public class WorldTextureGenerator : MonoBehaviour
             for (int y = 0; y < textureSize; y++)
             {
                 WorldGenBlockNode node = worldVariable.grid[x, y];
+                WorldGenResourceNode nodeResource = worldVariable.gridResources[x, y];
 
                 Color pixel = Color.magenta;
                 switch (node.type)
@@ -126,6 +186,14 @@ public class WorldTextureGenerator : MonoBehaviour
                         break;
                 }
                 pixel *= GetHeightColor(node.height);
+
+                if(nodeResource.type == ResourceType.RESOURCE_WOOD)
+                {
+                    //pixel.r = 0.0f;
+                    //pixel.b = 0.0f;
+                    pixel.g = 1.0f;
+                }
+
                 worldVariable.texture.SetPixel(x, y, pixel);
             }
         }
@@ -162,5 +230,21 @@ public class WorldTextureGenerator : MonoBehaviour
         float h = height * worldVariable.height;
         h = Mathf.Floor(h);
         return h / worldVariable.height;
+    }
+
+    private void SetSeed()
+    {
+        if (Seed != _noSeed)
+        {
+            UnityEngine.Random.InitState(Seed);
+        }
+    }
+
+    private void RestoreEngineSeed()
+    {
+        if (Seed != _noSeed)
+        {
+            UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
+        }
     }
 }

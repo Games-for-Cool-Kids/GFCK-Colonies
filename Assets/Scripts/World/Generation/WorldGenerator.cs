@@ -13,6 +13,8 @@ public class WorldGenerator
 
     private Material _material;
 
+    private GameObject _tree;
+
     private WorldVariable _worldVariable;
 
     private Marching _marching = new MarchingCubes();
@@ -38,6 +40,7 @@ public class WorldGenerator
 
 
     public WorldGenerator(Material material,
+                          GameObject treePrefab,
                           WorldVariable worldVariable,
                           WorldGenerationFinishedCallBack worldGenerationFinishedCallback)
     {
@@ -45,6 +48,7 @@ public class WorldGenerator
         this._worldChunks.blockHeight = worldVariable.height;
         this._worldVariable = worldVariable;
         this._material = material;
+        this._tree = treePrefab;
         this._worldGenFinishedCallback = worldGenerationFinishedCallback;
         this._voxels = new VoxelArray(_worldChunks.chunkSize * _worldChunks.worldChunkWidth, worldVariable.height + 1, _worldChunks.chunkSize * _worldChunks.worldChunkWidth);
 
@@ -61,6 +65,7 @@ public class WorldGenerator
         {
             FillHoles();
             CreateChunkMeshes();
+            CreateResourceNodes();
             //GenerateVoxelMesh();
 
             worldGenCompleted = true;
@@ -234,6 +239,25 @@ public class WorldGenerator
         var position = new Vector3(-_worldChunkWidth / 2, -_worldChunkWidth / 2, -_chunkSize / 2);
 
         CreateMesh32(verts, normals, indices, uvs, position);
+    }
+
+    private void CreateResourceNodes()
+    {
+        for (int x = 0; x < _worldVariable.size; x++)
+        {
+            for (int z = 0; z < _worldVariable.size; z++)
+            {
+                var resource = _worldVariable.gridResources[x, z];
+                var node = _worldVariable.grid[x, z];
+
+                if(resource.type == ResourceType.RESOURCE_WOOD)
+                {
+                    Vector3 blockWorldPos = new Vector3(node.x, node.height, node.y);
+
+                    GameObject.Instantiate(_tree, blockWorldPos, Quaternion.identity);
+                }
+            }
+        }
     }
 
     private void CreateMesh32(List<Vector3> verts, List<Vector3> normals, List<int> indices, List<Vector2> uvs,  Vector3 position)

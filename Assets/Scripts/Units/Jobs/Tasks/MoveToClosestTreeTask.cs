@@ -69,5 +69,10 @@ namespace Jobs
 
             return closestTree;
         }
+
+        public override string GetTaskDebugDescription()
+        {
+            return "I am moving to a tree";
+        }
     }
 }

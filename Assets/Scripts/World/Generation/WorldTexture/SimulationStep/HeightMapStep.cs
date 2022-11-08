@@ -6,17 +6,11 @@ public class HeightMapStep : ScriptableObject
 {
 	public float grain = 20;
 	public float midPoint = 0.5f;
-	public int seed;
 	public bool invertHeight = false;
 
 	public void ApplyTo(WorldVariable worldVariable)
     {
-		GenerateHeightMap(worldVariable, worldVariable.size, grain, seed);
-
-		if(seed >= 0)
-        {
-			Random.InitState(seed);
-		}	
+		GenerateHeightMap(worldVariable, worldVariable.size, grain);
 	}
 
 	float OffsetValue(float current, float total, float grain)
@@ -25,7 +19,7 @@ public class HeightMapStep : ScriptableObject
 		return Random.Range(-.5f, .5f) * max;
 	}
 
-	public void GenerateHeightMap(WorldVariable worldVariable, int length, float grain, int seed)
+	public void GenerateHeightMap(WorldVariable worldVariable, int length, float grain)
 	{
 		float c1, c2, c3, c4;
 

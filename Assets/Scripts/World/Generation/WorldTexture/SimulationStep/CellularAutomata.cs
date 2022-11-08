@@ -2,7 +2,7 @@
 using World;
 
 [CreateAssetMenu(menuName = "GameWorld/SimulationStep/Cellular Automata")]
-public class CellularAutomata : SimulationStep
+public class CellularAutomata : SimulationStepBlockNode
 {
     public int death = 3;
     public int birth = 4;

@@ -11,6 +11,8 @@ public class WorldVariable : ScriptableObject
 
     public WorldGenBlockNode[,] grid;
 
+    public WorldGenResourceNode[,] gridResources;
+
     public void Init(int size, int height)
     {
         this.size = size;
@@ -22,10 +24,12 @@ public class WorldVariable : ScriptableObject
         worldSprite = Sprite.Create(texture, rect, Vector2.zero, 100, 0, SpriteMeshType.FullRect);
 
         grid = new WorldGenBlockNode[size, size];
+        gridResources = new WorldGenResourceNode[size, size];
         for (int x = 0; x < size; x++)
             for (int y = 0; y < size; y++)
             {
                 grid[x, y] = new(x, y);
+                gridResources[x, y] = new(x, y);
             }
     }
 
