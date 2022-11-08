@@ -13,15 +13,17 @@ public class Unit : StorageEntity
 #if DEBUG
     private void Awake()
     {
-        var debugChild = GameObject.Instantiate<GameObject>(new GameObject(), gameObject.transform);
-        var canvas = debugChild.AddComponent<Canvas>();
-        canvas.name = "DebugCanvas";
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.transform.localScale *= 0.1f;
+        var debugChild = new GameObject("DebugCanvas");
+        debugChild.transform.parent = gameObject.transform;
+        debugChild.transform.localScale *= 0.1f;
 
-        var debugSubChild = GameObject.Instantiate<GameObject>(new GameObject(), canvas.transform);
+        var canvas = debugChild.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+        var debugSubChild = new GameObject("DebugText");
+        debugSubChild.transform.parent = debugChild.transform;
+
         var text = debugSubChild.AddComponent<Text>();
-        text.name = "DebugText";
         text.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
         text.alignment = TextAnchor.MiddleCenter;
 
