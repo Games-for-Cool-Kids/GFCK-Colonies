@@ -80,5 +80,10 @@ namespace Jobs
 
             return null;
         }
+
+        public override string GetTaskDebugDescription()
+        {
+            return "I am harvesting a resource";
+        }
     }
 }

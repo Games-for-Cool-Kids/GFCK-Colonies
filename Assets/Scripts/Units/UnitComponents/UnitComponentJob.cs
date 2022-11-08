@@ -25,9 +25,13 @@ public class UnitComponentJob : UnitComponentBase
     {
         // TODO We should probably avoid polling. Let the JobManager look for an available Unit when a new job becomes available
         if (job == null)
+        {
             ApplyForJob();
+        }  
         else
+        {
             job.Tick();
+        }
     }
 
     public void ApplyForJob()

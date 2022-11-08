@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-
+using System.Diagnostics;
+using UnityEngine;
 
 namespace Jobs
 {
@@ -101,5 +102,13 @@ namespace Jobs
 
             return UnitJobComponent.Owner;
         }
+
+#if DEBUG
+        public string GetCurrentTaskDebugDescription()
+        {
+            return currentTask.GetTaskDebugDescription();
+        }
+#endif
+
     }
 }

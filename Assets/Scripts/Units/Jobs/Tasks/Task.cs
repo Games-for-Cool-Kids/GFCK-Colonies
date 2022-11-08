@@ -1,10 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace Jobs
 {
-    public class Task
+    public abstract class Task
     {
         protected Job job; // Parent job
         protected bool _forceStop = false;
@@ -22,7 +18,7 @@ namespace Jobs
 
         public virtual void Start()
         {
-
+            //Debug.Log("Starting task on unit: " + job.GetAssignedUnit().GetInstanceID() + (_oneTime ? ". This is a one-time task" : ""));
         }
 
         public virtual void Tick()
@@ -30,20 +26,25 @@ namespace Jobs
             if (_forceStop)
             {
                 Finish();
-                return;
             }
         }
         public virtual void Finish()
         {
             Finished?.Invoke();
+            //Debug.Log("Task is done.");
 
             if (_oneTime)
+            {
                 job.tasks.Remove(this);
+                //Debug.Log("Task was one-time; removing from job");
+            }            
         }
 
         public virtual void ForceStop()
         {
             _forceStop = true;
         }
+
+        public abstract string GetTaskDebugDescription();
     }
 }
