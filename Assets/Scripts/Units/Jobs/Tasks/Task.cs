@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Jobs
 {
     public abstract class Task
@@ -18,7 +20,8 @@ namespace Jobs
 
         public virtual void Start()
         {
-            //Debug.Log("Starting task on unit: " + job.GetAssignedUnit().GetInstanceID() + (_oneTime ? ". This is a one-time task" : ""));
+            //Debug.Log("Starting task on unit: " + job.GetAssignedUnit().GetInstanceID()
+            //    + ((_flags & TaskFlag.OneTime) == TaskFlag.OneTime ? ". This is a one-time task" : ""));
         }
 
         public virtual void Tick()
@@ -36,7 +39,6 @@ namespace Jobs
             if ((_flags & TaskFlag.OneTime) == TaskFlag.OneTime)
                 job.tasks.Remove(this);
                 //Debug.Log("Task was one-time; removing from job");
-            }            
         }
 
         public virtual void ForceStop()
