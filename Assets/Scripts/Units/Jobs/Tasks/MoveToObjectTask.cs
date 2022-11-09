@@ -40,7 +40,7 @@ namespace Jobs
 
         public override string GetTaskDebugDescription()
         {
-            return "I am moving to an entity";
+            return "I am moving to " + TargetObject.name;
         }
     }
 }

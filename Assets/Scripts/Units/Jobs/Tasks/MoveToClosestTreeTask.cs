@@ -72,7 +72,7 @@ namespace Jobs
 
         public override string GetTaskDebugDescription()
         {
-            return "I am moving to a tree";
+            return base.GetTaskDebugDescription();
         }
     }
 }
