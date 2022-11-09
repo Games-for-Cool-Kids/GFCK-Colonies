@@ -63,7 +63,7 @@ namespace Jobs
             resourcesToTransfer.Add(new(resource, amount));
         }
 
-        public override string GetTaskDebugDescription()
+        public override string GetTaskDescription()
         {
             return "I am transferring " + resourcesToTransfer.Count + " resources";
         }

@@ -38,7 +38,7 @@ namespace Jobs
             unitMoveComponent.Stop();
         }
 
-        public override string GetTaskDebugDescription()
+        public override string GetTaskDescription()
         {
             return "I am moving to " + TargetObject.name;
         }

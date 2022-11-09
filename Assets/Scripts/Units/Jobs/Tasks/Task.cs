@@ -46,6 +46,6 @@ namespace Jobs
             _forceStop = true;
         }
 
-        public abstract string GetTaskDebugDescription();
+        public abstract string GetTaskDescription();
     }
 }

@@ -81,7 +81,7 @@ namespace Jobs
             return null;
         }
 
-        public override string GetTaskDebugDescription()
+        public override string GetTaskDescription()
         {
             return "I am harvesting " + _type.ToString() + " from " + _node.name;
         }

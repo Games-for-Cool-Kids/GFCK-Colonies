@@ -106,7 +106,7 @@ namespace Jobs
 #if DEBUG
         public string GetCurrentTaskDebugDescription()
         {
-            return currentTask.GetTaskDebugDescription();
+            return currentTask.GetTaskDescription();
         }
 #endif
 
