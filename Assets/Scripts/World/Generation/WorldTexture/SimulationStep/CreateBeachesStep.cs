@@ -18,7 +18,7 @@ public class CreateBeachesStep : SimulationStepBlockNode
                 if (_x == node.x && _y == node.y)
                     continue;
 
-                WorldGenBlockNode neighbor = GetNodeFromGrid(_x, _y, worldVar.grid, maxX, maxY);
+                WorldGenBlockNode neighbor = GetNodeFromGrid(_x, _y, worldVar.blockGrid, maxX, maxY);
                 if (neighbor == null)
                     continue;
 

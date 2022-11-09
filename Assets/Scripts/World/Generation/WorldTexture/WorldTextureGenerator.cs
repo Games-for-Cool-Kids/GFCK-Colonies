@@ -121,20 +121,20 @@ public class WorldTextureGenerator : MonoBehaviour
 
     private void ApplyBaseBlockTypeStep(int x, int y)
     {
-        WorldGenBlockNode node = worldVariable.grid[x, y];
+        WorldGenBlockNode node = worldVariable.blockGrid[x, y];
         node.type = heightToBlockStep.GetNodeType(node, worldVariable, textureSize, textureSize);
     }
 
     private void ApplyBeachStep(int x, int y)
     {
-        WorldGenBlockNode node = worldVariable.grid[x, y];
+        WorldGenBlockNode node = worldVariable.blockGrid[x, y];
         node.type = beachStep.GetNodeType(node, worldVariable, textureSize, textureSize);
     }
 
     private void ApplyResourcesStep(int x, int y)
     {
-        WorldGenBlockNode node = worldVariable.grid[x, y];
-        WorldGenResourceNode nodeResource = worldVariable.gridResources[x, y];
+        WorldGenBlockNode node = worldVariable.blockGrid[x, y];
+        WorldGenResourceNode nodeResource = worldVariable.resourceGrid[x, y];
 
         nodeResource.type = ResourcesStep.GetResourceType(node, worldVariable, _noiseTex, textureSize, textureSize);
     }
@@ -147,7 +147,7 @@ public class WorldTextureGenerator : MonoBehaviour
         {
             for (int y = 0; y < textureSize; y++)
             {
-                WorldGenBlockNode node = worldVariable.grid[x, y];
+                WorldGenBlockNode node = worldVariable.blockGrid[x, y];
 
                 if (node.type == BlockType.WATER)
                     node.height = waterLevel;
@@ -163,8 +163,8 @@ public class WorldTextureGenerator : MonoBehaviour
         {
             for (int y = 0; y < textureSize; y++)
             {
-                WorldGenBlockNode node = worldVariable.grid[x, y];
-                WorldGenResourceNode nodeResource = worldVariable.gridResources[x, y];
+                WorldGenBlockNode node = worldVariable.blockGrid[x, y];
+                WorldGenResourceNode nodeResource = worldVariable.resourceGrid[x, y];
 
                 Color pixel = Color.magenta;
                 switch (node.type)

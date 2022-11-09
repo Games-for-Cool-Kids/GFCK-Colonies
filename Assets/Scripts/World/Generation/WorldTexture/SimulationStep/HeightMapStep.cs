@@ -41,7 +41,7 @@ public class HeightMapStep : ScriptableObject
 			float c = (c1 + c2 + c3 + c4) * .25f;
 			if (invertHeight)
 				c = 1 - c;
-			worldVariable.grid[(int)x, (int)y].height = c;
+			worldVariable.blockGrid[(int)x, (int)y].height = c;
 		}
 		else
 		{
