@@ -9,7 +9,7 @@ namespace World
 
         public Material material;
 
-        public GameObject TreePrefab; // Is this the place to put this? :/
+        public GameObject TreePrefab;
 
         public WorldVariable worldVariable;
         public GameObject[,] chunkObjects;
@@ -41,7 +41,7 @@ namespace World
             worldChunks.worldChunkWidth = Mathf.FloorToInt(worldVariable.size / worldChunks.chunkSize);
             worldChunks.blockHeight = worldVariable.height;
 
-            worldGenerator = new(material, TreePrefab, worldVariable, TakeGeneratedWorld); // Creates world using multithreading. We need to wait for it to finish to use the world.
+            worldGenerator = new(material, worldVariable, TakeGeneratedWorld); // Creates world using multithreading. We need to wait for it to finish to use the world.
         }
 
         public void RunWorldGeneration()
@@ -59,7 +59,8 @@ namespace World
 
             foreach (var chunk in generatedChunks)
             {
-                CreateChunkObject(chunk);
+                var chunkObject = CreateChunkObject(chunk);
+                CreateChunkResourceNodes(chunk, chunkObject);
             }
 
             worldGenerator = null; // Stops generator from running.
@@ -67,7 +68,7 @@ namespace World
             WorldGenerationDone?.Invoke();
         }
 
-        private void CreateChunkObject(Chunk chunk)
+        private GameObject CreateChunkObject(Chunk chunk)
         {
             GameObject newChunkObject = new GameObject("Chunk" + chunk.origin.ToString());
             newChunkObject.isStatic = true;
@@ -83,6 +84,28 @@ namespace World
             renderer.material = material;
 
             newChunkObject.AddComponent<MeshCollider>();
+
+            return newChunkObject;
+        }
+
+        private void CreateChunkResourceNodes(Chunk chunk, GameObject chunkObject)
+        {
+            int startX = chunk.x * worldChunks.chunkSize;
+            int startZ = chunk.z * worldChunks.chunkSize;
+            for (int x = startX; x < startX + chunk.MaxX; x++)
+            {
+                for (int z = startZ; z < startZ + chunk.MaxZ; z++)
+                {
+                    var resource = worldVariable.resourceGrid[x, z];
+                    var node = worldVariable.blockGrid[x, z];
+
+                    if (resource.type == ResourceType.RESOURCE_WOOD)
+                    {
+                        Vector3 blockWorldPos = new Vector3(node.x, node.height, node.y);
+                        GameObject.Instantiate(TreePrefab, blockWorldPos, Quaternion.identity, chunkObject.transform);
+                    }
+                }
+            }
         }
 
         private void ResetWorld()
