@@ -16,7 +16,7 @@ namespace Jobs
         {
             base.Start();
 
-            unitMoveComponent = GameObject.FindObjectOfType<UnitComponentMove>();
+            unitMoveComponent = job.GetAssignedUnit().GetComponent<UnitComponentMove>();
             Debug.Assert(unitMoveComponent != null);
 
             GoToTargetObject();
