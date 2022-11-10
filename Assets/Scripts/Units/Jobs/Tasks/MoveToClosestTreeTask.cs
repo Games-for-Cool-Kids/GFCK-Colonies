@@ -69,10 +69,5 @@ namespace Jobs
 
             return closestTree;
         }
-
-        public override string GetTaskDescription()
-        {
-            return base.GetTaskDescription();
-        }
     }
 }
