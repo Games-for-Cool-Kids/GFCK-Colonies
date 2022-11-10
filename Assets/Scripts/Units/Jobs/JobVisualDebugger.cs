@@ -22,7 +22,7 @@ namespace Jobs
                 if(unit != null)
                 {
                     var text = unit.gameObject.GetComponentInChildren<Text>();
-                    text.text = job.GetCurrentTaskDebugDescription();
+                    text.text = job.GetCurrentTaskDescription();
                 }    
             }
         }

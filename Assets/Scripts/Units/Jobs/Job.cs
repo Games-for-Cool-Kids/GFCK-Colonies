@@ -103,12 +103,9 @@ namespace Jobs
             return UnitJobComponent.Owner;
         }
 
-#if DEBUG
-        public string GetCurrentTaskDebugDescription()
+        public string GetCurrentTaskDescription()
         {
             return currentTask.GetTaskDescription();
         }
-#endif
-
     }
 }
