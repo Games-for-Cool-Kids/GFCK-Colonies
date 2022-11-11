@@ -13,6 +13,8 @@ public class UnitComponentJob : UnitComponentBase
 
     public float transferSpeed = 1; // Resources transferred per second.
 
+    public int inventorySize = 5; // ToDo: Implement max inventory size inside Inventory class.
+
     protected override void Start()
     {
         base.Start();
