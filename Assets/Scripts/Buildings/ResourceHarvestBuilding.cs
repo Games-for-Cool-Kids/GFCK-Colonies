@@ -1,4 +1,4 @@
-using Economy;
+﻿using Economy;
 using Jobs;
 
 public class ResourceHarvestBuilding : Building
@@ -19,12 +19,8 @@ public class ResourceHarvestBuilding : Building
     {
         if (type == resourceTypeToHarvest)
         {
-            AddToHarvestPickupRequest(changedAmount); // By default all resources of harvest type should be picked up.
+            var request_manager = PlayerInfo.Instance.ResourceTransferRequestManager;
+            request_manager.RequestPickup(this, resourceTypeToHarvest, changedAmount); // By default all resources of harvest type should be picked up.
         }
-    }
-
-    private void AddToHarvestPickupRequest(int amount)
-    {
-        AddToPickupRequest(resourceTypeToHarvest, amount);
     }
 }
