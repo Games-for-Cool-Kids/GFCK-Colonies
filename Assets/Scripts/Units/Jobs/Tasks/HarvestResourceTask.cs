@@ -41,7 +41,7 @@ namespace Jobs
             {
                 if (TryHarvest())
                 {
-                    Finish();
+                    Finish(); // !Important: If you implement harvesting more than one resource, also update harvestTask.Finished lambda of lumberjack in JobFactory.!
                 }
             }
             else
