@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 
 namespace Jobs
@@ -31,8 +31,17 @@ namespace Jobs
         }
         private static Job CreateCourierJob(Building jobBuilding)
         {
-            Debug.Log("Miner job not yet implemented");
-            return new Job(jobBuilding, JobType.COURIER);
+            var job = new Job(jobBuilding, JobType.COURIER);
+
+            var transferAllTask = new DeliverAllResourcesTask(job);
+            transferAllTask.targetStorage = jobBuilding;
+
+            job.tasks.Add(new IdleTask(job)); // Needed to avoid infinite loop when there are no transfer requests.
+            job.tasks.Add(CreateMoveToJobBuildingTask(job));
+            job.tasks.Add(transferAllTask); // Empty inventory whenever we return to stockpile.
+            job.tasks.Add(new LookForResourceTransferRequestTask(job));
+
+            return job;
         }
         private static Job CreateLumberJackJob(Building jobBuilding)
         {
