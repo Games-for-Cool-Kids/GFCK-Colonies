@@ -18,7 +18,6 @@ public class WorldTextureGenerator : MonoBehaviour
     public int textureSize = 256; // Always a square.
     public int maxHeight = 50;
 
-    public float NoiseScale = 1.0f;
     private Texture2D _noiseTex;
 
     // Block nodes
@@ -40,14 +39,14 @@ public class WorldTextureGenerator : MonoBehaviour
 
     private void Start()
     {
-        GenerateNoiseTexture();
-
         Generate();
     }
 
     private void Generate()
     {
         SetSeed();
+
+        GenerateNoiseTexture();
 
         // Init
         worldVariable.Init(textureSize, maxHeight);
@@ -70,13 +69,24 @@ public class WorldTextureGenerator : MonoBehaviour
         RestoreEngineSeed();
     }
 
+    // TODO Extract to generic noise generation function that can layer different sizes together
     private void GenerateNoiseTexture()
     {
         _noiseTex = new Texture2D(textureSize, textureSize);
 
+        float noiseScaleLarge = 4.0f;
+        float noiseScaleSmall = 15.0f;
+
+        float offsetLargeX = UnityEngine.Random.Range(0, noiseScaleLarge);
+        float offsetLargeY = UnityEngine.Random.Range(0, noiseScaleLarge);
+
+        float offsetSmallX = UnityEngine.Random.Range(0, noiseScaleSmall);
+        float offsetSmallY = UnityEngine.Random.Range(0, noiseScaleSmall);
+
+        float smallToLargeLerp = 0.5f;
+
         Color[] pixels = new Color[_noiseTex.width * _noiseTex.height];
 
-        // For each pixel in the texture...
         float y = 0.0F;
 
         while (y < _noiseTex.height)
@@ -84,16 +94,32 @@ public class WorldTextureGenerator : MonoBehaviour
             float x = 0.0F;
             while (x < _noiseTex.width)
             {
-                float xCoord = x / _noiseTex.width * NoiseScale;
-                float yCoord = y / _noiseTex.height * NoiseScale;
-                float sample = Mathf.PerlinNoise(xCoord, yCoord);
+                float sample = 0.0f;
+
+                // Small
+                {
+                    float xCoord = x / _noiseTex.width * noiseScaleSmall + offsetSmallX;
+                    float yCoord = y / _noiseTex.height * noiseScaleSmall + offsetSmallY;
+                    float sampleSmall = Mathf.PerlinNoise(xCoord, yCoord) * (1.0f - smallToLargeLerp);
+                    sample += sampleSmall;
+                }
+
+                // Large
+                {
+                    float xCoord = x / _noiseTex.width * noiseScaleLarge + offsetLargeX;
+                    float yCoord = y / _noiseTex.height * noiseScaleLarge + offsetLargeY;
+                    float sampleLarge = Mathf.PerlinNoise(xCoord, yCoord) * smallToLargeLerp;
+                    sample += sampleLarge;
+                }
+
+                sample = Math.Clamp(sample, 0.0f, 1.0f);
+
                 pixels[(int)y * _noiseTex.width + (int)x] = new Color(sample, sample, sample);
                 x++;
             }
             y++;
         }
 
-        // Copy the pixel data to the texture and load it into the GPU.
         _noiseTex.SetPixels(pixels);
         _noiseTex.Apply();
     }

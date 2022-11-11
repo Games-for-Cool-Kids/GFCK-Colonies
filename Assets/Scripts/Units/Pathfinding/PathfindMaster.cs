@@ -17,10 +17,14 @@ namespace Pathfinding
         private List<Pathfinder> currentThreads;
         private List<Pathfinder> todoThreads;
 
+        private PathFinderCache _cache;
+
         void Start()
         {
             currentThreads = new List<Pathfinder>();
             todoThreads = new List<Pathfinder>();
+
+            _cache = new PathFinderCache(GameManager.Instance.World);
         }
    
         void Update() 
@@ -66,7 +70,7 @@ namespace Pathfinding
                 return;
             }
 
-            Pathfinder newThread = new Pathfinder(GameManager.Instance.World, start, target, completeCallback);
+            Pathfinder newThread = new Pathfinder(_cache, GameManager.Instance.World, start, target, completeCallback);
             todoThreads.Add(newThread);
         }
     }
