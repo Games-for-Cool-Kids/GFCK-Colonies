@@ -51,6 +51,8 @@ namespace Jobs
             if(currentTask == task)
                 StartNextTask();
 
+            tasks.Remove(task);
+
             task.Finished -= StartNextTask;
         }
 
@@ -103,12 +105,9 @@ namespace Jobs
             return UnitJobComponent.Owner;
         }
 
-#if DEBUG
-        public string GetCurrentTaskDebugDescription()
+        public string GetCurrentTaskDescription()
         {
             return currentTask.GetTaskDescription();
         }
-#endif
-
     }
 }

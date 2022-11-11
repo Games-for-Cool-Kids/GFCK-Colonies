@@ -16,6 +16,14 @@ namespace Jobs
         {
             base.Start();
 
+            // No need to move if we're already there!
+            float sqr_distance_to_target = job.GetAssignedUnit().gameObject.GetSqrBBDistanceToObject(TargetObject);
+            if (sqr_distance_to_target <= MathUtil.SQRD_DIAG_DIST_BETWEEN_BLOCKS)
+            {
+                Finish();
+                return;
+            }
+
             unitMoveComponent = job.GetAssignedUnit().GetComponent<UnitComponentMove>();
             Debug.Assert(unitMoveComponent != null);
 

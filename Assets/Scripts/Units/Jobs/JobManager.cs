@@ -50,8 +50,8 @@ namespace Jobs
             Job job = availableJobs[0];
             job.UnitJobComponent = employee;
 
-            SetJobTaken(job);
             employee.AssignJob(job);
+            SetJobTaken(job);
 
             job.Start();
 

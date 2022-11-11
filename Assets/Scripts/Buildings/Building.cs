@@ -13,11 +13,6 @@ public class Building : StorageEntity // Need to add derived classes to Building
 
     private bool _firstUpdate = true;
 
-    protected override void Start()
-    {
-        base.Start();
-    }
-
     protected virtual void Update()
     {
         // Set blockGrid after first update, because bounding box of renderer is only correct after first render.
@@ -26,6 +21,11 @@ public class Building : StorageEntity // Need to add derived classes to Building
             CreateBuildGrid();
             _firstUpdate = false;
         }
+    }
+
+    protected virtual void OnDestroy()
+    {
+        UnregisterJobs();
     }
 
     // Can be done by player-hand, or by villager
@@ -39,9 +39,13 @@ public class Building : StorageEntity // Need to add derived classes to Building
     public void RegisterJobs()
     {
         foreach (Job job in jobs)
-        {
             JobManager.Instance.RegisterJob(job);
-        }
+    }
+
+    public void UnregisterJobs()
+    {
+        foreach (Job job in jobs)
+            JobManager.Instance.UnregisterJob(job);
     }
 
     public void AddJob(JobType type)

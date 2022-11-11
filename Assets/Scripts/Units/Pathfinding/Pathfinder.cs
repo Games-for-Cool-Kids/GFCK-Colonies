@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using PathFinding;
 using World;
 
 //for more on A* visit
@@ -10,33 +9,14 @@ namespace Pathfinding
 {
     public class Pathfinder
     {
-        class PathNode
-        {
-            public PathNode(Block block)
-            {
-                this.block = block;
-            }
-            public Block block;
-            public PathNode parent = null;
-            public Heuristics heuristics = new();
-        }
-
-        class NodeGrid
-        {
-            public PathNode[,,] grid;
-            public PathNode At(int x, int y, int z)
-            {
-                return grid[x, y, z];
-            }
-        }
-        private NodeGrid[,] _chunkNodeGrids;
         private Block _startBlock;
         private Block _targetBlock;
 
-        private int worldChunkWidth;
+        private PathFinderCache _cache;
 
         private int chunkSize;
         private int maxY;
+        private int _worldChunkWidth;
 
         private List<Block> _foundPath = null;
 
@@ -45,37 +25,18 @@ namespace Pathfinding
         public volatile bool executionFinished = false;
         public PathfindMaster.PathFindingThreadComplete completedCallback;
 
-        public Pathfinder(GameWorld world, Block start, Block target, PathfindMaster.PathFindingThreadComplete completedCallback)
+        public Pathfinder(PathFinderCache cache, GameWorld world, Block start, Block target, PathfindMaster.PathFindingThreadComplete completedCallback)
         {
+            _cache = cache;
+
             this._startBlock = start;
             this._targetBlock = target;
+            this._worldChunkWidth = world.worldChunks.worldChunkWidth;
             this.completedCallback = completedCallback;
-            this.worldChunkWidth = world.worldChunks.worldChunkWidth;
             this.chunkSize = world.worldChunks.chunkSize;
             this.maxY = world.worldVariable.height;
-
-            GenerateWalkableChunkNodeGrids(world.worldChunks.chunks);
         }
 
-        private void GenerateWalkableChunkNodeGrids(Chunk[,] chunks)
-        {
-            _chunkNodeGrids = new NodeGrid[worldChunkWidth, worldChunkWidth];
-
-            for (int x = 0; x < worldChunkWidth; x++)
-            {
-                for (int z = 0; z < worldChunkWidth; z++)
-                {
-                    var currentChunk = chunks[x, z];
-
-                    _chunkNodeGrids[x, z] = new NodeGrid();
-                    _chunkNodeGrids[x, z].grid = new PathNode[currentChunk.MaxX, currentChunk.MaxY, currentChunk.MaxZ];
-                    foreach (Block block in currentChunk.GetWalkableBlocks())
-                    {
-                        _chunkNodeGrids[x, z].grid[block.x, block.y, block.z] = new PathNode(block);
-                    }
-                }
-            }
-        }
 
         public void FindPath()
         {
@@ -226,9 +187,7 @@ namespace Pathfinding
                            && Mathf.Abs(zDiff) == 1;
 
             // Check given neighbour.
-            search = GetPathNode(worldPos);
-            if (search != null)
-                neighbour = search;
+            neighbour = search = GetPathNode(worldPos);
 
             // If we want to move diagonally, the neighboring orthogonal blocks also need to be walkable.
             // Right now we only allow it if all 4 blocks are on the same height.
@@ -252,7 +211,7 @@ namespace Pathfinding
                 if (neighbour == null)
                 {
                     search = GetPathNode(worldPos + Vector3.up);
-                    if (neighbour != null)
+                    if (neighbour != null) // This check can never be true
                         neighbour = search;
                 }
 
@@ -260,7 +219,7 @@ namespace Pathfinding
                 if (neighbour == null)
                 {
                     search = GetPathNode(worldPos - Vector3.up);
-                    if (neighbour != null)
+                    if (neighbour != null) // This check can never be true
                         neighbour = search;
                 }
             }
@@ -274,10 +233,10 @@ namespace Pathfinding
             int c_z = Mathf.FloorToInt(worldPos.z / chunkSize);
 
             if (c_x < 0 || worldPos.y < 0 || c_z < 0
-            || c_x >= worldChunkWidth || worldPos.y >= maxY || c_z >= worldChunkWidth)
+            || c_x >= _worldChunkWidth || worldPos.y >= maxY || c_z >= _worldChunkWidth)
                 return null; // bounds check
 
-            var grid = _chunkNodeGrids[c_x, c_z].grid;
+            var grid = _cache.ChunkNodeGrids[c_x, c_z].grid;
             int x = Mathf.FloorToInt(worldPos.x - c_x * chunkSize);
             int y = Mathf.FloorToInt(worldPos.y);
             int z = Mathf.FloorToInt(worldPos.z - c_z * chunkSize);

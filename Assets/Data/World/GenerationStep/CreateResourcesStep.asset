@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0779a4b467d49e545b405fb948d616cb, type: 3}
   m_Name: CreateResourcesStep
   m_EditorClassIdentifier: 
-  ClusterSize: 0.4
-  SecondaryClusterSize: 0.2
-  Scarceness: 0.5
+  ClusterSize: 0.8
+  SecondaryClusterSize: 0.5
+  Scarceness: 0.45

@@ -4,6 +4,12 @@ using UnityEngine;
 
 namespace Jobs
 {
+    public enum TransferType : short
+    {
+        PickUp,
+        Delivery,
+    }
+
     public class TransferResourcesTask : Task
     {
         public StorageEntity targetStorage = null;
@@ -11,9 +17,24 @@ namespace Jobs
         public List<ResourceStack> resourcesToTransfer = new();
 
         private float _timeSinceLastTransfer = 0;
+        private TransferType _transferType; 
 
-        public TransferResourcesTask(Job job, TaskFlag flags = TaskFlag.None) : base(job, flags)
-        { }
+        public TransferResourcesTask(Job job,
+            TransferType transferType,
+            TaskFlag flags = TaskFlag.None)
+                : base(job, flags)
+        {
+            _transferType = transferType;
+        }
+
+        public override void Start()
+        {
+            base.Start();
+
+            // This can happen when this task is repeated, unit already emptied his inventory.
+            if (resourcesToTransfer.Count == 0)
+                Finish();
+        }
 
         public override void Tick()
         {
@@ -37,29 +58,45 @@ namespace Jobs
             }
             // No more resources to transfer.
             if (resourcesToTransfer.Count == 0)
-            {
                 Finish();
-            }
         }
 
         private void TransferFirstResourceInList()
         {
-            ResourceType resourceToTransfer = resourcesToTransfer[0].type;
+            Debug.Assert(resourcesToTransfer[0].amount > 0);
+
+            var resourceType = resourcesToTransfer[0].type;
+
             // Lower resources to transfer.
             resourcesToTransfer[0].amount -= 1;
             if (resourcesToTransfer[0].amount == 0)
                 resourcesToTransfer.RemoveAt(0);
 
-            // Take from unit.
-            var unit = job.GetAssignedUnit();
-            unit.inventory.RemoveResource(resourceToTransfer);
+            Inventory source, target;
+            if(_transferType == TransferType.PickUp)
+            {
+                source = targetStorage.inventory;
+                target = job.GetAssignedUnit().inventory;
+            }
+            else //if(_transferType == TransferType.Deliver)
+            {
+                source = job.GetAssignedUnit().inventory;
+                target = targetStorage.inventory;
+            }
 
-            // Add to target.
-            targetStorage.inventory.AddResource(resourceToTransfer);
+            source.RemoveResource(resourceType);
+            target.AddResource(resourceType);
         }
 
-        public void AddResourceToTransfer(ResourceType resource, int amount)
+        public void Add(ResourceStack resourceStack)
         {
+            Add(resourceStack.type, resourceStack.amount);
+        }
+
+        public void Add(ResourceType resource, int amount)
+        {
+            Debug.Assert(amount > 0);
+
             resourcesToTransfer.Add(new(resource, amount));
         }
 
