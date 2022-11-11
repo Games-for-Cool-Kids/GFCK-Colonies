@@ -11,6 +11,8 @@ namespace Jobs
 
         public delegate void TaskEvent();
         public event TaskEvent Finished;
+
+        private bool _running = false; // Mostly for debug purposes, to check that start and finish are called correctly by derived implementations.
          
         public Task(Job job, TaskFlag flags)
         {
@@ -20,12 +22,13 @@ namespace Jobs
 
         public virtual void Start()
         {
-            //Debug.Log("Starting task on unit: " + job.GetAssignedUnit().GetInstanceID()
-            //    + ((_flags & TaskFlag.OneTime) == TaskFlag.OneTime ? ". This is a one-time task" : ""));
+            _running = true;
         }
 
         public virtual void Tick()
         {
+            Debug.Assert(_running);
+
             if (_forceStop)
             {
                 Finish();
@@ -33,17 +36,20 @@ namespace Jobs
         }
         public virtual void Finish()
         {
-            Finished?.Invoke();
-            //Debug.Log("Task is done.");
+            Debug.Assert(_running);
 
             if ((_flags & TaskFlag.OneTime) == TaskFlag.OneTime)
-                job.tasks.Remove(this);
-                //Debug.Log("Task was one-time; removing from job");
+                job.RemoveTask(this);
+            
+            Finished?.Invoke();
+
+            _running = false;
         }
 
         public virtual void ForceStop()
         {
             _forceStop = true;
+            _running = false;
         }
 
         public abstract string GetTaskDescription();
