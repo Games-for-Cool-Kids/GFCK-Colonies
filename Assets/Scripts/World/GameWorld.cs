@@ -101,8 +101,13 @@ namespace World
 
                     if (resource.type == ResourceType.RESOURCE_WOOD)
                     {
-                        Vector3 blockWorldPos = new Vector3(node.x, node.height, node.y);
-                        GameObject.Instantiate(TreePrefab, blockWorldPos, Quaternion.identity, chunkObject.transform);
+                        int nodeY = Mathf.FloorToInt(node.height * worldVariable.height);
+                        Vector3 blockWorldPos = new Vector3(node.x, nodeY, node.y);
+                        var Tree = Instantiate(TreePrefab, chunkObject.transform);
+                        Debug.Log(Tree.GetPivotYOffset());
+                        Debug.Log(Tree.GetObjectHeight());
+                        Debug.Log(nodeY);
+                        Tree.transform.position = blockWorldPos + Tree.GetPivotYOffset(); // Normally we should add half a block, but tree roots should stick in ground a bit.
                     }
                 }
             }

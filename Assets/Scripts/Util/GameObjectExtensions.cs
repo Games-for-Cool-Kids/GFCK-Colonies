@@ -5,7 +5,9 @@ using World;
 
 public static class GameObjectExtensions
 {
-    public static Vector3 GetPivotToMeshMinOffset(this GameObject gameObject) // Difference between object pivot and mesh bottom in world space.
+
+    /// <summary>Difference between object pivot position and mesh center bottom position.</summary>
+    public static Vector3 GetPivotYOffset(this GameObject gameObject)
     {
         float offset = 0;
 
@@ -17,7 +19,7 @@ public static class GameObjectExtensions
 
     public static Vector3 GetObjectBottomPosition(this GameObject gameObject)
     {
-        return gameObject.transform.position - GetPivotToMeshMinOffset(gameObject);
+        return gameObject.transform.position - GetPivotYOffset(gameObject);
     }
 
     public static Bounds CalculateRecursiveBounds(this GameObject gameObject)

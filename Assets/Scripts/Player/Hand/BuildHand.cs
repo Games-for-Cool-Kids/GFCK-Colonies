@@ -99,7 +99,7 @@ public class BuildHand : MonoBehaviour
     private void MoveBuildingTo(Block block)    {        if (_selectedStructure.TryGetComponent<Building>(out var building)         && !DoesStructureFit(building.buildGrid))
             return;
 
-        Vector3 offset = Vector3.right / 2 + Vector3.forward / 2;        _selectedStructure.transform.position = block.GetSurfaceWorldPos() + _selectedStructure.GetPivotToMeshMinOffset() + offset;    }
+        Vector3 offset = Vector3.right / 2 + Vector3.forward / 2;        _selectedStructure.transform.position = block.GetSurfaceWorldPos() + _selectedStructure.GetPivotYOffset() + offset;    }
     private bool DoesStructureFit(BuildingGrid buildingGrid)    {        //var bounds = _selectedStructure.GetGridBounds();        //var structureBlocks = GameManager.Instance.GameWorld.GetContainedBlocks(bounds);
         //Debug.Assert(structureBlocks.Length == buildingGrid.grid.Length);
         //for (int x = 0; x < structureBlocks.GetLength(0); x++)        //{        //    for (int z = 0; z < structureBlocks.GetLength(1); z++)        //    {        //        var block = structureBlocks[x, z];
