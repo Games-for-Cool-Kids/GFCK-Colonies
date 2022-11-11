@@ -32,9 +32,9 @@ public class Unit : StorageEntity
     }
 #endif
 
-    protected override void Start()    {        base.Start();        OnUnitSpawned?.Invoke(gameObject);    }
+    protected virtual void Start()    {        OnUnitSpawned?.Invoke(gameObject);    }
 
-    protected override void OnDestroy()    {        base.OnDestroy();        OnUnitDespawned?.Invoke(gameObject);    }
+    protected virtual void OnDestroy()    {        OnUnitDespawned?.Invoke(gameObject);    }
 
     public Block GetCurrentBlock()
     {

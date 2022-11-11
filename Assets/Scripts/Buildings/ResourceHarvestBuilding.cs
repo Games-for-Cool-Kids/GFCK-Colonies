@@ -1,4 +1,4 @@
-﻿using Economy;
+using Economy;
 using Jobs;
 
 public class ResourceHarvestBuilding : Building
@@ -10,7 +10,7 @@ public class ResourceHarvestBuilding : Building
         this.resourceTypeToHarvest = resourceType;
     }
 
-    protected override void Start()
+    protected virtual void Start()
     {
         inventory.ResourceChanged += OnResourceAdded;
     }

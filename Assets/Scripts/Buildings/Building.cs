@@ -13,11 +13,6 @@ public class Building : StorageEntity // Need to add derived classes to Building
 
     private bool _firstUpdate = true;
 
-    protected override void Start()
-    {
-        base.Start();
-    }
-
     protected virtual void Update()
     {
         // Set blockGrid after first update, because bounding box of renderer is only correct after first render.
