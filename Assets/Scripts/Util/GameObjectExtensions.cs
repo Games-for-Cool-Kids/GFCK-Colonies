@@ -59,7 +59,7 @@ public static class GameObjectExtensions
     public static float GetSqrBBDistanceToObject(this GameObject gameObject, GameObject other)
     {
         var thisBB = gameObject.GetGridBounds();
-        var otherBB = gameObject.GetGridBounds();
+        var otherBB = other.GetGridBounds();
 
         var p1 = thisBB.ClosestPoint(other.transform.position);
         var p2 = otherBB.ClosestPoint(gameObject.transform.position);
