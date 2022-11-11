@@ -23,6 +23,11 @@ public class Building : StorageEntity // Need to add derived classes to Building
         }
     }
 
+    protected virtual void OnDestroy()
+    {
+        UnregisterJobs();
+    }
+
     // Can be done by player-hand, or by villager
     public void DropOffResource(Resource resource)
     {
@@ -34,9 +39,13 @@ public class Building : StorageEntity // Need to add derived classes to Building
     public void RegisterJobs()
     {
         foreach (Job job in jobs)
-        {
             JobManager.Instance.RegisterJob(job);
-        }
+    }
+
+    public void UnregisterJobs()
+    {
+        foreach (Job job in jobs)
+            JobManager.Instance.UnregisterJob(job);
     }
 
     public void AddJob(JobType type)
