@@ -51,6 +51,8 @@ namespace Jobs
             if(currentTask == task)
                 StartNextTask();
 
+            tasks.Remove(task);
+
             task.Finished -= StartNextTask;
         }
 
