@@ -2,7 +2,7 @@ using Jobs;
 
 public class LumberMill : ResourceHarvestBuilding
 {
-    public LumberMill() : base(ResourceType.RESOURCE_WOOD)
+    public LumberMill() : base(ResourceType.Wood)
     { }
 
     protected override void Start()

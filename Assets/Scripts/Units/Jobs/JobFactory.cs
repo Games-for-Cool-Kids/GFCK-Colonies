@@ -47,11 +47,11 @@ namespace Jobs
         {
             var job = new Job(jobBuilding, JobType.LUMBERJACK);
 
-            var harvestTask = new HarvestResourceTask(job, ResourceType.RESOURCE_WOOD);
+            var harvestTask = new HarvestResourceTask(job, ResourceType.Wood);
             var transferTask = new TransferResourcesTask(job, TransferType.Delivery);
             transferTask.targetStorage = jobBuilding;
             
-            harvestTask.Finished += () => transferTask.Add(ResourceType.RESOURCE_WOOD, 1); // Tell transfer task to transfer the harvested resource(s).
+            harvestTask.Finished += () => transferTask.Add(ResourceType.Wood, 1); // Tell transfer task to transfer the harvested resource(s).
 
             job.tasks.Add(new MoveToClosestTreeTask(job));
             job.tasks.Add(harvestTask);

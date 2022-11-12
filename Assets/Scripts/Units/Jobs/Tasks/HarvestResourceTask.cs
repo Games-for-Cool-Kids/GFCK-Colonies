@@ -61,8 +61,8 @@ namespace Jobs
 
         private ResourceNode FindResourceNode()
         {
-            Debug.Assert(_type != ResourceType.RESOURCE_INVALID);
-            if (_type == ResourceType.RESOURCE_INVALID) return null;
+            Debug.Assert(_type != ResourceType.Invalid);
+            if (_type == ResourceType.Invalid) return null;
 
             string nodeTag = Conversions.ResourceNodeTagForType(_type);
 

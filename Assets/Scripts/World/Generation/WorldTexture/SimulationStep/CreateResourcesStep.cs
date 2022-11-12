@@ -18,17 +18,17 @@ public class CreateResourcesStep : SimulationStepResourceNode
             {
                 if (Random.Range(0, 2.0f) <= noiseSample - Scarceness)
                 {
-                    return ResourceType.RESOURCE_WOOD;
+                    return ResourceType.Wood;
                 }   
             } else if(noiseSample >= SecondaryClusterSize)
             {
                 if (Random.Range(0, 5.0f) <= noiseSample - Scarceness)
                 {
-                    return ResourceType.RESOURCE_WOOD;
+                    return ResourceType.Wood;
                 }
             }
         }
 
-        return ResourceType.RESOURCE_INVALID;
+        return ResourceType.Invalid;
     }
 }

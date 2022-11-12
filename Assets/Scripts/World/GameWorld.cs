@@ -99,7 +99,7 @@ namespace World
                     var resource = worldVariable.resourceGrid[x, z];
                     var node = worldVariable.blockGrid[x, z];
 
-                    if (resource.type == ResourceType.RESOURCE_WOOD)
+                    if (resource.type == ResourceType.Wood)
                     {
                         int nodeY = Mathf.FloorToInt(node.height * worldVariable.height);
                         Vector3 blockWorldPos = new Vector3(node.x, nodeY, node.y);

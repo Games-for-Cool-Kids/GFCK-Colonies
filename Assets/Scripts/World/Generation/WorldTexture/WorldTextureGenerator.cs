@@ -213,7 +213,7 @@ public class WorldTextureGenerator : MonoBehaviour
                 }
                 pixel *= GetHeightColor(node.height);
 
-                if(nodeResource.type == ResourceType.RESOURCE_WOOD)
+                if(nodeResource.type == ResourceType.Wood)
                 {
                     //pixel.r = 0.0f;
                     //pixel.b = 0.0f;

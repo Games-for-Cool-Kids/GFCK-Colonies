@@ -37,7 +37,7 @@ namespace Economy
 
         private void VerifyRequest(ResourceType resourceType, int amount)
         {
-            Debug.Assert(resourceType != ResourceType.RESOURCE_INVALID);
+            Debug.Assert(resourceType != ResourceType.Invalid);
             Debug.Assert(amount != 0);
             if (amount < 0)
                 Debug.LogWarningFormat("Requesting {0} resources of type {1}, was this intentional?", amount, resourceType.ToString());
