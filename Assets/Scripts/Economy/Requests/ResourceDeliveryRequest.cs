@@ -7,5 +7,10 @@ namespace Economy
         public ResourceDeliveryRequest(StorageEntity requester, ResourceStack resourceStack) 
             : base(requester, resourceStack)
         { }
+
+        public override string ToString()
+        {
+            return string.Format("Delivery {0}x{1} request", resourceStack.amount, resourceStack.type);
+        }
     }
 }

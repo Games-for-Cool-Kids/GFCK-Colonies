@@ -33,9 +33,9 @@ namespace Jobs
         {
             var request_manager = PlayerInfo.Instance.ResourceTransferRequestManager;
 
-            for(ResourceTransferRequest request = request_manager.GetNextRequest(null); 
+            for(ResourceTransferRequest request = request_manager.GetNextOpenRequest(null); 
                 request != null; 
-                request_manager.GetNextRequest(request))
+                request_manager.GetNextOpenRequest(request))
             {
                 if(request is ResourcePickUpRequest)
                 {
@@ -52,12 +52,12 @@ namespace Jobs
 
         private void PromiseToFulfill(ResourceTransferRequest request)
         {
-            int inventory_size = job.UnitJobComponent.inventorySize;
-            int fullfill_amount = inventory_size <= request.resourceStack.amount
-                                ? inventory_size : request.resourceStack.amount;
+            int fullfill_amount = Mathf.Min(job.UnitJobComponent.inventorySize, request.resourceStack.amount);
 
             var request_tracker = PlayerInfo.Instance.ResourceTransferRequestManager;
             _requestToFulfill = request_tracker.PromiseToFulfill(request, fullfill_amount);
+
+            Debug.LogFormat("Promise to fulfill {0}, for target inventory with {1}", _requestToFulfill, request.requester.inventory);
 
             Debug.Assert(_requestToFulfill is ResourcePickUpRequest || _requestToFulfill is ResourceDeliveryRequest);
         }

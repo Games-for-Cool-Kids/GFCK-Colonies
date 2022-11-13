@@ -31,6 +31,8 @@ namespace Jobs
         {
             base.Start();
 
+            Debug.Assert(resourcesToTransfer != null);
+
             // This can happen when this task is repeated, unit already emptied his inventory.
             if (resourcesToTransfer.Count == 0)
                 Finish();
@@ -54,23 +56,23 @@ namespace Jobs
             if (_timeSinceLastTransfer >= job.UnitJobComponent.transferSpeed)
             {
                 _timeSinceLastTransfer = 0;
-                TransferFirstResourceInList();
+                TransferNextResource();
             }
             // No more resources to transfer.
             if (resourcesToTransfer.Count == 0)
                 Finish();
         }
 
-        private void TransferFirstResourceInList()
+        public override void Finish()
+        {
+            Debug.Assert(resourcesToTransfer.Count == 0);
+
+            base.Finish();
+        }
+
+        private void TransferNextResource()
         {
             Debug.Assert(resourcesToTransfer[0].amount > 0);
-
-            var resourceType = resourcesToTransfer[0].type;
-
-            // Lower resources to transfer.
-            resourcesToTransfer[0].amount -= 1;
-            if (resourcesToTransfer[0].amount == 0)
-                resourcesToTransfer.RemoveAt(0);
 
             Inventory source, target;
             if(_transferType == TransferType.PickUp)
@@ -84,8 +86,16 @@ namespace Jobs
                 target = targetStorage.inventory;
             }
 
+            var resourceType = resourcesToTransfer[0].type;
             source.RemoveResource(resourceType);
             target.AddResource(resourceType);
+
+            //Debug.LogFormat("Transferred 1 out of {0} {1}", resourcesToTransfer[0].amount, resourcesToTransfer[0].type);
+
+            // Lower resources to transfer.
+            resourcesToTransfer[0].amount -= 1;
+            if (resourcesToTransfer[0].amount == 0)
+                resourcesToTransfer.RemoveAt(0);
         }
 
         public void Add(ResourceStack resourceStack)
