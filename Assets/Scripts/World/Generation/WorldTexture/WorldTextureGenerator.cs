@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
@@ -7,6 +8,20 @@ using World;
 
 public class WorldTextureGenerator : MonoBehaviour
 {
+    private class NoiseTextureLayerData
+    {
+        public NoiseTextureLayerData(float scale, Vector2 offset, float selectionBias)
+        {
+            Scale = scale;
+            Offset = offset;
+            SelectionBias = selectionBias;
+        }
+
+        public float Scale { get; private set; }
+        public Vector2 Offset { get; private set; }
+        public float SelectionBias { get; private set; } // Between 0 to 1, when adding all biases of all layers together
+    }
+
     public GameObject imageObject;
 
     public Color ground;
@@ -18,7 +33,8 @@ public class WorldTextureGenerator : MonoBehaviour
     public int textureSize = 256; // Always a square.
     public int maxHeight = 50;
 
-    private Texture2D _noiseTex;
+    private Texture2D _forestNoiseTex;
+    private Texture2D _rocksNoiseTex;
 
     // Block nodes
     public HeightMapStep heightMapStep;
@@ -46,7 +62,29 @@ public class WorldTextureGenerator : MonoBehaviour
     {
         SetSeed();
 
-        GenerateNoiseTexture();
+        IEnumerable<NoiseTextureLayerData> forestLayers = new List<NoiseTextureLayerData>()
+        { 
+            new NoiseTextureLayerData(4.0f, new Vector2(UnityEngine.Random.Range(0, 4.0f), 
+                                                        UnityEngine.Random.Range(0, 4.0f)), 
+                                      0.5f),
+            new NoiseTextureLayerData(15.0f, new Vector2(UnityEngine.Random.Range(0, 15.0f), 
+                                                         UnityEngine.Random.Range(0, 15.0f)), 
+                                      0.5f) 
+        };
+
+        _forestNoiseTex = GenerateLayeredNoiseTexture(textureSize, forestLayers);
+
+        IEnumerable<NoiseTextureLayerData> rockLayers = new List<NoiseTextureLayerData>()
+        {
+            new NoiseTextureLayerData(4.0f, new Vector2(UnityEngine.Random.Range(0, 4.0f),
+                                                        UnityEngine.Random.Range(0, 4.0f)),
+                                      0.5f),
+            new NoiseTextureLayerData(15.0f, new Vector2(UnityEngine.Random.Range(0, 15.0f),
+                                                         UnityEngine.Random.Range(0, 15.0f)),
+                                      0.5f)
+        };
+
+        _rocksNoiseTex = GenerateLayeredNoiseTexture(textureSize, rockLayers);
 
         // Init
         worldVariable.Init(textureSize, maxHeight);
@@ -69,59 +107,42 @@ public class WorldTextureGenerator : MonoBehaviour
         RestoreEngineSeed();
     }
 
-    // TODO Extract to generic noise generation function that can layer different sizes together
-    private void GenerateNoiseTexture()
+    // TODO Can store up to 3 different noise textures across RGB channels of a single texxture
+    Texture2D GenerateLayeredNoiseTexture(int textureSize, IEnumerable<NoiseTextureLayerData> layersData)
     {
-        _noiseTex = new Texture2D(textureSize, textureSize);
+        Texture2D noiseTex = new Texture2D(textureSize, textureSize); // TODO Don't need to generate mip-maps
 
-        float noiseScaleLarge = 4.0f;
-        float noiseScaleSmall = 15.0f;
+        Color[] pixels = new Color[textureSize * textureSize];
 
-        float offsetLargeX = UnityEngine.Random.Range(0, noiseScaleLarge);
-        float offsetLargeY = UnityEngine.Random.Range(0, noiseScaleLarge);
-
-        float offsetSmallX = UnityEngine.Random.Range(0, noiseScaleSmall);
-        float offsetSmallY = UnityEngine.Random.Range(0, noiseScaleSmall);
-
-        float smallToLargeLerp = 0.5f;
-
-        Color[] pixels = new Color[_noiseTex.width * _noiseTex.height];
-
-        float y = 0.0F;
-
-        while (y < _noiseTex.height)
+        foreach(var layerData in layersData)
         {
-            float x = 0.0F;
-            while (x < _noiseTex.width)
+            float noiseScale = layerData.Scale;
+            float offsetX = layerData.Offset.x;
+            float offsetY = layerData.Offset.y;
+            float bias = layerData.SelectionBias;
+
+            float y = 0.0f;
+
+            while (y < noiseTex.height)
             {
-                float sample = 0.0f;
-
-                // Small
+                float x = 0.0f;
+                while (x < noiseTex.width)
                 {
-                    float xCoord = x / _noiseTex.width * noiseScaleSmall + offsetSmallX;
-                    float yCoord = y / _noiseTex.height * noiseScaleSmall + offsetSmallY;
-                    float sampleSmall = Mathf.PerlinNoise(xCoord, yCoord) * (1.0f - smallToLargeLerp);
-                    sample += sampleSmall;
+                    float xCoord = x / textureSize * noiseScale + offsetX;
+                    float yCoord = y / textureSize * noiseScale + offsetY;
+                    float sample = Mathf.PerlinNoise(xCoord, yCoord) * bias;
+
+                    pixels[(int)y * textureSize + (int)x] += new Color(sample, sample, sample);
+                    x++;
                 }
-
-                // Large
-                {
-                    float xCoord = x / _noiseTex.width * noiseScaleLarge + offsetLargeX;
-                    float yCoord = y / _noiseTex.height * noiseScaleLarge + offsetLargeY;
-                    float sampleLarge = Mathf.PerlinNoise(xCoord, yCoord) * smallToLargeLerp;
-                    sample += sampleLarge;
-                }
-
-                sample = Math.Clamp(sample, 0.0f, 1.0f);
-
-                pixels[(int)y * _noiseTex.width + (int)x] = new Color(sample, sample, sample);
-                x++;
+                y++;
             }
-            y++;
         }
 
-        _noiseTex.SetPixels(pixels);
-        _noiseTex.Apply();
+        noiseTex.SetPixels(pixels);
+        noiseTex.Apply();
+
+        return noiseTex;
     }
 
     private void InitImageInScene()
@@ -162,7 +183,7 @@ public class WorldTextureGenerator : MonoBehaviour
         WorldGenBlockNode node = worldVariable.blockGrid[x, y];
         WorldGenResourceNode nodeResource = worldVariable.resourceGrid[x, y];
 
-        nodeResource.type = ResourcesStep.GetResourceType(node, worldVariable, _noiseTex, textureSize, textureSize);
+        nodeResource.type = ResourcesStep.GetResourceType(node, worldVariable, _forestNoiseTex, textureSize, textureSize);
     }
 
     private void SetWaterBlocksToCorrectLevel()
