@@ -10,7 +10,7 @@ namespace Economy
     {
         public Inventory inventory = new();
 
-        private ResourceDictionary _wantedResources = new (); // Any resource not in list will be asked to be picked up.
+        private ResourceDictionary _wantedResources = new ();
 
         protected void SetRequestedResource(ResourceType type, int amount)
         {
@@ -58,5 +58,10 @@ namespace Economy
             return excessResources;
         }
 
+        /// <summary>Will ask to pick up all non-wanted resources.</summary>
+        protected void RequestPickupAll()
+        {
+            PlayerInfo.Instance.ResourceTransferRequestManager.UpdateRequests(this);
+        }
     }
 }

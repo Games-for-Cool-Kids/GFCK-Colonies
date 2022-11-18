@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,17 +13,6 @@ namespace Economy
         private List<ResourceTransferRequest> _promisedRequests = new(); // Assigned to be fullfilled. Promised requests should only be removed on fulfillment, as this could break unit jobs.
 
 
-        /// <summary>Will add to existing request of given storage/type, or create a new request.</summary>
-        public void RequestPickup(StorageEntity source, ResourceType resourceType, int amount)
-        {
-            VerifyRequest(resourceType, amount);
-
-            var request = _pickupRequests.Find(pur => pur.requester == source && pur.resourceStack.type == resourceType);
-            if (request == null)
-                AddPickupRequest(new ResourcePickUpRequest(source, new(resourceType, amount)));
-            else
-                request.resourceStack.amount += amount;
-        }
         /// <summary>Will add to existing request of given storage/type, or create a new request.</summary>
         public void UpdateRequests(StorageEntity storage)
         {
@@ -62,7 +51,8 @@ namespace Economy
                 int promised = promised_deliveries.Sum(req => req.resourceStack.amount);
 
                 var open_delivery_request = delivery_requests.Find(req => req.resourceStack.type == resource);
-                if (storage.GetWantedResources().TryGetValue(resource, out int wanted))
+                if (storage.GetWantedResources().TryGetValue(resource, out int wanted)
+                 && wanted > 0)
                 {
                     int to_deliver = wanted - promised;
 
@@ -94,14 +84,15 @@ namespace Economy
                 int promised = promised_pickups.Sum(req => req.resourceStack.amount);
 
                 var open_pickup_request = pickup_requests.Find(req => req.resourceStack.type == resource);
-                if (storage.GetExcessResources().TryGetValue(resource, out int excess))
+                if (storage.GetExcessResources().TryGetValue(resource, out int excess)
+                 && excess > 0)
                 {
                     int to_pickup = excess - promised;
 
                     if (open_pickup_request != null)
                         open_pickup_request.resourceStack.amount = to_pickup;
                     else if (to_pickup > 0)
-                        AddRequest(new ResourceDeliveryRequest(storage, new(resource, to_pickup)));
+                        AddRequest(new ResourcePickUpRequest(storage, new(resource, to_pickup)));
                 }
                 else // No longer wanted.
                 {

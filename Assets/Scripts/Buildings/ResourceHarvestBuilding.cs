@@ -8,19 +8,12 @@ public class ResourceHarvestBuilding : Building
     public ResourceHarvestBuilding(ResourceType resourceType)
     {
         this.resourceTypeToHarvest = resourceType;
+
+        inventory.ResourceChanged += OnResourceAdded;
     }
 
-    protected virtual void Start()
+    private void OnResourceAdded(ResourceType type, int changedAmount)
     {
-        //inventory.ResourceChanged += OnResourceAdded;
+        RequestPickupAll();
     }
-
-    //private void OnResourceAdded(ResourceType type, int changedAmount)
-    //{
-    //    if (type == resourceTypeToHarvest)
-    //    {
-    //        var request_manager = PlayerInfo.Instance.ResourceTransferRequestManager;
-    //        request_manager.RequestPickup(this, resourceTypeToHarvest, changedAmount); // By default all resources of harvest type should be picked up.
-    //    }
-    //}
 }
