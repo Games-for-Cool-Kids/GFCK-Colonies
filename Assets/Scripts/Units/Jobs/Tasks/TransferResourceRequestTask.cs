@@ -1,4 +1,4 @@
-
+﻿
 using Economy;
 using System.Diagnostics;
 
@@ -25,15 +25,19 @@ namespace Jobs
 
         public override void Finish()
         {
-            // ToDo: Check if actually fulfilled, task can have been finished early.
-
-
             var request_tracker = PlayerInfo.Instance.ResourceTransferRequestManager;
             request_tracker.FullFillRequest(RequestToFulfill);
 
             RequestToFulfill = null;
 
             base.Finish();
+        }
+
+        protected override void TransferNextResource()
+        {
+            RequestToFulfill.Amount -= 1;
+
+            base.TransferNextResource();
         }
     }
 }

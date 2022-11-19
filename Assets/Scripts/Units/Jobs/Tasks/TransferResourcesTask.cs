@@ -70,7 +70,7 @@ namespace Jobs
             base.Finish();
         }
 
-        private void TransferNextResource()
+        protected virtual void TransferNextResource()
         {
             Debug.Assert(resourcesToTransfer[0].amount > 0);
 
@@ -89,8 +89,6 @@ namespace Jobs
             var resourceType = resourcesToTransfer[0].type;
             source.RemoveResource(resourceType);
             target.AddResource(resourceType);
-
-            //Debug.LogFormat("Transferred 1 out of {0} {1}", resourcesToTransfer[0].amount, resourcesToTransfer[0].type);
 
             // Lower resources to transfer.
             resourcesToTransfer[0].amount -= 1;
