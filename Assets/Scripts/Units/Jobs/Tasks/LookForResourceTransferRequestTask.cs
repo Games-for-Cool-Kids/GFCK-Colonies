@@ -52,12 +52,11 @@ namespace Jobs
 
         private void PromiseToFulfill(ResourceTransferRequest request)
         {
-            int fullfill_amount = Mathf.Min(job.UnitJobComponent.inventorySize, request.resourceStack.amount);
+            var request_manager = PlayerInfo.Instance.ResourceTransferRequestManager;
+            
+            int fullfill_amount = Mathf.Min(job.UnitJobComponent.inventorySize, request.Amount);
+            _requestToFulfill = request_manager.PromiseToFulfill(job.GetAssignedUnit(), request, fullfill_amount);
 
-            var request_tracker = PlayerInfo.Instance.ResourceTransferRequestManager;
-            _requestToFulfill = request_tracker.PromiseToFulfill(request, fullfill_amount);
-
-            Debug.LogFormat("Promise to fulfill {0}, for target inventory with {1}", _requestToFulfill, request.requester.inventory);
 
             Debug.Assert(_requestToFulfill is ResourcePickUpRequest || _requestToFulfill is ResourceDeliveryRequest);
         }
@@ -66,14 +65,14 @@ namespace Jobs
         {
             // Move task.
             var move_to_storage_task = new MoveToObjectTask(job, TaskFlag.OneTime);
-            move_to_storage_task.TargetObject = _requestToFulfill.requester.gameObject;
+            move_to_storage_task.TargetObject = _requestToFulfill.Requester.gameObject;
 
             // Transfer task.
             var transfer_type = _requestToFulfill is ResourcePickUpRequest ? TransferType.PickUp : TransferType.Delivery;
 
             var transfer_resources_task = new TransferResourceRequestTask(job, transfer_type, TaskFlag.OneTime);
             transfer_resources_task.RequestToFulfill = _requestToFulfill;
-            transfer_resources_task.targetStorage = _requestToFulfill.requester;
+            transfer_resources_task.targetStorage = _requestToFulfill.Requester;  // ToDo: Is this correct?
 
             // Update job.
             job.AddTask(move_to_storage_task);

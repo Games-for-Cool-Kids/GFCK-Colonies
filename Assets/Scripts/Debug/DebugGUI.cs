@@ -65,10 +65,10 @@ public class DebugGUI : MonoBehaviour
     private void DrawRequest(ResourceTransferRequest request)
     {
         string label = string.Format("{0}x{1} {2} {3}",
-            request.resourceStack.amount,
-            request.resourceStack.type.ToString(),
+            request.Amount,
+            request.ResourceType.ToString(),
             request is ResourcePickUpRequest ? "from" : "to",
-            request.requester.gameObject.name);
+            request.Requester.gameObject.name);
 
         // - Draw -
         GUILayout.BeginHorizontal();
@@ -93,10 +93,10 @@ public class DebugGUI : MonoBehaviour
         string label = string.Format("{0} will {1} {2}x{3} {4} {5}",
             promise.unit.gameObject.name,
             promise.request is ResourcePickUpRequest ? "pick up" : "deliver",
-            promise.request.resourceStack.amount,
-            promise.request.resourceStack.type.ToString(),
+            promise.request.Amount,
+            promise.request.ResourceType.ToString(),
             promise.request is ResourcePickUpRequest ? "from" : "to",
-            promise.request.requester.gameObject.name);
+            promise.request.Requester.gameObject.name);
 
         GUILayout.BeginHorizontal();
 

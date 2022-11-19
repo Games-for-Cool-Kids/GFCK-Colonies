@@ -10,7 +10,7 @@ namespace Economy
 
         public override string ToString()
         {
-            return string.Format("Pickup {0}x{1} request", resourceStack.amount, resourceStack.type);
+            return string.Format("Pickup {0}x{1} request", ResourceStack.amount, ResourceStack.type);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿
+
 using Economy;
 using System.Diagnostics;
 
@@ -18,7 +18,7 @@ namespace Jobs
         {
             Debug.Assert(RequestToFulfill != null);
 
-            Add(RequestToFulfill.resourceStack);
+            Add(RequestToFulfill.ResourceStack);
 
             base.Start();
         }
