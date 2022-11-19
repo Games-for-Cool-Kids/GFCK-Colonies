@@ -62,8 +62,20 @@ namespace Jobs
         }
         private static Job CreateMinerJob(Building jobBuilding)
         {
-            Debug.Log("Miner job not yet implemented");
-            return new Job(jobBuilding, JobType.MINER);
+            var job = new Job(jobBuilding, JobType.MINER);
+
+            var harvestTask = new HarvestResourceTask(job, ResourceType.Stone);
+            var transferTask = new TransferResourcesTask(job, TransferType.Delivery);
+            transferTask.targetStorage = jobBuilding;
+
+            harvestTask.Finished += () => transferTask.Add(ResourceType.Stone, 1); // Tell transfer task to transfer the harvested resource(s).
+
+            job.tasks.Add(new MoveToClosestRockTask(job));
+            job.tasks.Add(harvestTask);
+            job.tasks.Add(CreateMoveToJobBuildingTask(job));
+            job.tasks.Add(transferTask);
+
+            return job;
         }
 
         private static Task CreateMoveToJobBuildingTask(Job job)
