@@ -197,5 +197,33 @@ namespace Economy
             else
                 _deliveryRequests.Remove(request as ResourceDeliveryRequest);
         }
+
+        /// <summary>Returns clone of the original list, since outside callers should not modify requests.</summary>
+        public List<ResourcePickUpRequest> GetPickupRequestsClone()
+        {
+            return new(_openRequests
+                .Where(req => req is ResourcePickUpRequest)
+                .Cast<ResourcePickUpRequest>()
+                .ToList());
+        }
+        /// <summary>Returns clone of the original list, since outside callers should not modify requests.</summary>
+        public List<ResourceDeliveryRequest> GetDeliveryRequestsClone()
+        {
+            return new(_openRequests
+                .Where(req => req is ResourceDeliveryRequest)
+                .Cast<ResourceDeliveryRequest>()
+                .ToList());
+        }
+        /// <summary>Returns clone of the original list, since outside callers should not modify requests.</summary>
+        public List<ResourceTransferRequest> GetOpenRequestsClone()
+        {
+            return new(_openRequests);
+        }
+        /// <summary>Returns clone of the original list, since outside callers should not modify requests.</summary>
+        public List<(Unit unit, ResourceTransferRequest request)> GetPromisedRequestsClone()
+        {
+            return new(_promisedRequests);
+        }
+
     }
 }
