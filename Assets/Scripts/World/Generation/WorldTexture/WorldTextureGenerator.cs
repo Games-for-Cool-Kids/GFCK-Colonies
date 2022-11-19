@@ -8,20 +8,6 @@ using World;
 
 public class WorldTextureGenerator : MonoBehaviour
 {
-    private class NoiseTextureLayerData
-    {
-        public NoiseTextureLayerData(float scale, Vector2 offset, float selectionBias)
-        {
-            Scale = scale;
-            Offset = offset;
-            SelectionBias = selectionBias;
-        }
-
-        public float Scale { get; private set; }
-        public Vector2 Offset { get; private set; }
-        public float SelectionBias { get; private set; } // Between 0 to 1, when adding all biases of all layers together
-    }
-
     public GameObject imageObject;
 
     public Color ground;
@@ -33,9 +19,6 @@ public class WorldTextureGenerator : MonoBehaviour
     public int textureSize = 256; // Always a square.
     public int maxHeight = 50;
 
-    private Texture2D _forestNoiseTex;
-    private Texture2D _rocksNoiseTex;
-
     // Block nodes
     public HeightMapStep heightMapStep;
     public HeightToBlockTypeStep heightToBlockStep;
@@ -43,7 +26,8 @@ public class WorldTextureGenerator : MonoBehaviour
 
     // Surface stuff
     // Resource nodes
-    public CreateResourcesStep ResourcesStep;
+    public CreateResourcesTreesStep ResourcesTreesStep;
+    public CreateResourcesStoneStep ResourcesStoneStep;
 
     public WorldVariable worldVariable;
 
@@ -62,29 +46,9 @@ public class WorldTextureGenerator : MonoBehaviour
     {
         SetSeed();
 
-        IEnumerable<NoiseTextureLayerData> forestLayers = new List<NoiseTextureLayerData>()
-        { 
-            new NoiseTextureLayerData(4.0f, new Vector2(UnityEngine.Random.Range(0, 4.0f), 
-                                                        UnityEngine.Random.Range(0, 4.0f)), 
-                                      0.5f),
-            new NoiseTextureLayerData(15.0f, new Vector2(UnityEngine.Random.Range(0, 15.0f), 
-                                                         UnityEngine.Random.Range(0, 15.0f)), 
-                                      0.5f) 
-        };
-
-        _forestNoiseTex = GenerateLayeredNoiseTexture(textureSize, forestLayers);
-
-        IEnumerable<NoiseTextureLayerData> rockLayers = new List<NoiseTextureLayerData>()
-        {
-            new NoiseTextureLayerData(4.0f, new Vector2(UnityEngine.Random.Range(0, 4.0f),
-                                                        UnityEngine.Random.Range(0, 4.0f)),
-                                      0.5f),
-            new NoiseTextureLayerData(15.0f, new Vector2(UnityEngine.Random.Range(0, 15.0f),
-                                                         UnityEngine.Random.Range(0, 15.0f)),
-                                      0.5f)
-        };
-
-        _rocksNoiseTex = GenerateLayeredNoiseTexture(textureSize, rockLayers);
+        // TODO Not a great solution.. This needs to be handled automatically. Awake()?
+        ResourcesTreesStep.RegenerateNoiseMap();
+        ResourcesStoneStep.RegenerateNoiseMap();
 
         // Init
         worldVariable.Init(textureSize, maxHeight);
@@ -108,42 +72,6 @@ public class WorldTextureGenerator : MonoBehaviour
     }
 
     // TODO Can store up to 3 different noise textures across RGB channels of a single texxture
-    Texture2D GenerateLayeredNoiseTexture(int textureSize, IEnumerable<NoiseTextureLayerData> layersData)
-    {
-        Texture2D noiseTex = new Texture2D(textureSize, textureSize); // TODO Don't need to generate mip-maps
-
-        Color[] pixels = new Color[textureSize * textureSize];
-
-        foreach(var layerData in layersData)
-        {
-            float noiseScale = layerData.Scale;
-            float offsetX = layerData.Offset.x;
-            float offsetY = layerData.Offset.y;
-            float bias = layerData.SelectionBias;
-
-            float y = 0.0f;
-
-            while (y < noiseTex.height)
-            {
-                float x = 0.0f;
-                while (x < noiseTex.width)
-                {
-                    float xCoord = x / textureSize * noiseScale + offsetX;
-                    float yCoord = y / textureSize * noiseScale + offsetY;
-                    float sample = Mathf.PerlinNoise(xCoord, yCoord) * bias;
-
-                    pixels[(int)y * textureSize + (int)x] += new Color(sample, sample, sample);
-                    x++;
-                }
-                y++;
-            }
-        }
-
-        noiseTex.SetPixels(pixels);
-        noiseTex.Apply();
-
-        return noiseTex;
-    }
 
     private void InitImageInScene()
     { 
@@ -183,7 +111,14 @@ public class WorldTextureGenerator : MonoBehaviour
         WorldGenBlockNode node = worldVariable.blockGrid[x, y];
         WorldGenResourceNode nodeResource = worldVariable.resourceGrid[x, y];
 
-        nodeResource.type = ResourcesStep.GetResourceType(node, worldVariable, _forestNoiseTex, textureSize, textureSize);
+        nodeResource.type = ResourcesTreesStep.GetResourceType(node, worldVariable);
+
+        // TODO Temporary, but not ideal. If there are many trees, we have a smaller chance of getting rock.
+        // Also, this is ugly.
+        if(nodeResource.type == ResourceType.Invalid)
+        {
+            nodeResource.type = ResourcesStoneStep.GetResourceType(node, worldVariable);
+        }
     }
 
     private void SetWaterBlocksToCorrectLevel()
@@ -239,6 +174,11 @@ public class WorldTextureGenerator : MonoBehaviour
                     //pixel.r = 0.0f;
                     //pixel.b = 0.0f;
                     pixel.g = 1.0f;
+                } else if(nodeResource.type == ResourceType.Stone)
+                {
+                    pixel.r = 1.0f;
+                    //pixel.b = 0.0f;
+                    //pixel.g = 1.0f;
                 }
 
                 worldVariable.texture.SetPixel(x, y, pixel);

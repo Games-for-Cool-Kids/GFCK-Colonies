@@ -450,6 +450,10 @@ PrefabInstance:
       propertyPath: TreePrefab
       value: 
       objectReference: {fileID: 5992806014588921302, guid: 467d032d6a124ab4aa4525b66fd3f3ee, type: 3}
+    - target: {fileID: 8949228526120178119, guid: 2dfd28f84b6e2f64392f293d51cf5ddb, type: 3}
+      propertyPath: StonePrefab
+      value: 
+      objectReference: {fileID: 4709858280068765143, guid: 981c032fa4415994f9cb7b108df3c390, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2dfd28f84b6e2f64392f293d51cf5ddb, type: 3}
 --- !u!224 &1215031685 stripped

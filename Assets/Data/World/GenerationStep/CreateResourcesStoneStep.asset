@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e882bb506b6e7a49a7e343c799089c1, type: 3}
+  m_Name: CreateResourcesStoneStep
+  m_EditorClassIdentifier: 
+  NoiseMapGenerator: {fileID: 11400000, guid: 8da9140b9b3c7e342b7dd8bd7d96a115, type: 2}
+  ClusterSize: 0.7
+  Scarceness: 0.5
