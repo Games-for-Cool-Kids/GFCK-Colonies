@@ -18,22 +18,26 @@ namespace Jobs
         {
             Debug.Assert(RequestToFulfill != null);
 
-            Add(RequestToFulfill.resourceStack);
+            Add(RequestToFulfill.ResourceStack);
 
             base.Start();
         }
 
         public override void Finish()
         {
-            // ToDo: Check if actually fulfilled, task can have been finished early.
-
-
             var request_tracker = PlayerInfo.Instance.ResourceTransferRequestManager;
             request_tracker.FullFillRequest(RequestToFulfill);
 
             RequestToFulfill = null;
 
             base.Finish();
+        }
+
+        protected override void TransferNextResource()
+        {
+            RequestToFulfill.Amount -= 1;
+
+            base.TransferNextResource();
         }
     }
 }

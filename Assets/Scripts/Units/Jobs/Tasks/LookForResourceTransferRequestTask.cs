@@ -33,9 +33,9 @@ namespace Jobs
         {
             var request_manager = PlayerInfo.Instance.ResourceTransferRequestManager;
 
-            for(ResourceTransferRequest request = request_manager.GetNextRequest(null); 
+            for(ResourceTransferRequest request = request_manager.GetNextOpenRequest(null); 
                 request != null; 
-                request_manager.GetNextRequest(request))
+                request_manager.GetNextOpenRequest(request))
             {
                 if(request is ResourcePickUpRequest)
                 {
@@ -52,12 +52,11 @@ namespace Jobs
 
         private void PromiseToFulfill(ResourceTransferRequest request)
         {
-            int inventory_size = job.UnitJobComponent.inventorySize;
-            int fullfill_amount = inventory_size <= request.resourceStack.amount
-                                ? inventory_size : request.resourceStack.amount;
+            var request_manager = PlayerInfo.Instance.ResourceTransferRequestManager;
+            
+            int fullfill_amount = Mathf.Min(job.UnitJobComponent.inventorySize, request.Amount);
+            _requestToFulfill = request_manager.PromiseToFulfill(job.GetAssignedUnit(), request, fullfill_amount);
 
-            var request_tracker = PlayerInfo.Instance.ResourceTransferRequestManager;
-            _requestToFulfill = request_tracker.PromiseToFulfill(request, fullfill_amount);
 
             Debug.Assert(_requestToFulfill is ResourcePickUpRequest || _requestToFulfill is ResourceDeliveryRequest);
         }
@@ -66,14 +65,14 @@ namespace Jobs
         {
             // Move task.
             var move_to_storage_task = new MoveToObjectTask(job, TaskFlag.OneTime);
-            move_to_storage_task.TargetObject = _requestToFulfill.requester.gameObject;
+            move_to_storage_task.TargetObject = _requestToFulfill.Requester.gameObject;
 
             // Transfer task.
             var transfer_type = _requestToFulfill is ResourcePickUpRequest ? TransferType.PickUp : TransferType.Delivery;
 
             var transfer_resources_task = new TransferResourceRequestTask(job, transfer_type, TaskFlag.OneTime);
             transfer_resources_task.RequestToFulfill = _requestToFulfill;
-            transfer_resources_task.targetStorage = _requestToFulfill.requester;
+            transfer_resources_task.targetStorage = _requestToFulfill.Requester;  // ToDo: Is this correct?
 
             // Update job.
             job.AddTask(move_to_storage_task);

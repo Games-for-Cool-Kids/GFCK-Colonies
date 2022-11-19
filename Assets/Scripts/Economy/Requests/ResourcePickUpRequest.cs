@@ -7,5 +7,10 @@ namespace Economy
         public ResourcePickUpRequest(StorageEntity requester, ResourceStack resourceStack) 
             : base(requester, resourceStack)
         { }
+
+        public override string ToString()
+        {
+            return string.Format("Pickup {0}x{1} request", ResourceStack.amount, ResourceStack.type);
+        }
     }
 }

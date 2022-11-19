@@ -10,6 +10,7 @@ namespace World
         public Material material;
 
         public GameObject TreePrefab;
+        public GameObject StonePrefab;
 
         public WorldVariable worldVariable;
         public GameObject[,] chunkObjects;
@@ -105,6 +106,13 @@ namespace World
                         Vector3 blockWorldPos = new Vector3(node.x, nodeY, node.y);
                         var Tree = Instantiate(TreePrefab, chunkObject.transform);
                         Tree.transform.position = blockWorldPos + Tree.GetPivotYOffset(); // Normally we should add half a block, but tree roots should stick in ground a bit.
+                    }
+                    if (resource.type == ResourceType.Stone) // TODO Remove duplication
+                    {
+                        int nodeY = Mathf.FloorToInt(node.height * worldVariable.height);
+                        Vector3 blockWorldPos = new Vector3(node.x, nodeY, node.y);
+                        var rock = Instantiate(StonePrefab, chunkObject.transform);
+                        rock.transform.position = blockWorldPos + rock.GetPivotYOffset(); // Normally we should add half a block, but tree roots should stick in ground a bit.
                     }
                 }
             }

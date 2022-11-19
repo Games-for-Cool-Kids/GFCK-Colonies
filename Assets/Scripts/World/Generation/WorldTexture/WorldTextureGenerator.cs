@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
@@ -18,8 +19,6 @@ public class WorldTextureGenerator : MonoBehaviour
     public int textureSize = 256; // Always a square.
     public int maxHeight = 50;
 
-    private Texture2D _noiseTex;
-
     // Block nodes
     public HeightMapStep heightMapStep;
     public HeightToBlockTypeStep heightToBlockStep;
@@ -27,7 +26,8 @@ public class WorldTextureGenerator : MonoBehaviour
 
     // Surface stuff
     // Resource nodes
-    public CreateResourcesStep ResourcesStep;
+    public CreateResourcesTreesStep ResourcesTreesStep;
+    public CreateResourcesStoneStep ResourcesStoneStep;
 
     public WorldVariable worldVariable;
 
@@ -46,7 +46,9 @@ public class WorldTextureGenerator : MonoBehaviour
     {
         SetSeed();
 
-        GenerateNoiseTexture();
+        // TODO Not a great solution.. This needs to be handled automatically. Awake()?
+        ResourcesTreesStep.RegenerateNoiseMap();
+        ResourcesStoneStep.RegenerateNoiseMap();
 
         // Init
         worldVariable.Init(textureSize, maxHeight);
@@ -69,60 +71,7 @@ public class WorldTextureGenerator : MonoBehaviour
         RestoreEngineSeed();
     }
 
-    // TODO Extract to generic noise generation function that can layer different sizes together
-    private void GenerateNoiseTexture()
-    {
-        _noiseTex = new Texture2D(textureSize, textureSize);
-
-        float noiseScaleLarge = 4.0f;
-        float noiseScaleSmall = 15.0f;
-
-        float offsetLargeX = UnityEngine.Random.Range(0, noiseScaleLarge);
-        float offsetLargeY = UnityEngine.Random.Range(0, noiseScaleLarge);
-
-        float offsetSmallX = UnityEngine.Random.Range(0, noiseScaleSmall);
-        float offsetSmallY = UnityEngine.Random.Range(0, noiseScaleSmall);
-
-        float smallToLargeLerp = 0.5f;
-
-        Color[] pixels = new Color[_noiseTex.width * _noiseTex.height];
-
-        float y = 0.0F;
-
-        while (y < _noiseTex.height)
-        {
-            float x = 0.0F;
-            while (x < _noiseTex.width)
-            {
-                float sample = 0.0f;
-
-                // Small
-                {
-                    float xCoord = x / _noiseTex.width * noiseScaleSmall + offsetSmallX;
-                    float yCoord = y / _noiseTex.height * noiseScaleSmall + offsetSmallY;
-                    float sampleSmall = Mathf.PerlinNoise(xCoord, yCoord) * (1.0f - smallToLargeLerp);
-                    sample += sampleSmall;
-                }
-
-                // Large
-                {
-                    float xCoord = x / _noiseTex.width * noiseScaleLarge + offsetLargeX;
-                    float yCoord = y / _noiseTex.height * noiseScaleLarge + offsetLargeY;
-                    float sampleLarge = Mathf.PerlinNoise(xCoord, yCoord) * smallToLargeLerp;
-                    sample += sampleLarge;
-                }
-
-                sample = Math.Clamp(sample, 0.0f, 1.0f);
-
-                pixels[(int)y * _noiseTex.width + (int)x] = new Color(sample, sample, sample);
-                x++;
-            }
-            y++;
-        }
-
-        _noiseTex.SetPixels(pixels);
-        _noiseTex.Apply();
-    }
+    // TODO Can store up to 3 different noise textures across RGB channels of a single texxture
 
     private void InitImageInScene()
     { 
@@ -162,7 +111,14 @@ public class WorldTextureGenerator : MonoBehaviour
         WorldGenBlockNode node = worldVariable.blockGrid[x, y];
         WorldGenResourceNode nodeResource = worldVariable.resourceGrid[x, y];
 
-        nodeResource.type = ResourcesStep.GetResourceType(node, worldVariable, _noiseTex, textureSize, textureSize);
+        nodeResource.type = ResourcesTreesStep.GetResourceType(node, worldVariable);
+
+        // TODO Temporary, but not ideal. If there are many trees, we have a smaller chance of getting rock.
+        // Also, this is ugly.
+        if(nodeResource.type == ResourceType.Invalid)
+        {
+            nodeResource.type = ResourcesStoneStep.GetResourceType(node, worldVariable);
+        }
     }
 
     private void SetWaterBlocksToCorrectLevel()
@@ -218,6 +174,11 @@ public class WorldTextureGenerator : MonoBehaviour
                     //pixel.r = 0.0f;
                     //pixel.b = 0.0f;
                     pixel.g = 1.0f;
+                } else if(nodeResource.type == ResourceType.Stone)
+                {
+                    pixel.r = 1.0f;
+                    //pixel.b = 0.0f;
+                    //pixel.g = 1.0f;
                 }
 
                 worldVariable.texture.SetPixel(x, y, pixel);
