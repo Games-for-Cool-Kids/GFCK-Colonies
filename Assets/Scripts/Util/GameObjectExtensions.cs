@@ -70,12 +70,12 @@ public static class GameObjectExtensions
     }
 
     /// <summary>The block that is outside of this objects' BB, closest to point.</summary>
-    public static Block GetClosestNeighboringBlock(this GameObject gameObject, Vector3 point)
+    public static Block GetClosestNeighboringSurfaceBlock(this GameObject gameObject, Vector3 point)
     {
         var bounds = gameObject.GetGridBounds();
         var closestPoint = bounds.ClosestPoint(point);
 
         Vector3 direction = (point - closestPoint).normalized / 2.0f;
-        return GameManager.Instance.World.GetSurfaceBlockUnder(closestPoint + direction);
+        return GameManager.Instance.World.GetSurfaceBlock(closestPoint + direction);
     }
 }
