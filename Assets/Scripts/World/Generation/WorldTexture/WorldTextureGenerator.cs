@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
@@ -18,9 +19,6 @@ public class WorldTextureGenerator : MonoBehaviour
     public int textureSize = 256; // Always a square.
     public int maxHeight = 50;
 
-    public float NoiseScale = 1.0f;
-    private Texture2D _noiseTex;
-
     // Block nodes
     public HeightMapStep heightMapStep;
     public HeightToBlockTypeStep heightToBlockStep;
@@ -28,7 +26,8 @@ public class WorldTextureGenerator : MonoBehaviour
 
     // Surface stuff
     // Resource nodes
-    public CreateResourcesStep ResourcesStep;
+    public CreateResourcesTreesStep ResourcesTreesStep;
+    public CreateResourcesStoneStep ResourcesStoneStep;
 
     public WorldVariable worldVariable;
 
@@ -40,14 +39,16 @@ public class WorldTextureGenerator : MonoBehaviour
 
     private void Start()
     {
-        GenerateNoiseTexture();
-
         Generate();
     }
 
     private void Generate()
     {
         SetSeed();
+
+        // TODO Not a great solution.. This needs to be handled automatically. Awake()?
+        ResourcesTreesStep.RegenerateNoiseMap();
+        ResourcesStoneStep.RegenerateNoiseMap();
 
         // Init
         worldVariable.Init(textureSize, maxHeight);
@@ -70,33 +71,7 @@ public class WorldTextureGenerator : MonoBehaviour
         RestoreEngineSeed();
     }
 
-    private void GenerateNoiseTexture()
-    {
-        _noiseTex = new Texture2D(textureSize, textureSize);
-
-        Color[] pixels = new Color[_noiseTex.width * _noiseTex.height];
-
-        // For each pixel in the texture...
-        float y = 0.0F;
-
-        while (y < _noiseTex.height)
-        {
-            float x = 0.0F;
-            while (x < _noiseTex.width)
-            {
-                float xCoord = x / _noiseTex.width * NoiseScale;
-                float yCoord = y / _noiseTex.height * NoiseScale;
-                float sample = Mathf.PerlinNoise(xCoord, yCoord);
-                pixels[(int)y * _noiseTex.width + (int)x] = new Color(sample, sample, sample);
-                x++;
-            }
-            y++;
-        }
-
-        // Copy the pixel data to the texture and load it into the GPU.
-        _noiseTex.SetPixels(pixels);
-        _noiseTex.Apply();
-    }
+    // TODO Can store up to 3 different noise textures across RGB channels of a single texxture
 
     private void InitImageInScene()
     { 
@@ -121,22 +96,29 @@ public class WorldTextureGenerator : MonoBehaviour
 
     private void ApplyBaseBlockTypeStep(int x, int y)
     {
-        WorldGenBlockNode node = worldVariable.grid[x, y];
+        WorldGenBlockNode node = worldVariable.blockGrid[x, y];
         node.type = heightToBlockStep.GetNodeType(node, worldVariable, textureSize, textureSize);
     }
 
     private void ApplyBeachStep(int x, int y)
     {
-        WorldGenBlockNode node = worldVariable.grid[x, y];
+        WorldGenBlockNode node = worldVariable.blockGrid[x, y];
         node.type = beachStep.GetNodeType(node, worldVariable, textureSize, textureSize);
     }
 
     private void ApplyResourcesStep(int x, int y)
     {
-        WorldGenBlockNode node = worldVariable.grid[x, y];
-        WorldGenResourceNode nodeResource = worldVariable.gridResources[x, y];
+        WorldGenBlockNode node = worldVariable.blockGrid[x, y];
+        WorldGenResourceNode nodeResource = worldVariable.resourceGrid[x, y];
 
-        nodeResource.type = ResourcesStep.GetResourceType(node, worldVariable, _noiseTex, textureSize, textureSize);
+        nodeResource.type = ResourcesTreesStep.GetResourceType(node, worldVariable);
+
+        // TODO Temporary, but not ideal. If there are many trees, we have a smaller chance of getting rock.
+        // Also, this is ugly.
+        if(nodeResource.type == ResourceType.Invalid)
+        {
+            nodeResource.type = ResourcesStoneStep.GetResourceType(node, worldVariable);
+        }
     }
 
     private void SetWaterBlocksToCorrectLevel()
@@ -147,7 +129,7 @@ public class WorldTextureGenerator : MonoBehaviour
         {
             for (int y = 0; y < textureSize; y++)
             {
-                WorldGenBlockNode node = worldVariable.grid[x, y];
+                WorldGenBlockNode node = worldVariable.blockGrid[x, y];
 
                 if (node.type == BlockType.WATER)
                     node.height = waterLevel;
@@ -163,8 +145,8 @@ public class WorldTextureGenerator : MonoBehaviour
         {
             for (int y = 0; y < textureSize; y++)
             {
-                WorldGenBlockNode node = worldVariable.grid[x, y];
-                WorldGenResourceNode nodeResource = worldVariable.gridResources[x, y];
+                WorldGenBlockNode node = worldVariable.blockGrid[x, y];
+                WorldGenResourceNode nodeResource = worldVariable.resourceGrid[x, y];
 
                 Color pixel = Color.magenta;
                 switch (node.type)
@@ -187,11 +169,16 @@ public class WorldTextureGenerator : MonoBehaviour
                 }
                 pixel *= GetHeightColor(node.height);
 
-                if(nodeResource.type == ResourceType.RESOURCE_WOOD)
+                if(nodeResource.type == ResourceType.Wood)
                 {
                     //pixel.r = 0.0f;
                     //pixel.b = 0.0f;
                     pixel.g = 1.0f;
+                } else if(nodeResource.type == ResourceType.Stone)
+                {
+                    pixel.r = 1.0f;
+                    //pixel.b = 0.0f;
+                    //pixel.g = 1.0f;
                 }
 
                 worldVariable.texture.SetPixel(x, y, pixel);

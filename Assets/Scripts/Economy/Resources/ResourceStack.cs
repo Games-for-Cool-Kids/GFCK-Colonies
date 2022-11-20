@@ -2,7 +2,7 @@
 {
     public class ResourceStack
     {
-        public ResourceType type = ResourceType.RESOURCE_INVALID;
+        public ResourceType type = ResourceType.Invalid;
         public int amount = 0;
 
         public ResourceStack(ResourceType type, int amount)

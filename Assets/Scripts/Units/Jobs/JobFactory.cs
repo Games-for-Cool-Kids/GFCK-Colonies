@@ -31,18 +31,27 @@ namespace Jobs
         }
         private static Job CreateCourierJob(Building jobBuilding)
         {
-            Debug.Log("Miner job not yet implemented");
-            return new Job(jobBuilding, JobType.COURIER);
+            var job = new Job(jobBuilding, JobType.COURIER);
+
+            var transferAllTask = new DeliverAllResourcesTask(job);
+            transferAllTask.targetStorage = jobBuilding;
+
+            job.tasks.Add(new IdleTask(job)); // Needed to avoid infinite loop when there are no transfer requests.
+            job.tasks.Add(CreateMoveToJobBuildingTask(job));
+            job.tasks.Add(transferAllTask); // Empty inventory whenever we return to stockpile.
+            job.tasks.Add(new LookForResourceTransferRequestTask(job));
+
+            return job;
         }
         private static Job CreateLumberJackJob(Building jobBuilding)
         {
             var job = new Job(jobBuilding, JobType.LUMBERJACK);
 
-            var harvestTask = new HarvestResourceTask(job, ResourceType.RESOURCE_WOOD);
-            var transferTask = new TransferResourcesTask(job);
+            var harvestTask = new HarvestResourceTask(job, ResourceType.Wood);
+            var transferTask = new TransferResourcesTask(job, TransferType.Delivery);
             transferTask.targetStorage = jobBuilding;
             
-            harvestTask.Finished += () => transferTask.AddResourceToTransfer(ResourceType.RESOURCE_WOOD, 1); // Tell transfer task to transfer the harvested resource(s).
+            harvestTask.Finished += () => transferTask.Add(ResourceType.Wood, 1); // Tell transfer task to transfer the harvested resource(s).
 
             job.tasks.Add(new MoveToClosestTreeTask(job));
             job.tasks.Add(harvestTask);
@@ -53,8 +62,20 @@ namespace Jobs
         }
         private static Job CreateMinerJob(Building jobBuilding)
         {
-            Debug.Log("Miner job not yet implemented");
-            return new Job(jobBuilding, JobType.MINER);
+            var job = new Job(jobBuilding, JobType.MINER);
+
+            var harvestTask = new HarvestResourceTask(job, ResourceType.Stone);
+            var transferTask = new TransferResourcesTask(job, TransferType.Delivery);
+            transferTask.targetStorage = jobBuilding;
+
+            harvestTask.Finished += () => transferTask.Add(ResourceType.Stone, 1); // Tell transfer task to transfer the harvested resource(s).
+
+            job.tasks.Add(new MoveToClosestRockTask(job));
+            job.tasks.Add(harvestTask);
+            job.tasks.Add(CreateMoveToJobBuildingTask(job));
+            job.tasks.Add(transferTask);
+
+            return job;
         }
 
         private static Task CreateMoveToJobBuildingTask(Job job)

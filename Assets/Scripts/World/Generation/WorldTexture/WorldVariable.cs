@@ -9,9 +9,8 @@ public class WorldVariable : ScriptableObject
     public Texture2D texture { get; private set; }
     public Sprite worldSprite { get; private set; }
 
-    public WorldGenBlockNode[,] grid;
-
-    public WorldGenResourceNode[,] gridResources;
+    public WorldGenBlockNode[,] blockGrid;
+    public WorldGenResourceNode[,] resourceGrid;
 
     public void Init(int size, int height)
     {
@@ -23,13 +22,13 @@ public class WorldVariable : ScriptableObject
         Rect rect = new Rect(0, 0, size, size);
         worldSprite = Sprite.Create(texture, rect, Vector2.zero, 100, 0, SpriteMeshType.FullRect);
 
-        grid = new WorldGenBlockNode[size, size];
-        gridResources = new WorldGenResourceNode[size, size];
+        blockGrid = new WorldGenBlockNode[size, size];
+        resourceGrid = new WorldGenResourceNode[size, size];
         for (int x = 0; x < size; x++)
             for (int y = 0; y < size; y++)
             {
-                grid[x, y] = new(x, y);
-                gridResources[x, y] = new(x, y);
+                blockGrid[x, y] = new(x, y);
+                resourceGrid[x, y] = new(x, y);
             }
     }
 
@@ -44,7 +43,7 @@ public class WorldVariable : ScriptableObject
         
         for(int x = 0; x < chunkSize; x++)
             for (int y = 0; y < chunkSize; y++)
-                data[x, y] = grid[chunkX * chunkSize + x, chunkY * chunkSize + y];
+                data[x, y] = blockGrid[chunkX * chunkSize + x, chunkY * chunkSize + y];
         
         return data;
     }

@@ -1,7 +1,10 @@
 using Jobs;
 
-public class LumberMill : Building
+public class LumberMill : ResourceHarvestBuilding
 {
+    public LumberMill() : base(ResourceType.Wood)
+    { }
+
     void Start()
     {
         AddJob(JobType.LUMBERJACK);

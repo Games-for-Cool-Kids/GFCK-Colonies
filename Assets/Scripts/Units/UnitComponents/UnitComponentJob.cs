@@ -13,6 +13,8 @@ public class UnitComponentJob : UnitComponentBase
 
     public float transferSpeed = 1; // Resources transferred per second.
 
+    public int inventorySize = 5; // ToDo: Implement max inventory size inside Inventory class.
+
     protected override void Start()
     {
         base.Start();
@@ -25,9 +27,13 @@ public class UnitComponentJob : UnitComponentBase
     {
         // TODO We should probably avoid polling. Let the JobManager look for an available Unit when a new job becomes available
         if (job == null)
+        {
             ApplyForJob();
+        }  
         else
+        {
             job.Tick();
+        }
     }
 
     public void ApplyForJob()

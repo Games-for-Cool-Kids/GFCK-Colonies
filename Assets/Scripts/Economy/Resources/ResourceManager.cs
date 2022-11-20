@@ -18,7 +18,7 @@ public class ResourceManager : MonoBehaviourSingleton<ResourceManager>
 
         //_ResourcesInWorldPerTypeUnclaimed[type].Add(resourceInWorld);
 
-        Debug.Log("Keeping track of an instantiated resource. Now tracking: " + _resourcesInWorldUnclaimed.Count + " resources in the world.");
+        //Debug.Log("Keeping track of an instantiated resource. Now tracking: " + _resourcesInWorldUnclaimed.Count + " resources in the world.");
     }
 
     // Marks a resource as claimed, so it can't be picked up by someone else any more
@@ -81,6 +81,6 @@ public class ResourceManager : MonoBehaviourSingleton<ResourceManager>
 
         container.RemoveAt(lastElement);
 
-        Debug.Log("Stopped tracking an instantiated resource. Now tracking: " + _resourcesInWorldUnclaimed.Count + " resources in the world.");
+        //Debug.Log("Stopped tracking an instantiated resource. Now tracking: " + _resourcesInWorldUnclaimed.Count + " resources in the world.");
     }
 }

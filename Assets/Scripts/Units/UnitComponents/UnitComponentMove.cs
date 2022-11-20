@@ -47,6 +47,9 @@ public class UnitComponentMove : UnitComponentBase
 
     public void MoveToBlock(Block targetBlock, ArrivedAtLocation onArrived)
     {
+        Debug.Assert(Owner.GetCurrentBlock() != null);
+        Debug.Assert(targetBlock != null);
+
         _onArrived = onArrived;
         lookingForPath = true;
 
@@ -81,7 +84,7 @@ public class UnitComponentMove : UnitComponentBase
 
         Block targetBlock = _path[_pathIndex + 1];
 
-        Vector3 targetPos = targetBlock.GetSurfaceWorldPos() + gameObject.GetPivotToMeshMinOffset();
+        Vector3 targetPos = targetBlock.GetSurfaceWorldPos() + gameObject.GetPivotYOffset();
         Vector3 characterToTarget = targetPos - transform.position;
         Vector3 direction = characterToTarget.normalized;
         Vector3 move = direction * Owner.moveSpeed * Time.fixedDeltaTime;

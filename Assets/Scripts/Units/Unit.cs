@@ -1,6 +1,7 @@
 using Economy;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 using World;
 
 public class Unit : StorageEntity
@@ -9,9 +10,31 @@ public class Unit : StorageEntity
 
     public float moveSpeed = 5;
 
-    private void Start()    {        OnUnitSpawned?.Invoke(gameObject);    }
+#if DEBUG
+    private void Awake()
+    {
+        var debugChild = new GameObject("DebugCanvas");
+        debugChild.transform.parent = gameObject.transform;
+        debugChild.transform.localScale *= 0.1f;
 
-    private void OnDestroy()    {        OnUnitDespawned?.Invoke(gameObject);    }
+        var canvas = debugChild.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+        var debugSubChild = new GameObject("DebugText");
+        debugSubChild.transform.parent = debugChild.transform;
+
+        var text = debugSubChild.AddComponent<Text>();
+        text.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+        text.alignment = TextAnchor.MiddleCenter;
+
+        var uiFollower = text.gameObject.AddComponent<WorldObjectUIFollower>();
+        uiFollower.HeightOffset = 5.0f;
+    }
+#endif
+
+    protected virtual void Start()    {        OnUnitSpawned?.Invoke(gameObject);    }
+
+    protected virtual void OnDestroy()    {        OnUnitDespawned?.Invoke(gameObject);    }
 
     public Block GetCurrentBlock()
     {

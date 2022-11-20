@@ -8,41 +8,44 @@ namespace Economy
 
     public class Inventory
     {
-        private ResourceDictionary _storedResources = new();
+        public ResourceDictionary storedResources = new();
 
-        public event EventHandler<ResourceType> ResourceChanged;
+        public delegate void ResourceAmountChangedEvent(ResourceType resource, int changeAmount);
+        public ResourceAmountChangedEvent ResourceChanged;
 
         public Inventory()
         {
             foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
-                _storedResources.Add(type, 0);
+                storedResources.Add(type, 0);
         }
 
         public int GetCount(ResourceType resource)
         {
-            return _storedResources[resource];
+            return storedResources[resource];
         }
 
         public void SetResource(ResourceType resource, int amount)
         {
-            _storedResources[resource] = amount;
-            ResourceChanged?.Invoke(this, resource);
+            int oldAmount = storedResources[resource];
+
+            storedResources[resource] = amount;
+            ResourceChanged?.Invoke(resource, amount - oldAmount);
         }
 
         public void AddResource(ResourceType resource, int amount = 1)
         {
-            _storedResources[resource] += amount;
-            ResourceChanged?.Invoke(this, resource);
+            storedResources[resource] += amount;
+            ResourceChanged?.Invoke(resource, amount);
         }
         public void RemoveResource(ResourceType resource, int amount = 1)
         {
-            _storedResources[resource] -= amount;
-            ResourceChanged?.Invoke(this, resource);
+            storedResources[resource] -= amount;
+            ResourceChanged?.Invoke(resource, -amount);
         }
 
         public bool HasResources()
         {
-            foreach (int storedAmount in _storedResources.Values)
+            foreach (int storedAmount in storedResources.Values)
                 if (storedAmount > 0)
                     return true;
 

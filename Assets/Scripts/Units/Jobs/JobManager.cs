@@ -15,6 +15,20 @@ namespace Jobs
 
         public UDictionary<JobType, GameObject> tools;
 
+#if DEBUG
+        public IList<Job> GetAvailableJobs() { return availableJobs.AsReadOnly(); }
+        public IList<Job> GetTakenJobs() { return takenJobs.AsReadOnly(); }
+#endif
+
+#if DEBUG
+        public override void Awake()
+        {
+            base.Awake();
+
+            gameObject.AddComponent<JobVisualDebugger>();
+        }
+#endif
+
         public void RegisterJob(Job job)
         {
             availableJobs.Add(job);
@@ -36,8 +50,8 @@ namespace Jobs
             Job job = availableJobs[0];
             job.UnitJobComponent = employee;
 
-            SetJobTaken(job);
             employee.AssignJob(job);
+            SetJobTaken(job);
 
             job.Start();
 

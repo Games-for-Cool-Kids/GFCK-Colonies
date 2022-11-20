@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-
+using System.Diagnostics;
+using UnityEngine;
 
 namespace Jobs
 {
@@ -49,6 +50,8 @@ namespace Jobs
         {
             if(currentTask == task)
                 StartNextTask();
+
+            tasks.Remove(task);
 
             task.Finished -= StartNextTask;
         }
@@ -100,6 +103,11 @@ namespace Jobs
                 return null;
 
             return UnitJobComponent.Owner;
+        }
+
+        public string GetCurrentTaskDescription()
+        {
+            return currentTask.GetTaskDescription();
         }
     }
 }

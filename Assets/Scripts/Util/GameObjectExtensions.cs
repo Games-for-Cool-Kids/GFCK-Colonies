@@ -5,7 +5,9 @@ using World;
 
 public static class GameObjectExtensions
 {
-    public static Vector3 GetPivotToMeshMinOffset(this GameObject gameObject) // Difference between object pivot and mesh bottom in world space.
+
+    /// <summary>Difference between object pivot position and mesh center bottom position.</summary>
+    public static Vector3 GetPivotYOffset(this GameObject gameObject)
     {
         float offset = 0;
 
@@ -17,7 +19,7 @@ public static class GameObjectExtensions
 
     public static Vector3 GetObjectBottomPosition(this GameObject gameObject)
     {
-        return gameObject.transform.position - GetPivotToMeshMinOffset(gameObject);
+        return gameObject.transform.position - GetPivotYOffset(gameObject);
     }
 
     public static Bounds CalculateRecursiveBounds(this GameObject gameObject)
@@ -59,7 +61,7 @@ public static class GameObjectExtensions
     public static float GetSqrBBDistanceToObject(this GameObject gameObject, GameObject other)
     {
         var thisBB = gameObject.GetGridBounds();
-        var otherBB = gameObject.GetGridBounds();
+        var otherBB = other.GetGridBounds();
 
         var p1 = thisBB.ClosestPoint(other.transform.position);
         var p2 = otherBB.ClosestPoint(gameObject.transform.position);
@@ -68,13 +70,13 @@ public static class GameObjectExtensions
     }
 
     /// <summary>The block that is outside of this objects' BB, closest to point.</summary>
-    public static Block GetClosestNeighboringBlock(this GameObject gameObject, Vector3 point)
+    public static Block GetClosestNeighboringSurfaceBlock(this GameObject gameObject, Vector3 point)
     {
         var bounds = gameObject.GetGridBounds();
         var closestPoint = bounds.ClosestPoint(point);
 
         Vector3 direction = (point - closestPoint).normalized / 2.0f;
-        return GameManager.Instance.World.GetSurfaceBlockUnder(closestPoint + direction);
+        return GameManager.Instance.World.GetSurfaceBlock(closestPoint + direction);
     }
 
     public static Block GetRandomBlockWithinBounds(this GameObject gameObject)

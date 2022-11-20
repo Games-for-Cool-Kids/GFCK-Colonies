@@ -4,7 +4,7 @@ using World;
 public class ResourceNode : MonoBehaviour
 {
     public GameObject resourceToDrop = null;
-    public ResourceType type = ResourceType.RESOURCE_INVALID;
+    public ResourceType type = ResourceType.Invalid;
 
     public float spawnOffset = 3; // Units that the resource spawns towards the camera.
 

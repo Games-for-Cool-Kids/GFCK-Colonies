@@ -10,7 +10,7 @@ namespace Jobs
 
         private float _timeSinceLastHarvest = 0;
 
-        public HarvestResourceTask(Job job, ResourceType type, bool oneTime = false) : base(job, oneTime)
+        public HarvestResourceTask(Job job, ResourceType type, TaskFlag flags = TaskFlag.None) : base(job, flags)
         {
             this._type = type;
         }
@@ -41,7 +41,7 @@ namespace Jobs
             {
                 if (TryHarvest())
                 {
-                    Finish();
+                    Finish(); // !Important: If you implement harvesting more than one resource, also update harvestTask.Finished lambda of lumberjack in JobFactory.!
                 }
             }
             else
@@ -61,8 +61,8 @@ namespace Jobs
 
         private ResourceNode FindResourceNode()
         {
-            Debug.Assert(_type != ResourceType.RESOURCE_INVALID);
-            if (_type == ResourceType.RESOURCE_INVALID) return null;
+            Debug.Assert(_type != ResourceType.Invalid);
+            if (_type == ResourceType.Invalid) return null;
 
             string nodeTag = Conversions.ResourceNodeTagForType(_type);
 
@@ -79,6 +79,11 @@ namespace Jobs
             }
 
             return null;
+        }
+
+        public override string GetTaskDescription()
+        {
+            return "I am harvesting " + _type.ToString() + " from " + _node.name;
         }
     }
 }

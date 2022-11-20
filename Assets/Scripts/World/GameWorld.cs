@@ -9,7 +9,8 @@ namespace World
 
         public Material material;
 
-        public GameObject TreePrefab; // Is this the place to put this? :/
+        public GameObject TreePrefab;
+        public GameObject StonePrefab;
 
         public WorldVariable worldVariable;
         public GameObject[,] chunkObjects;
@@ -41,7 +42,7 @@ namespace World
             worldChunks.worldChunkWidth = Mathf.FloorToInt(worldVariable.size / worldChunks.chunkSize);
             worldChunks.blockHeight = worldVariable.height;
 
-            worldGenerator = new(material, TreePrefab, worldVariable, TakeGeneratedWorld); // Creates world using multithreading. We need to wait for it to finish to use the world.
+            worldGenerator = new(material, worldVariable, TakeGeneratedWorld); // Creates world using multithreading. We need to wait for it to finish to use the world.
         }
 
         public void RunWorldGeneration()
@@ -59,7 +60,8 @@ namespace World
 
             foreach (var chunk in generatedChunks)
             {
-                CreateChunkObject(chunk);
+                var chunkObject = CreateChunkObject(chunk);
+                CreateChunkResourceNodes(chunk, chunkObject);
             }
 
             worldGenerator = null; // Stops generator from running.
@@ -67,7 +69,7 @@ namespace World
             WorldGenerationDone?.Invoke();
         }
 
-        private void CreateChunkObject(Chunk chunk)
+        private GameObject CreateChunkObject(Chunk chunk)
         {
             GameObject newChunkObject = new GameObject("Chunk" + chunk.origin.ToString());
             newChunkObject.isStatic = true;
@@ -83,6 +85,37 @@ namespace World
             renderer.material = material;
 
             newChunkObject.AddComponent<MeshCollider>();
+
+            return newChunkObject;
+        }
+
+        private void CreateChunkResourceNodes(Chunk chunk, GameObject chunkObject)
+        {
+            int startX = chunk.x * worldChunks.chunkSize;
+            int startZ = chunk.z * worldChunks.chunkSize;
+            for (int x = startX; x < startX + chunk.MaxX; x++)
+            {
+                for (int z = startZ; z < startZ + chunk.MaxZ; z++)
+                {
+                    var resource = worldVariable.resourceGrid[x, z];
+                    var node = worldVariable.blockGrid[x, z];
+
+                    if (resource.type == ResourceType.Wood)
+                    {
+                        int nodeY = Mathf.FloorToInt(node.height * worldVariable.height);
+                        Vector3 blockWorldPos = new Vector3(node.x, nodeY, node.y);
+                        var Tree = Instantiate(TreePrefab, chunkObject.transform);
+                        Tree.transform.position = blockWorldPos + Tree.GetPivotYOffset(); // Normally we should add half a block, but tree roots should stick in ground a bit.
+                    }
+                    if (resource.type == ResourceType.Stone) // TODO Remove duplication
+                    {
+                        int nodeY = Mathf.FloorToInt(node.height * worldVariable.height);
+                        Vector3 blockWorldPos = new Vector3(node.x, nodeY, node.y);
+                        var rock = Instantiate(StonePrefab, chunkObject.transform);
+                        rock.transform.position = blockWorldPos + rock.GetPivotYOffset(); // Normally we should add half a block, but tree roots should stick in ground a bit.
+                    }
+                }
+            }
         }
 
         private void ResetWorld()
@@ -207,18 +240,24 @@ namespace World
 
             Vector3 localBlockPos = worldPos - chunk.origin;
             int x = Mathf.FloorToInt(localBlockPos.x);
-            int startY = Mathf.FloorToInt(worldPos.y); // Start at given y, in case there is overlap.
+            int startY = Mathf.CeilToInt(worldPos.y); // Start at given y, in case there is overlap.
             int z = Mathf.FloorToInt(localBlockPos.z);
 
             for (int y = startY; y > 0; y--) // Search from top-down until we hit a surface block.
             {
                 Block block = chunk.GetBlock(x, y, z);
-                if (block.IsSolidBlock())
+                if (block != null 
+                 && block.IsSolidBlock())
                     return block;
             }
 
             return null;
+        }
 
+        public Block GetSurfaceBlock(Vector3 worldPos)
+        {
+            worldPos.y = worldVariable.height; // Start search from world top.
+            return GetSurfaceBlockUnder(worldPos);
         }
 
         public List<Block> GetSurroundingBlocks(Vector3 worldPos, bool diagonal = true, bool includeAir = false)

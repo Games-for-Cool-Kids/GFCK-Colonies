@@ -8,7 +8,7 @@ public abstract class UnitComponentBase : MonoBehaviour
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        Owner = GetComponent<Unit>();
+        Owner = gameObject.GetComponent<Unit>();
         Debug.Assert(Owner != null);
     }
 }

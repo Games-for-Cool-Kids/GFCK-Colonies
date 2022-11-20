@@ -17,10 +17,14 @@ namespace Pathfinding
         private List<Pathfinder> currentThreads;
         private List<Pathfinder> todoThreads;
 
+        private PathFinderCache _cache;
+
         void Start()
         {
             currentThreads = new List<Pathfinder>();
             todoThreads = new List<Pathfinder>();
+
+            _cache = new PathFinderCache(GameManager.Instance.World);
         }
    
         void Update() 
@@ -59,14 +63,10 @@ namespace Pathfinding
 
         public void RequestPathfind(Block start, Block target, PathFindingThreadComplete completeCallback)
         {
-            if(start == null
-            || target == null)
-            {
-                Debug.LogError("Start or end block cannot be null");
-                return;
-            }
+            Debug.Assert(start != null);
+            Debug.Assert(target != null);
 
-            Pathfinder newThread = new Pathfinder(GameManager.Instance.World, start, target, completeCallback);
+            Pathfinder newThread = new Pathfinder(_cache, GameManager.Instance.World, start, target, completeCallback);
             todoThreads.Add(newThread);
         }
     }

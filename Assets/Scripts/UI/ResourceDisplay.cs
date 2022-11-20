@@ -24,7 +24,7 @@ public class ResourceDisplay : MonoBehaviour
             CreateResourceUIElement(resource);
     }
 
-    private void UpdateUIVisibility(object sender, ResourceType resource)
+    private void UpdateUIVisibility(ResourceType resource, int changeAmount)
     {
         SetVisible(_linkedInventory.HasResources());
 
