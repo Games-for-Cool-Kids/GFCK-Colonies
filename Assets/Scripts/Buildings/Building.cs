@@ -12,6 +12,7 @@ public class Building : StorageEntity // Need to add derived classes to Building
     public List<Job> jobs = new List<Job>();
 
     private bool _firstUpdate = true;
+    private bool _underConstruction = true; // New buildings are under construction by default.
 
     protected virtual void Update()
     {
@@ -28,6 +29,14 @@ public class Building : StorageEntity // Need to add derived classes to Building
         UnregisterJobs();
     }
 
+    public virtual void OnConstructed()
+    {
+        _underConstruction = true; // Temp until we implement actual construction.
+
+        RegisterJobs();
+        ShowBuildGrid(false);
+    }
+
     // Can be done by player-hand, or by villager
     public void DropOffResource(Resource resource)
     {
@@ -41,13 +50,11 @@ public class Building : StorageEntity // Need to add derived classes to Building
         foreach (Job job in jobs)
             JobManager.Instance.RegisterJob(job);
     }
-
     public void UnregisterJobs()
     {
         foreach (Job job in jobs)
             JobManager.Instance.UnregisterJob(job);
     }
-
     public void AddJob(JobType type)
     {
         var job = JobFactory.CreateJob(type, this);
@@ -57,6 +64,11 @@ public class Building : StorageEntity // Need to add derived classes to Building
     public Block GetCurrentBlock()
     {
         return GameManager.Instance.World.GetBlockAt(transform.position + Vector3.down / 2);
+    }
+
+    public void ShowBuildGrid(bool show)
+    {
+        GetComponent<BuildingGridDrawer>().Visible = show;
     }
 
     private void CreateBuildGrid()

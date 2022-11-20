@@ -16,7 +16,7 @@ public class CreateObjectOnClick : MonoBehaviour
             if (hovered_block != null)
             {
                 var new_object = GameManager.Instance.InstantiateGameObject(ObjectToCreate);
-                new_object.transform.position = hovered_block.GetSurfaceWorldPos() + new_object.GetPivotYOffset();
+                new_object.PositionOnBlock(hovered_block);
 
                 _createAfterClick = false;
             }

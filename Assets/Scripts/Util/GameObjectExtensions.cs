@@ -78,4 +78,20 @@ public static class GameObjectExtensions
         Vector3 direction = (point - closestPoint).normalized / 2.0f;
         return GameManager.Instance.World.GetSurfaceBlock(closestPoint + direction);
     }
+
+    public static Block GetRandomBlockWithinBounds(this GameObject gameObject)
+    {
+        var bounds = gameObject.GetGridBounds();
+        var randX = UnityEngine.Random.Range(bounds.min.x, bounds.max.x);
+        var randZ = UnityEngine.Random.Range(bounds.min.z, bounds.max.z);
+        var topY = bounds.max.y;
+
+        return GameManager.Instance.World.GetSurfaceBlockUnder(new(randX, topY, randZ));
+    }
+
+    public static void PositionOnBlock(this GameObject gameObject, Block block)
+    {
+        gameObject.transform.position = block.GetSurfaceWorldPos() + gameObject.GetPivotYOffset();
+    }
+
 }
