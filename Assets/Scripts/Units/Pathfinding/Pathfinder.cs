@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 using World;
 
 //for more on A* visit
@@ -27,6 +28,9 @@ namespace Pathfinding
 
         public Pathfinder(PathFinderCache cache, GameWorld world, Block start, Block target, PathfindMaster.PathFindingThreadComplete completedCallback)
         {
+            Debug.Assert(start != null);
+            Debug.Assert(target != null);
+
             _cache = cache;
 
             this._startBlock = start;
@@ -246,6 +250,9 @@ namespace Pathfinding
 
         private float GetDistance(Block posA, Block posB)
         {
+            Debug.Assert(posA != null);
+            Debug.Assert(posB != null);
+
             float distX = Mathf.Abs(posA.worldPosition.x - posB.worldPosition.x);
             float distZ = Mathf.Abs(posA.worldPosition.z - posB.worldPosition.z);
             float distY = Mathf.Abs(posA.worldPosition.y - posB.worldPosition.y);

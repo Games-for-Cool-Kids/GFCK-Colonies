@@ -63,12 +63,8 @@ namespace Pathfinding
 
         public void RequestPathfind(Block start, Block target, PathFindingThreadComplete completeCallback)
         {
-            if(start == null
-            || target == null)
-            {
-                Debug.LogError("Start or end block cannot be null");
-                return;
-            }
+            Debug.Assert(start != null);
+            Debug.Assert(target != null);
 
             Pathfinder newThread = new Pathfinder(_cache, GameManager.Instance.World, start, target, completeCallback);
             todoThreads.Add(newThread);

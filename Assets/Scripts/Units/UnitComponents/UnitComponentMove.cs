@@ -47,6 +47,9 @@ public class UnitComponentMove : UnitComponentBase
 
     public void MoveToBlock(Block targetBlock, ArrivedAtLocation onArrived)
     {
+        Debug.Assert(Owner.GetCurrentBlock() != null);
+        Debug.Assert(targetBlock != null);
+
         _onArrived = onArrived;
         lookingForPath = true;
 

@@ -246,11 +246,13 @@ namespace World
             for (int y = startY; y > 0; y--) // Search from top-down until we hit a surface block.
             {
                 Block block = chunk.GetBlock(x, y, z);
-                if (block.IsSolidBlock())
+                if (block != null 
+                 && block.IsSolidBlock())
                     return block;
             }
 
             return null;
+        }
 
         public Block GetSurfaceBlock(Vector3 worldPos)
         {
