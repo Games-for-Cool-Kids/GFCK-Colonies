@@ -5,10 +5,8 @@ public class StoneCutter : ResourceHarvestBuilding
     public StoneCutter() : base(ResourceType.Stone)
     { }
 
-    protected override void Start()
+    void Start()
     {
-        base.Start();
-
         AddJob(JobType.MINER);
     }
 }
