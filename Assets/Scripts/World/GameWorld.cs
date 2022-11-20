@@ -240,7 +240,7 @@ namespace World
 
             Vector3 localBlockPos = worldPos - chunk.origin;
             int x = Mathf.FloorToInt(localBlockPos.x);
-            int startY = Mathf.FloorToInt(worldPos.y); // Start at given y, in case there is overlap.
+            int startY = Mathf.CeilToInt(worldPos.y); // Start at given y, in case there is overlap.
             int z = Mathf.FloorToInt(localBlockPos.z);
 
             for (int y = startY; y > 0; y--) // Search from top-down until we hit a surface block.
