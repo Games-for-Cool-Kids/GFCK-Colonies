@@ -7,9 +7,4 @@ public class Faction
     public List<GameObject> MilitaryUnits = new List<GameObject>();
 
     public int MaxPopulation = 10;
-
-    public int PopulationCount()
-    {
-        return Population.Count;
-    }
 }

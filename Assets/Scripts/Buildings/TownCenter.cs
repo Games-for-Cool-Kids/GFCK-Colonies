@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using World;
 
 public class TownCenter : Building
@@ -15,17 +15,30 @@ public class TownCenter : Building
         base.OnConstructed();
 
         for(int i = 0; i < InitialVillagersToSpawn; ++i)
-        {
-            var villager = GameObject.Instantiate(VillagerPrefab);
-
-            villager.PositionOnBlock(gameObject.GetRandomBlockWithinBounds());
-        }
+            SpawnVillager();
     }
 
     protected override void Update()
     {
         base.Update();
 
+        _timeSinceLastSpawn += Time.deltaTime;
 
+        var faction = PlayerInfo.Instance.playerFaction;
+
+        if (_timeSinceLastSpawn >= VillagerSpawnTime
+         && faction.Population.Count < faction.MaxPopulation)
+        {
+            SpawnVillager();
+        }
+    }
+
+    private void SpawnVillager()
+    {
+        _timeSinceLastSpawn = 0;
+
+        var villager = GameObject.Instantiate(VillagerPrefab);
+
+        villager.PositionOnBlock(gameObject.GetRandomBlockWithinBounds());
     }
 }
