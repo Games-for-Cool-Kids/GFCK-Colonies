@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace DebugGUI
 {
@@ -11,16 +12,29 @@ namespace DebugGUI
 
 
         [SerializeField, HideInInspector]
-        private DebugGUIWindow _requestsWindow;
+        private List<DebugGUIWindow> _windows = new ();
+
+        //internal class TestContent : DebugGUIWindowContent
+        //{
+        //    public override void DrawGUI(int windowId)
+        //    {
+        //        GUILayout.BeginVertical();
+        //        GUILayout.Label("Test");
+        //        GUILayout.EndVertical();
+        //    }
+        //}
 
         private void OnEnable()
         {
-            _requestsWindow = new DebugGUIWindow("Requests", new DebugGUIRequestsWindowContent(DeliveryArrowTex, PickupArrowTex), DebugSkin);
+            _windows.Add(new DebugGUIWindow("Requests", new DebugGUIRequestsWindowContent(DeliveryArrowTex, PickupArrowTex), DebugSkin));
+            //_windows.Add(new DebugGUIWindow("Test", new TestContent(), DebugSkin));
         }
 
         private void OnGUI()
         {
-            _requestsWindow.Draw();
+            foreach (var window in _windows)
+                if(window.Open)
+                    window.Draw();
         }
     }
 }

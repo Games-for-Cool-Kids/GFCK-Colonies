@@ -5,6 +5,9 @@ namespace DebugGUI
 {
     internal class DebugGUIWindow
     {
+        public bool Open = true;
+        public bool Minimized = false;
+
         private Rect _rect = new(20, 20, 160, 100);
         private bool _resizing = false;
 
@@ -26,7 +29,8 @@ namespace DebugGUI
             var old_skin = GUI.skin;
             GUI.skin = _debugSkin; // Apply skin
 
-            _rect = GUILayout.Window(0, _rect,
+            _rect = GUILayout.Window(0,
+                                     _rect,
                                      DrawInternal,
                                      _title,
                                      GUILayout.MaxHeight(Screen.height - _rect.y),
@@ -40,11 +44,24 @@ namespace DebugGUI
             var old_skin = GUI.skin;
             GUI.skin = _debugSkin; // Apply skin
 
-            // - Draw Content - 
-            _content.DrawGUI(windowId);
-            // ----------------
+            if (!Minimized)
+            {
+                GUILayout.BeginVertical();
+                GUILayout.Space(22);
+                // - Draw Content - 
+                _content.DrawGUI(windowId);
+                // ----------------
+                GUILayout.EndVertical();
 
-            ResizeButton();
+                DrawResizeButton();
+            }
+            else
+            {
+                _rect.height = 23;
+                DrawMinimized();
+            }
+
+            DrawMinMaxButton();
 
             if (_resizing)
                 ResizeWindowToMouse();
@@ -54,6 +71,13 @@ namespace DebugGUI
             GUI.skin = old_skin; // Reset skin
         }
 
+        private void DrawMinimized()
+        {
+            GUILayout.BeginVertical();
+            GUILayout.Space(1);
+            GUILayout.EndVertical();
+        }
+
         private void ResizeWindowToMouse()
         {
             _rect.max = _rect.min + Event.current.mousePosition;
@@ -61,7 +85,7 @@ namespace DebugGUI
                 _resizing = false;
         }
 
-        private void ResizeButton()
+        private void DrawResizeButton()
         {
             const int btn_size = 8;
             var btn_rect = new Rect(_rect.width - btn_size - 1,
@@ -74,8 +98,28 @@ namespace DebugGUI
 
             if (GUI.RepeatButton(btn_rect, "", GUIStyle.none)
              && Input.GetMouseButton(0))
+            {
                 _resizing = true; // True until left mouse released.
-                                  // --------
+            }
+            // --------
         }
+
+
+        private void DrawMinMaxButton()
+        {
+            const int btn_size = 10;
+            var btn_rect = new Rect(_rect.width - btn_size - 2,
+                                    2,
+                                    btn_size,
+                                    btn_size);
+
+            // - Draw -
+            GUIUtil.ColoredRect(btn_rect, new(1, 1, 1, 0.2f));
+
+            if (GUI.Button(btn_rect, Minimized ? "+" : "-"))
+                Minimized = !Minimized;
+            // --------
+        }
+
     }
 }
