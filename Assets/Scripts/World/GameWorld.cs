@@ -252,6 +252,10 @@ namespace World
 
             return null;
 
+        public Block GetSurfaceBlock(Vector3 worldPos)
+        {
+            worldPos.y = worldVariable.height; // Start search from world top.
+            return GetSurfaceBlockUnder(worldPos);
         }
 
         public List<Block> GetSurroundingBlocks(Vector3 worldPos, bool diagonal = true, bool includeAir = false)

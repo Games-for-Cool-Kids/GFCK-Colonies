@@ -36,8 +36,10 @@ namespace Jobs
             if (TargetObject == null) return;
 
             Vector3 unitPos = job.GetAssignedUnit().transform.position;
-            Block targetBlock = TargetObject.gameObject.GetClosestNeighboringBlock(unitPos);
+            Block targetBlock = TargetObject.gameObject.GetClosestNeighboringSurfaceBlock(unitPos);
 
+            Debug.Assert(targetBlock != null);
+            
             unitMoveComponent.MoveToBlock(targetBlock, Finish);
         }
 
