@@ -9,6 +9,19 @@ public class BuildingGridDrawer : MonoBehaviour
     private Material _gridCellMaterial;
     public Material gridCellErrorMaterial;
 
+    [SerializeField, GetSet("Visible")]
+    private bool _visible = true;
+    public bool Visible 
+    { 
+        get => _visible;
+        set
+        {
+            _visible = value;
+            foreach (var cell in _cells)
+                cell.SetActive(_visible);
+        }
+    }
+
     private Building _building = null;
     private Vector3 _lastBuildingPos = Vector3.zero;
 
@@ -26,6 +39,9 @@ public class BuildingGridDrawer : MonoBehaviour
 
     void Update()
     {
+        if (!Visible)
+            return;
+
         BuildingGrid buildGrid = _building.buildGrid;
 
         int gridSize = buildGrid.width * buildGrid.length;

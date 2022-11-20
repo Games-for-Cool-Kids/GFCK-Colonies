@@ -22,4 +22,10 @@ public class TownCenter : Building
         }
     }
 
+    protected override void Update()
+    {
+        base.Update();
+
+
+    }
 }
