@@ -12,6 +12,7 @@ public class Building : StorageEntity // Need to add derived classes to Building
     public List<Job> jobs = new List<Job>();
 
     private bool _firstUpdate = true;
+    private bool _underConstruction = true; // New buildings are under construction by default.
 
     protected virtual void Update()
     {
@@ -27,6 +28,14 @@ public class Building : StorageEntity // Need to add derived classes to Building
     {
         UnregisterJobs();
     }
+
+    public virtual void OnConstructed()
+    {
+        RegisterJobs();
+
+        _underConstruction = true; // Temp until we implement actual construction.
+    }
+
 
     // Can be done by player-hand, or by villager
     public void DropOffResource(Resource resource)

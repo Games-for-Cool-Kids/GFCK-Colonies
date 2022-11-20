@@ -10,8 +10,10 @@ public class TownCenter : Building
     public float VillagerSpawnTime = 30;
     private float _timeSinceLastSpawn = 0;
 
-    void Start()
+    public override void OnConstructed()
     {
+        base.OnConstructed();
+
         for(int i = 0; i < InitialVillagersToSpawn; ++i)
         {
             var villager = GameObject.Instantiate(VillagerPrefab);
