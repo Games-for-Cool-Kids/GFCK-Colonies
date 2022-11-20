@@ -13,12 +13,12 @@ PrefabInstance:
       objectReference: {fileID: 7567002938336694664, guid: 43490869772b32b4089ed8c2ff89ffb0, type: 3}
     - target: {fileID: 277460506429960961, guid: 64ada2fc3551f464ea5a19f11864b609, type: 3}
       propertyPath: m_text
-      value: Lumberjack
+      value: Stone Cutter
       objectReference: {fileID: 0}
     - target: {fileID: 277460506894526047, guid: 64ada2fc3551f464ea5a19f11864b609, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 3286163911610860551, guid: 2322e892f3bcdcf41ba8576febb3ae52, type: 3}
+      objectReference: {fileID: 3286163911610860551, guid: d1e7e3be2c52c7e4196cce56bc2c4997, type: 3}
     - target: {fileID: 277460506894526049, guid: 64ada2fc3551f464ea5a19f11864b609, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
