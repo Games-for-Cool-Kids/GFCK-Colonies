@@ -91,7 +91,7 @@ public static class GameObjectExtensions
 
     public static void PositionOnBlock(this GameObject gameObject, Block block)
     {
-        gameObject.transform.position = block.GetSurfaceWorldPos() + gameObject.GetPivotToMeshMinOffset();
+        gameObject.transform.position = block.GetSurfaceWorldPos() + gameObject.GetPivotYOffset();
     }
 
 }
