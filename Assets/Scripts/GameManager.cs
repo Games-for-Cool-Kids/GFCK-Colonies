@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     public static GameObject InstantiateGameObject(GameObject obj, Transform parent = null)
     {
         var newObject = parent == null ? Instantiate(obj) : Instantiate(obj, parent);
+        UniqueObjectNameGenerator.GiveUniqueName(newObject);
         GameObjectCreated?.Invoke(newObject); // Send out event.
         return newObject;
     }
