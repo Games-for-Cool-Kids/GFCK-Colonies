@@ -56,7 +56,7 @@ public class BuildHand : MonoBehaviour
 
     public void SelectStructure(GameObject structure)
     {
-        _selectedStructure = GameManager.Instance.InstantiateGameObject(structure);
+        _selectedStructure = GameManager.InstantiateGameObject(structure); // ToDo: Instantiate a temp game object, with scripts removed. And only instantiate proper when placed.
 
         // Store properties we change to restore them later.
         _oldMaterial = _selectedStructure.GetComponent<MeshRenderer>().material;

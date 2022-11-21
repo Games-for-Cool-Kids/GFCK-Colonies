@@ -12,19 +12,19 @@ namespace Jobs
         {
             TargetObject = FindTreeNearestToBuilding();
 
-            GameManager.Instance.gameObjectCreate += UpdateTargetTreeIfCloser;
+            GameManager.GameObjectCreated += UpdateTargetTreeIfCloser;
 
             base.Start();
         }
 
         public override void Finish()
         {
-            GameManager.Instance.gameObjectCreate -= UpdateTargetTreeIfCloser;
+            GameManager.GameObjectCreated -= UpdateTargetTreeIfCloser;
 
             base.Finish();
         }
 
-        // TODO Needs fixing! When building a new tree, gameObjectCreate() is called for the blueprint, firing this function on a dangerously invalid tree object!
+        // TODO Needs fixing! When building a new tree, GameObjectCreated() is called for the blueprint, firing this function on a dangerously invalid tree object!
         public void UpdateTargetTreeIfCloser(GameObject gameObject)
         {
             // ToDo: We should look for the closest tree that has a possible path to it.

@@ -37,7 +37,7 @@ public class TownCenter : Building
     {
         _timeSinceLastSpawn = 0;
 
-        var villager = GameObject.Instantiate(VillagerPrefab);
+        var villager = GameManager.InstantiateGameObject(VillagerPrefab);
 
         villager.PositionOnBlock(gameObject.GetRandomBlockWithinBounds());
     }
