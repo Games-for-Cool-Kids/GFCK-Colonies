@@ -17,7 +17,7 @@ public class PlayerInfo : MonoBehaviourSingleton<PlayerInfo>
     {
         if(playerFaction.Population.Count >= playerFaction.MaxPopulation)
         {
-            Destroy(unit);
+            Destroy(unit); // This is just to catch scenarios where units are wrongfully created.
             Debug.LogError("Trying to spawn more units than population cap allows!");
             return;
         }
