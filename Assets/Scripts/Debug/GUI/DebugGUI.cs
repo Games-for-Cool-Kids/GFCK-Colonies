@@ -27,6 +27,7 @@ namespace DebugGUI
             _mainDebugWindow.Open = true;
 
             _windows.Add(new DebugGUIWindow(++id, "Requests", new DebugGUIRequestsWindowContent(DeliveryArrowTex, PickupArrowTex)));
+            _windows.Add(new DebugGUIWindow(++id, "Units", new DebugGUIUnitWindowContent()));
         }
 
         void Update()
