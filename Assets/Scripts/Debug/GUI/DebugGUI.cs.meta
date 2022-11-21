@@ -4,7 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - DebugSkin: {instanceID: 0}
+  - DebugSkin: {fileID: 11400000, guid: 0a8a7968456efd541b58ad9b8208cbec, type: 2}
   - DeliveryArrowTex: {fileID: 6192944022281365145, guid: 2d701de8fffb24943b03ac971fdbe6f2, type: 3}
   - PickupArrowTex: {fileID: 6192944022281365145, guid: 0516dbdd86e11a54795b2bc4e221edb6, type: 3}
   executionOrder: 0

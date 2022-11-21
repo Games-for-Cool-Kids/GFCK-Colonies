@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 namespace DebugGUI
 {
-    public class DebugGUI : MonoBehaviour
+    public partial class DebugGUI : MonoBehaviour
     {
+        public bool Show = true;
+
         public GUISkin DebugSkin;
 
         public Texture2D DeliveryArrowTex;
@@ -12,29 +15,43 @@ namespace DebugGUI
 
 
         [SerializeField, HideInInspector]
-        private List<DebugGUIWindow> _windows = new ();
+        private List<DebugGUIWindow> _windows = new();
+        private DebugGUIWindow _mainDebugWindow;
 
-        //internal class TestContent : DebugGUIWindowContent
-        //{
-        //    public override void DrawGUI(int windowId)
-        //    {
-        //        GUILayout.BeginVertical();
-        //        GUILayout.Label("Test");
-        //        GUILayout.EndVertical();
-        //    }
-        //}
 
         private void OnEnable()
         {
-            _windows.Add(new DebugGUIWindow("Requests", new DebugGUIRequestsWindowContent(DeliveryArrowTex, PickupArrowTex), DebugSkin));
-            //_windows.Add(new DebugGUIWindow("Test", new TestContent(), DebugSkin));
+            int id = 0;
+
+            _mainDebugWindow = new DebugGUIWindow(++id, "DebugWindows - F5", new DebugGUIMainWindowContent(_windows));
+            _mainDebugWindow.Open = true;
+
+            _windows.Add(new DebugGUIWindow(++id, "Requests", new DebugGUIRequestsWindowContent(DeliveryArrowTex, PickupArrowTex)));
         }
 
-        private void OnGUI()
+        void Update()
         {
+            if (Input.GetKeyDown(KeyCode.F5))
+            {
+                Show = !Show;
+                _mainDebugWindow.Open = Show;
+            }
+        }
+
+        void OnGUI()
+        {
+            if (!Show)
+                return;
+
+            GUI.skin = DebugSkin; // Apply skin
+
+            _mainDebugWindow.Draw();
+
             foreach (var window in _windows)
-                if(window.Open)
+                if (window.Open)
                     window.Draw();
+
+            GUI.skin = null;
         }
     }
 }

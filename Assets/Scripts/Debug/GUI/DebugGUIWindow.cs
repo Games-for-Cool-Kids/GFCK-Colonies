@@ -5,49 +5,40 @@ namespace DebugGUI
 {
     internal class DebugGUIWindow
     {
-        public bool Open = true;
+        public string Title = "Debug";
+        public int ID { get; private set; }
+
+        public bool Open = false;
         public bool Minimized = false;
 
         private Rect _rect = new(20, 20, 160, 100);
         private bool _resizing = false;
 
-        private string _title = "Debug";
-
-        private GUISkin _debugSkin;
-
         private DebugGUIWindowContent _content;
 
-        public DebugGUIWindow(string title, DebugGUIWindowContent content, GUISkin debugSkin)
+        public DebugGUIWindow(int id, string title, DebugGUIWindowContent content)
         {
-            _title = title;
+            Title = title;
+            ID = id;
             _content = content;
-            _debugSkin = debugSkin;
         }
 
         public void Draw()
         {
-            var old_skin = GUI.skin;
-            GUI.skin = _debugSkin; // Apply skin
-
-            _rect = GUILayout.Window(0,
+            _rect = GUILayout.Window(ID,
                                      _rect,
                                      DrawInternal,
-                                     _title,
+                                     Title,
+                                     WindowStyle(),
                                      GUILayout.MaxHeight(Screen.height - _rect.y),
                                      GUILayout.MaxWidth(Screen.width - _rect.x));
-
-            GUI.skin = old_skin; // Reset skin
         }
 
         private void DrawInternal(int windowId)
         {
-            var old_skin = GUI.skin;
-            GUI.skin = _debugSkin; // Apply skin
-
             if (!Minimized)
             {
                 GUILayout.BeginVertical();
-                GUILayout.Space(22);
                 // - Draw Content - 
                 _content.DrawGUI(windowId);
                 // ----------------
@@ -62,19 +53,34 @@ namespace DebugGUI
             }
 
             DrawMinMaxButton();
+            DrawCloseButton();
 
             if (_resizing)
                 ResizeWindowToMouse();
             else
                 GUI.DragWindow();
+        }
 
-            GUI.skin = old_skin; // Reset skin
+        private GUIStyle WindowStyle()
+        {
+            var style = new GUIStyle(GUI.skin.window);
+            if(Minimized)
+            {
+                style.padding = new(0, 0, 5, 0);
+                style.contentOffset = Vector2.zero;
+            }
+            else 
+            {
+                style.padding = new(4, 4, 23, 4);
+                style.contentOffset = new(0, -18);
+            }
+            return style;
         }
 
         private void DrawMinimized()
         {
             GUILayout.BeginVertical();
-            GUILayout.Space(1);
+            GUILayout.Space(0);
             GUILayout.EndVertical();
         }
 
@@ -104,8 +110,22 @@ namespace DebugGUI
             // --------
         }
 
-
         private void DrawMinMaxButton()
+        {
+            const int btn_size = 10;
+            var btn_rect = new Rect(_rect.width - 24,
+                                    2,
+                                    btn_size,
+                                    btn_size);
+
+            // - Draw -
+            GUIUtil.ColoredRect(btn_rect, new(1, 1, 1, 0.2f));
+
+            if (GUI.Button(btn_rect, Minimized ? "+" : "-"))
+                Minimized = !Minimized;
+            // --------
+        }
+        private void DrawCloseButton()
         {
             const int btn_size = 10;
             var btn_rect = new Rect(_rect.width - btn_size - 2,
@@ -116,8 +136,8 @@ namespace DebugGUI
             // - Draw -
             GUIUtil.ColoredRect(btn_rect, new(1, 1, 1, 0.2f));
 
-            if (GUI.Button(btn_rect, Minimized ? "+" : "-"))
-                Minimized = !Minimized;
+            if (GUI.Button(btn_rect, "x"))
+                Open = false;
             // --------
         }
 
