@@ -15,4 +15,4 @@ MonoBehaviour:
   NoiseMapGenerator: {fileID: 11400000, guid: 2d807938215137f47830d16b5343adfe, type: 2}
   ClusterSize: 0.8
   SecondaryClusterSize: 0.5
-  Scarceness: 0.45
+  Scarceness: 0.43
