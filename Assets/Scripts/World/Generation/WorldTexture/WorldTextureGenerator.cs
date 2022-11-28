@@ -16,8 +16,8 @@ public class WorldTextureGenerator : MonoBehaviour
     public Color sand;
     public Color snow;
 
-    public int textureSize = 256; // Always a square.
-    public int maxHeight = 50;
+    public int TextureSize = 256; // Always a square.
+    public int MaxHeight = 50;
 
     // Block nodes
     public HeightMapStep heightMapStep;
@@ -47,11 +47,11 @@ public class WorldTextureGenerator : MonoBehaviour
         SetSeed();
 
         // TODO Not a great solution.. This needs to be handled automatically. Awake()?
-        ResourcesTreesStep.RegenerateNoiseMap();
-        ResourcesStoneStep.RegenerateNoiseMap();
+        ResourcesTreesStep.RegenerateNoiseMap(TextureSize);
+        ResourcesStoneStep.RegenerateNoiseMap(TextureSize);
 
         // Init
-        worldVariable.Init(textureSize, maxHeight);
+        worldVariable.Init(TextureSize, MaxHeight);
         InitImageInScene();
 
         // Height
@@ -80,9 +80,9 @@ public class WorldTextureGenerator : MonoBehaviour
 
     private void ScanWorld(StepLogic logic)
     {
-        for (int x = 0; x < textureSize; x++)
+        for (int x = 0; x < TextureSize; x++)
         {
-            for (int y = 0; y < textureSize; y++)
+            for (int y = 0; y < TextureSize; y++)
             {
                 logic(x, y);
             }
@@ -97,13 +97,13 @@ public class WorldTextureGenerator : MonoBehaviour
     private void ApplyBaseBlockTypeStep(int x, int y)
     {
         WorldGenBlockNode node = worldVariable.blockGrid[x, y];
-        node.type = heightToBlockStep.GetNodeType(node, worldVariable, textureSize, textureSize);
+        node.type = heightToBlockStep.GetNodeType(node, worldVariable, TextureSize, TextureSize);
     }
 
     private void ApplyBeachStep(int x, int y)
     {
         WorldGenBlockNode node = worldVariable.blockGrid[x, y];
-        node.type = beachStep.GetNodeType(node, worldVariable, textureSize, textureSize);
+        node.type = beachStep.GetNodeType(node, worldVariable, TextureSize, TextureSize);
     }
 
     private void ApplyResourcesStep(int x, int y)
@@ -125,9 +125,9 @@ public class WorldTextureGenerator : MonoBehaviour
     {
         float waterLevel = GetBlockHeightClosestTo(heightToBlockStep.waterLevel);
 
-        for (int x = 0; x < textureSize; x++)
+        for (int x = 0; x < TextureSize; x++)
         {
-            for (int y = 0; y < textureSize; y++)
+            for (int y = 0; y < TextureSize; y++)
             {
                 WorldGenBlockNode node = worldVariable.blockGrid[x, y];
 
@@ -139,11 +139,11 @@ public class WorldTextureGenerator : MonoBehaviour
 
     private void DrawWorld(bool drawHeight = false)
     {
-        Texture2D heightMap = new Texture2D(textureSize, textureSize);
+        Texture2D heightMap = new Texture2D(TextureSize, TextureSize);
 
-        for (int x = 0; x < textureSize; x++)
+        for (int x = 0; x < TextureSize; x++)
         {
-            for (int y = 0; y < textureSize; y++)
+            for (int y = 0; y < TextureSize; y++)
             {
                 WorldGenBlockNode node = worldVariable.blockGrid[x, y];
                 WorldGenResourceNode nodeResource = worldVariable.resourceGrid[x, y];

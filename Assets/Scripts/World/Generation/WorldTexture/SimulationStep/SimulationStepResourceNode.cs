@@ -7,9 +7,9 @@ public abstract class SimulationStepResourceNode : SimulationStepBase
 
     protected Texture2D _noiseTexture;
 
-    public void RegenerateNoiseMap()
+    public void RegenerateNoiseMap(int textureSize)
     {
-        _noiseTexture = NoiseMapGenerator.GenerateLayeredNoiseTexture();
+        _noiseTexture = NoiseMapGenerator.GenerateLayeredNoiseTexture(textureSize);
     }
 
     public abstract ResourceType GetResourceType(WorldGenBlockNode node, WorldVariable worldVar);
