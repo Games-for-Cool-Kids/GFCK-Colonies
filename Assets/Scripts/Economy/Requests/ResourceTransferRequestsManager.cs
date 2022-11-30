@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Economy
 {
+    [Serializable]
     public class ResourceTransferRequestsManager
     {
         private List<ResourceTransferRequest> _openRequests = new(); // Open to be taken for fullfilment.

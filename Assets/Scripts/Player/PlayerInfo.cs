@@ -9,6 +9,16 @@ public class PlayerInfo : MonoBehaviourSingleton<PlayerInfo>
 
     void Start()
     {
+        Init();
+    }
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+
+        Init();
+    }
+    private void Init()
+    {
         Unit.OnUnitSpawned += AddUnit;
         Unit.OnUnitDespawned += RemoveUnit;
     }

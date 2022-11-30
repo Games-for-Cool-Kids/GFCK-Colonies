@@ -8,9 +8,16 @@ public class StructureButton : MonoBehaviour
     void Start()
     {
         Button button_component = GetComponent<Button>();
-        Debug.Assert(button_component != null);
         button_component.onClick.AddListener(BuildStructure);
     }
+
+    void OnEnable()
+    {
+        Button button_component = GetComponent<Button>();
+        button_component.onClick.RemoveAllListeners();
+        button_component.onClick.AddListener(BuildStructure);
+    }
+
 
     void BuildStructure()
     {

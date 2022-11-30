@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class ResourceManager : MonoBehaviourSingleton<ResourceManager>
 {
-    private List<Resource> _resourcesInWorldUnclaimed = new List<Resource>();
-    private List<Resource> _resourcesInWorldClaimed = new List<Resource>();
+    [SerializeField] private List<Resource> _resourcesInWorldUnclaimed = new List<Resource>();
+    [SerializeField] private List<Resource> _resourcesInWorldClaimed = new List<Resource>();
 
     // TODO This works, but is currently not necessary. Bring back if needed, and decide if it should hold claimed/unclaimed/both resources
     // An "inverse" Dictionary, where we can efficiently find a dropped resource in the world based on a given resource type

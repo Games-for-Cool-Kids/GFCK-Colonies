@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class HandController : MonoBehaviour
 {
-    public PlayerHand PlayerHand { get; private set; }
-    public BuildHand BuildHand { get; private set; }
-    public RemoveBuildingHand RemoveBuildingHand { get; private set; }
+    [ReadOnly] public PlayerHand PlayerHand;
+    [ReadOnly] public BuildHand BuildHand;
+    [ReadOnly] public RemoveBuildingHand RemoveBuildingHand;
 
     private GameObject _currentHandObject;
 
@@ -17,14 +17,24 @@ public class HandController : MonoBehaviour
     }
 
 
-    void Start()
+    void Awake()
     {
         PlayerHand = GameObject.Find(GlobalDefines.playerHandName).GetComponent<PlayerHand>();
         BuildHand = GameObject.Find(GlobalDefines.buildHandName).GetComponent<BuildHand>();
         RemoveBuildingHand = GameObject.Find(GlobalDefines.buildHandName).GetComponent<RemoveBuildingHand>();
+    }
 
+    void OnEnable()
+    {
+        Init();
+    }
+
+
+    private void Init()
+    {
         Debug.Assert(PlayerHand != null);
         Debug.Assert(BuildHand != null);
+        Debug.Assert(RemoveBuildingHand != null);
 
         BuildHand.StructurePlaced += ActivatePlayerHand;
         BuildHand.BuildCanceled += ActivatePlayerHand;
