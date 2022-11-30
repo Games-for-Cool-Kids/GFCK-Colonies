@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace DebugGUI
 {
+    [Serializable]
     internal class DebugGUIWindow
     {
         public string Title = "Debug";
@@ -11,10 +12,10 @@ namespace DebugGUI
         public bool Open = false;
         public bool Minimized = false;
 
-        private Rect _rect = new(20, 20, 160, 100);
-        private bool _resizing = false;
+        [SerializeField] private Rect _rect = new(20, 20, 160, 100);
+        [SerializeField] private bool _resizing = false;
 
-        private DebugGUIWindowContent _content;
+        [SerializeField] private DebugGUIWindowContent _content;
 
         public DebugGUIWindow(int id, string title, DebugGUIWindowContent content)
         {

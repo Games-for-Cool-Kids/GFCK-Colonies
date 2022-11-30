@@ -1,5 +1,4 @@
-﻿
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace DebugGUI
@@ -18,12 +17,25 @@ namespace DebugGUI
             }
         }
 
-        private void DrawUnitGUI(Unit unit)
+        private static void DrawUnitGUI(Unit unit)
         {
             GUILayout.BeginHorizontal();
+            // ------------------------
 
             GUILayout.Label(unit.gameObject.name);
 
+            var job = unit.GetComponent<UnitComponentJob>().job;
+            if (job != null)
+            {
+                if (GUILayout.Button(job.type.ToString()))
+                    DebugGUI.Instance.Select(job);
+            }
+            else
+            {
+                GUILayout.Label("Unemployed");
+            }
+
+            // ------------------------
             GUILayout.EndHorizontal();
         }
     }

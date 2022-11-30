@@ -5,7 +5,7 @@ public class UnitComponentJob : UnitComponentBase
 {
     private Transform _toolSlot = null;
 
-    protected Job job = null;
+    public Job job { get; private set; } = null;
 
     // TODO Too specific
     public int harvestDamage = 10;

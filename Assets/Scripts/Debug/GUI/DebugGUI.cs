@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Jobs;
+using System.Collections.Generic;
 using UnityEditor.Rendering;
 using UnityEngine;
 
 namespace DebugGUI
 {
-    public partial class DebugGUI : MonoBehaviour
+    public partial class DebugGUI : MonoBehaviourSingleton<DebugGUI>
     {
         public bool Show = true;
 
@@ -16,11 +17,15 @@ namespace DebugGUI
 
         [SerializeField, HideInInspector]
         private List<DebugGUIWindow> _windows = new();
-        private DebugGUIWindow _mainDebugWindow;
+        [SerializeField] private DebugGUIWindow _mainDebugWindow;
 
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
+            _windows.Clear();
+
             int id = 0;
 
             _mainDebugWindow = new DebugGUIWindow(++id, "DebugWindows - F5", new DebugGUIMainWindowContent(_windows));
@@ -28,6 +33,7 @@ namespace DebugGUI
 
             _windows.Add(new DebugGUIWindow(++id, "Requests", new DebugGUIRequestsWindowContent(DeliveryArrowTex, PickupArrowTex)));
             _windows.Add(new DebugGUIWindow(++id, "Units", new DebugGUIUnitWindowContent()));
+            _windows.Add(new DebugGUIWindow(++id, "Jobs", new DebugGUIJobsWindowContent()));
         }
 
         void Update()
@@ -53,6 +59,14 @@ namespace DebugGUI
                     window.Draw();
 
             GUI.skin = null;
+        }
+
+        public void Select(Job job)
+        {
+            var job_window = _windows.Find(wnd => wnd.Title == "Jobs");
+
+            job_window.Open = true;
+            job_window.Minimized = false;
         }
     }
 }
