@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace World
 {
+    [Serializable]
     public partial class Chunk
     {
         public int x;

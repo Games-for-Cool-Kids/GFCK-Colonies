@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace World
 {
@@ -13,6 +14,7 @@ namespace World
         ROCK,
     }
 
+    [Serializable]
     public class Block
     {
         public int x, y, z; // Local position in chunk.
