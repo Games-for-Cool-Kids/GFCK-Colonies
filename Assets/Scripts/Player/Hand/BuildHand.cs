@@ -14,8 +14,8 @@ public class BuildHand : MonoBehaviour
     private int _oldLayer;
 
 
-    public event EventHandler StructurePlaced;
-    public event EventHandler BuildCanceled;
+    public static event EventHandler StructurePlaced;
+    public static event EventHandler BuildCanceled;
 
 
     void Update()
