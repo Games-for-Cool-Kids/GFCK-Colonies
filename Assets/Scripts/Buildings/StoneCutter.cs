@@ -7,6 +7,6 @@ public class StoneCutter : ResourceHarvestBuilding
 
     void Start()
     {
-        AddJob(JobType.MINER);
+        AddJob(JobType.Miner);
     }
 }
