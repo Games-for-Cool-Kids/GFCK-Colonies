@@ -26,11 +26,11 @@ namespace DebugGUI
         {
             var request_manager = PlayerInfo.Instance.ResourceTransferRequestManager;
 
-            var open_requests = request_manager.GetOpenRequestsClone();
-            var promised_requests = request_manager.GetPromisedRequestsClone();
-            var pickup_requests = request_manager.GetPickupRequestsClone()
+            var open_requests = request_manager.GetOpenRequests();
+            var promised_requests = request_manager.GetPromisedRequests();
+            var pickup_requests = request_manager.GetPickupRequests()
                 .Select(req => req as ResourceTransferRequest).ToList();
-            var delivery_requests = request_manager.GetDeliveryRequestsClone()
+            var delivery_requests = request_manager.GetDeliveryRequests()
                 .Select(req => req as ResourceTransferRequest).ToList();
 
             // - Draw 
@@ -46,9 +46,9 @@ namespace DebugGUI
             // --------
         }
 
-        private void DrawRequestList(List<ResourceTransferRequest> requests, string title, ref bool foldout)
+        private void DrawRequestList(IEnumerable<ResourceTransferRequest> requests, string title, ref bool foldout)
         {
-            if (foldout = EditorGUILayout.Foldout(foldout, title + " - " + requests.Count))
+            if (foldout = EditorGUILayout.Foldout(foldout, title + " - " + requests.Count()))
                 foreach (var request in requests)
                     DrawRequest(request);
         }
@@ -72,9 +72,9 @@ namespace DebugGUI
             // --------
         }
 
-        private void DrawPromisedRequestList(List<(Unit unit, ResourceTransferRequest request)> requests, string title, ref bool foldout)
+        private void DrawPromisedRequestList(IEnumerable<(Unit unit, ResourceTransferRequest request)> requests, string title, ref bool foldout)
         {
-            if (foldout = EditorGUILayout.Foldout(foldout, title + " - " + requests.Count))
+            if (foldout = EditorGUILayout.Foldout(foldout, title + " - " + requests.Count()))
                 foreach (var request in requests)
                     DrawPromisedRequest(request);
         }

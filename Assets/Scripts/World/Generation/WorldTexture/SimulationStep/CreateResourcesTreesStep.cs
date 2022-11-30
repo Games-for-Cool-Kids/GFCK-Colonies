@@ -13,7 +13,7 @@ public class CreateResourcesTreesStep : SimulationStepResourceNode
     {
         if (node.type == BlockType.GROUND )
         {
-            float noiseSample = _noiseTexture.GetPixel(node.x, node.y).grayscale;
+            float noiseSample = _noiseTexture.GetPixel(node.x, node.y).r;
             if(noiseSample >= ClusterSize)
             {
                 if (Random.Range(0, 2.0f) <= noiseSample - Scarceness)
