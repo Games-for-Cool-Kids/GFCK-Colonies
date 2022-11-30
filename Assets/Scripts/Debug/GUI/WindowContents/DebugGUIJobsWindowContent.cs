@@ -80,6 +80,7 @@ namespace DebugGUI
 
             if (foldout = EditorGUILayout.Foldout(foldout, foldout_label))
             {
+                Color old_text_color = GUI.skin.label.normal.textColor;
                 foreach (var task in job.tasks)
                 {
                     if (task == job.currentTask)
@@ -88,7 +89,7 @@ namespace DebugGUI
                     GUILayout.Label(CleanString(task));
 
                     if (task == job.currentTask)
-                        GUI.skin.label.normal.textColor = Color.white;
+                        GUI.skin.label.normal.textColor = old_text_color;
                 }
             }
 
