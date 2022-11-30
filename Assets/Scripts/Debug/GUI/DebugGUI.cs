@@ -1,5 +1,6 @@
 ﻿using Jobs;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.Rendering;
 using UnityEngine;
 
@@ -31,9 +32,17 @@ namespace DebugGUI
             _mainDebugWindow = new DebugGUIWindow(++id, "DebugWindows - F5", new DebugGUIMainWindowContent(_windows));
             _mainDebugWindow.Open = true;
 
-            _windows.Add(new DebugGUIWindow(++id, "Requests", new DebugGUIRequestsWindowContent(DeliveryArrowTex, PickupArrowTex)));
-            _windows.Add(new DebugGUIWindow(++id, "Units", new DebugGUIUnitWindowContent()));
-            _windows.Add(new DebugGUIWindow(++id, "Jobs", new DebugGUIJobsWindowContent()));
+            var requests_window = new DebugGUIWindow(++id, "Requests", new DebugGUIRequestsWindowContent(DeliveryArrowTex, PickupArrowTex));
+            requests_window.Rect.y = _mainDebugWindow.Rect.yMax + 10;
+            var units_window = new DebugGUIWindow(++id, "Units", new DebugGUIUnitWindowContent());
+            units_window.Rect.y = _mainDebugWindow.Rect.yMax + 10;
+            var jobs_window = new DebugGUIWindow(++id, "Jobs", new DebugGUIJobsWindowContent());
+            jobs_window.Rect.y = _mainDebugWindow.Rect.yMax + 10;
+
+
+            _windows.Add(requests_window);
+            _windows.Add(units_window);
+            _windows.Add(jobs_window);
         }
 
         void Update()
