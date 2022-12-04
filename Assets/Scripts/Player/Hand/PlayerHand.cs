@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerHand : MonoBehaviour
+public class PlayerHand : InputResolverStep
 {
     public enum PlayerHandState
     {
@@ -24,13 +24,7 @@ public class PlayerHand : MonoBehaviour
 
     private GameObject _selectedObject;
 
-
-    void Update()
-    {
-        HandleInput();
-    }
-
-    private void HandleInput()
+    public override bool ResolveInput()
     {
         switch (currentState)
         {
@@ -58,6 +52,8 @@ public class PlayerHand : MonoBehaviour
             default:
                 break;
         }
+
+        return true;
     }
 
     void DropOffResourceIfAble()

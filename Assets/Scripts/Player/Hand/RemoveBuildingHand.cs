@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
 
-public class RemoveBuildingHand : MonoBehaviour
+public class RemoveBuildingHand : InputResolverStep
 {
     public static event EventHandler BuildingRemoved;
 
-    void Update()
+    public override bool ResolveInput()
     {
         if (Input.GetMouseButtonDown(0))
         {
@@ -17,5 +17,7 @@ public class RemoveBuildingHand : MonoBehaviour
                 BuildingRemoved.Invoke(this, null);
             }
         }
+
+        return true;
     }
 }

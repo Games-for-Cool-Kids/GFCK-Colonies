@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using World;
 
-public class BuildHand : MonoBehaviour
+public class BuildHand : InputResolverStep
 {
     private GameObject _selectedStructure;
 
@@ -17,8 +17,7 @@ public class BuildHand : MonoBehaviour
     public static event EventHandler StructurePlaced;
     public static event EventHandler BuildCanceled;
 
-
-    void Update()
+    public override bool ResolveInput()
     {
         if (Input.GetMouseButtonDown(1)) // right mouse btn
             CancelBuilding();
@@ -26,7 +25,7 @@ public class BuildHand : MonoBehaviour
         var hovered_block = GameManager.Instance.World.GetBlockUnderMouse(true);
         if (hovered_block == null
          || !hovered_block.IsBuildable())
-            return;
+            return true;
 
         if (_selectedStructure != null)
         {
@@ -37,6 +36,8 @@ public class BuildHand : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0)) // left mouse btn
             PlaceStructure();
+
+        return true;
     }
 
     private void PlaceStructure()
