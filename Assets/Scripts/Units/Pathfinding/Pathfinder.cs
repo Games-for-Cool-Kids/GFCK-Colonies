@@ -1,27 +1,28 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 using World;
 
 //for more on A* visit
 //https://en.wikipedia.org/wiki/A*_search_algorithm
 namespace Pathfinding
 {
+    [Serializable]
     public class Pathfinder
     {
-        private Block _startBlock;
-        private Block _targetBlock;
+        [SerializeField] private Block _startBlock;
+        [SerializeField] private Block _targetBlock;
 
-        private PathFinderCache _cache;
+        [SerializeField] private PathFinderCache _cache;
 
-        private int chunkSize;
-        private int maxY;
-        private int _worldChunkWidth;
+        [SerializeField] private int chunkSize;
+        [SerializeField] private int maxY;
+        [SerializeField] private int _worldChunkWidth;
 
-        private List<Block> _foundPath = null;
+        [SerializeField] private List<Block> _foundPath = null;
 
-        private bool _allowVertical = true;
+        [SerializeField] private bool _allowVertical = true;
+
 
         public volatile bool executionFinished = false;
         public PathfindMaster.PathFindingThreadComplete completedCallback;
@@ -247,6 +248,7 @@ namespace Pathfinding
 
             return grid[x, y, z];
         }
+
 
         private float GetDistance(Block posA, Block posB)
         {

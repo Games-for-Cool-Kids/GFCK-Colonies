@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Economy
 {
+    [Serializable]
     public class ResourceTransferRequestsManager
     {
         private List<ResourceTransferRequest> _openRequests = new(); // Open to be taken for fullfilment.
@@ -166,32 +168,30 @@ namespace Economy
             _openRequests.Remove(request);
         }
 
-        /// <summary>Returns clone of the original list, since outside callers should not modify requests.</summary>
-        public List<ResourcePickUpRequest> GetPickupRequestsClone()
+        public IEnumerable<ResourcePickUpRequest> GetPickupRequests()
         {
-            return new(_openRequests
+            return _openRequests
                 .Where(req => req is ResourcePickUpRequest)
                 .Cast<ResourcePickUpRequest>()
-                .ToList());
-        }
-        /// <summary>Returns clone of the original list, since outside callers should not modify requests.</summary>
-        public List<ResourceDeliveryRequest> GetDeliveryRequestsClone()
-        {
-            return new(_openRequests
-                .Where(req => req is ResourceDeliveryRequest)
-                .Cast<ResourceDeliveryRequest>()
-                .ToList());
-        }
-        /// <summary>Returns clone of the original list, since outside callers should not modify requests.</summary>
-        public List<ResourceTransferRequest> GetOpenRequestsClone()
-        {
-            return new(_openRequests);
-        }
-        /// <summary>Returns clone of the original list, since outside callers should not modify requests.</summary>
-        public List<(Unit unit, ResourceTransferRequest request)> GetPromisedRequestsClone()
-        {
-            return new(_promisedRequests);
+                .AsEnumerable();
         }
 
+        public IEnumerable<ResourceDeliveryRequest> GetDeliveryRequests()
+        {
+            return _openRequests
+                .Where(req => req is ResourceDeliveryRequest)
+                .Cast<ResourceDeliveryRequest>()
+                .AsEnumerable();
+        }
+
+        public IEnumerable<ResourceTransferRequest> GetOpenRequests()
+        {
+            return _openRequests.AsEnumerable();
+        }
+
+        public IEnumerable<(Unit unit, ResourceTransferRequest request)> GetPromisedRequests()
+        {
+            return _promisedRequests.AsEnumerable();
+        }
     }
 }

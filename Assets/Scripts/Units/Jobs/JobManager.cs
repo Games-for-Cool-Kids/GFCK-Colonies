@@ -21,7 +21,7 @@ namespace Jobs
 #endif
 
 #if DEBUG
-        public override void Awake()
+        protected override void Awake()
         {
             base.Awake();
 

@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     public GameWorld World { get; private set; }
 
     public delegate void GameObjectEvent(GameObject gameObject);
-    public event GameObjectEvent gameObjectCreate;
+    public static event GameObjectEvent GameObjectCreated;
 
     private new void Awake()
     {
@@ -41,10 +41,11 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
             Debug.LogWarning("GameWorld not found.");
     }
 
-    public GameObject InstantiateGameObject(GameObject obj)
+    public static GameObject InstantiateGameObject(GameObject obj, Transform parent = null)
     {
-        var newObject = GameObject.Instantiate(obj);
-        gameObjectCreate?.Invoke(newObject); // Send out event.
+        var newObject = parent == null ? Instantiate(obj) : Instantiate(obj, parent);
+        UniqueObjectNameGenerator.GiveUniqueName(newObject);
+        GameObjectCreated?.Invoke(newObject); // Send out event.
         return newObject;
     }
 }

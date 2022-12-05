@@ -23,16 +23,14 @@ public class NoiseTextureLayerData
 [CreateAssetMenu(menuName = "GameWorld/LayeredNoiseMap")]
 public class NoiseMapGenerator : ScriptableObject
 {
-    public int TextureSize; // TODO We should probably fetch this from somewhere, to make sure it can't be used at a "wrong" size
-
     public List<NoiseTextureLayerData> LayersGenerationData = new List<NoiseTextureLayerData>();
 
-    // TODO Could store up to 3 different noise textures across RGB channels of a single texxture
-    public Texture2D GenerateLayeredNoiseTexture()
+    // TODO Could store up to 3 different noise textures across RGB channels of a single texture
+    public Texture2D GenerateLayeredNoiseTexture(int textureSize)
     {
-        Texture2D noiseTex = new Texture2D(TextureSize, TextureSize); // TODO Don't need to generate mip-maps
+        Texture2D noiseTex = new Texture2D(textureSize, textureSize, TextureFormat.RFloat, false); // single-channel, 32 bit float. 
 
-        Color[] pixels = new Color[TextureSize * TextureSize];
+        Color[] pixels = new Color[textureSize * textureSize];
 
         foreach (var layerData in LayersGenerationData)
         {
@@ -48,11 +46,11 @@ public class NoiseMapGenerator : ScriptableObject
                 float x = 0.0f;
                 while (x < noiseTex.width)
                 {
-                    float xCoord = x / TextureSize * noiseScale + offsetX;
-                    float yCoord = y / TextureSize * noiseScale + offsetY;
+                    float xCoord = x / textureSize * noiseScale + offsetX;
+                    float yCoord = y / textureSize * noiseScale + offsetY; 
                     float sample = Mathf.PerlinNoise(xCoord, yCoord) * bias;
 
-                    pixels[(int)y * TextureSize + (int)x] += new Color(sample, sample, sample);
+                    pixels[(int)y * textureSize + (int)x] += new Color(sample, 0.0f, 0.0f);
                     x++;
                 }
                 y++;

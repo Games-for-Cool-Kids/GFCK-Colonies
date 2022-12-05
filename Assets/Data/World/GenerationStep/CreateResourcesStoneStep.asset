@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: CreateResourcesStoneStep
   m_EditorClassIdentifier: 
   NoiseMapGenerator: {fileID: 11400000, guid: 8da9140b9b3c7e342b7dd8bd7d96a115, type: 2}
-  ClusterSize: 0.7
-  Scarceness: 0.5
+  ClusterSize: 0.8
+  Scarceness: 0.85

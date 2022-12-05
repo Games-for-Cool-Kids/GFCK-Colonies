@@ -2,10 +2,10 @@
 {
     public enum JobType
     {
-        UNEMPLOYED, // :(
-        COURIER,
-        LUMBERJACK,
-        MINER,
-        SOLDIER,
+        Unemployed, // :(
+        Courier,
+        Lumberjack,
+        Miner,
+        Soldier,
     }
 }

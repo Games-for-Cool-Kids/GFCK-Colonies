@@ -17,7 +17,7 @@ namespace Pathfinding
             GameManager.Instance.World.WorldGenerationDone += GenerateCache; // TODO Unregister
         }
 
-        private void GenerateCache()
+        public void GenerateCache()
         {
             this.worldChunkWidth = _world.worldChunks.worldChunkWidth;
 

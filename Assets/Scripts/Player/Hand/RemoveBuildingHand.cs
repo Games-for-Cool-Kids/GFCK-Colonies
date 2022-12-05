@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class RemoveBuildingHand : MonoBehaviour
 {
-    public event EventHandler BuildingRemoved;
+    public static event EventHandler BuildingRemoved;
 
     void Update()
     {

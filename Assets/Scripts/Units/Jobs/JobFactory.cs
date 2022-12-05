@@ -9,16 +9,16 @@ namespace Jobs
         {
             switch (type)
             {
-                case JobType.COURIER:
+                case JobType.Courier:
                     return CreateCourierJob(jobBuilding);
 
-                case JobType.LUMBERJACK:
+                case JobType.Lumberjack:
                     return CreateLumberJackJob(jobBuilding);
 
-                case JobType.MINER:
+                case JobType.Miner:
                     return CreateMinerJob(jobBuilding);
 
-                case JobType.UNEMPLOYED:
+                case JobType.Unemployed:
                 default:
                     return CreateUnemployedJob(jobBuilding);
             }
@@ -27,11 +27,11 @@ namespace Jobs
         private static Job CreateUnemployedJob(Building jobBuilding)
         {
             Debug.Log("Unemployed job not yet implemented");
-            return new Job(jobBuilding, JobType.UNEMPLOYED);
+            return new Job(jobBuilding, JobType.Unemployed);
         }
         private static Job CreateCourierJob(Building jobBuilding)
         {
-            var job = new Job(jobBuilding, JobType.COURIER);
+            var job = new Job(jobBuilding, JobType.Courier);
 
             var transferAllTask = new DeliverAllResourcesTask(job);
             transferAllTask.targetStorage = jobBuilding;
@@ -45,7 +45,7 @@ namespace Jobs
         }
         private static Job CreateLumberJackJob(Building jobBuilding)
         {
-            var job = new Job(jobBuilding, JobType.LUMBERJACK);
+            var job = new Job(jobBuilding, JobType.Lumberjack);
 
             var harvestTask = new HarvestResourceTask(job, ResourceType.Wood);
             var transferTask = new TransferResourcesTask(job, TransferType.Delivery);
@@ -62,7 +62,7 @@ namespace Jobs
         }
         private static Job CreateMinerJob(Building jobBuilding)
         {
-            var job = new Job(jobBuilding, JobType.MINER);
+            var job = new Job(jobBuilding, JobType.Miner);
 
             var harvestTask = new HarvestResourceTask(job, ResourceType.Stone);
             var transferTask = new TransferResourcesTask(job, TransferType.Delivery);

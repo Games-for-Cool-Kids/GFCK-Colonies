@@ -4,6 +4,6 @@ public class Stockpile : Building
 {
     protected virtual void Start()
     {
-        AddJob(JobType.COURIER);
+        AddJob(JobType.Courier);
     }
 }

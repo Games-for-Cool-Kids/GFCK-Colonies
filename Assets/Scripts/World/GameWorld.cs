@@ -1,9 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Serialization;
+using static Unity.VisualScripting.Member;
 
 namespace World
 {
-    public class GameWorld : MonoBehaviour
+    public class GameWorld : MonoBehaviour, ISerializationCallbackReceiver
     {
         public GameWorldChunkData worldChunks = new();
 
@@ -13,6 +15,7 @@ namespace World
         public GameObject StonePrefab;
 
         public WorldVariable worldVariable;
+
         public GameObject[,] chunkObjects;
 
         private WorldGenerator worldGenerator = null; // ToDo: Maybe only create world after generation is finished, so that we can separate generator from world.
@@ -23,6 +26,9 @@ namespace World
         public delegate void BlockEvent(Block block);
         public event BlockEvent blockAdd; // ToDo: update paths that intersect this block. (also diagonal)
         public event BlockEvent blockDig; // ToDo: update paths that intersect this block. (also diagonal)
+
+        [SerializeField] private GameWorldSerializer _serializer;
+
 
         private void Start()
         {
@@ -104,14 +110,14 @@ namespace World
                     {
                         int nodeY = Mathf.FloorToInt(node.height * worldVariable.height);
                         Vector3 blockWorldPos = new Vector3(node.x, nodeY, node.y);
-                        var Tree = Instantiate(TreePrefab, chunkObject.transform);
+                        var Tree = GameManager.InstantiateGameObject(TreePrefab, chunkObject.transform);
                         Tree.transform.position = blockWorldPos + Tree.GetPivotYOffset(); // Normally we should add half a block, but tree roots should stick in ground a bit.
                     }
                     if (resource.type == ResourceType.Stone) // TODO Remove duplication
                     {
                         int nodeY = Mathf.FloorToInt(node.height * worldVariable.height);
                         Vector3 blockWorldPos = new Vector3(node.x, nodeY, node.y);
-                        var rock = Instantiate(StonePrefab, chunkObject.transform);
+                        var rock = GameManager.InstantiateGameObject(StonePrefab, chunkObject.transform);
                         rock.transform.position = blockWorldPos + rock.GetPivotYOffset(); // Normally we should add half a block, but tree roots should stick in ground a bit.
                     }
                 }
@@ -289,6 +295,18 @@ namespace World
                 }
             }
             return neighbors;
+        }
+
+        public void OnBeforeSerialize()
+        {
+            if(worldGenerator == null)
+                _serializer.Serialize(this);
+        }
+
+        public void OnAfterDeserialize()
+        {
+            if (worldGenerator == null)
+                _serializer.Deserialize();
         }
     }
 }

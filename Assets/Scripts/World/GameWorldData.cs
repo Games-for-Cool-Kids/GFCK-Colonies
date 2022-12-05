@@ -1,6 +1,8 @@
-﻿
+﻿using System;
+
 namespace World
 {
+    [Serializable]
     public partial class GameWorldChunkData
     {
         public int chunkSize = 32;

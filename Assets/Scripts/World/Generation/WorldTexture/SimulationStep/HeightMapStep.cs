@@ -51,14 +51,7 @@ public class HeightMapStep : ScriptableObject
 			float e3 = (c3 + c4) * .5f;
 			float e4 = (c4 + c1) * .5f;
 
-			if (m <= 0)
-			{
-				m = 0;
-			}
-			else if (m > 1)
-			{
-				m = 1;
-			}
+			m = Mathf.Clamp(m, 0.0f, 1.0f);
 
 			DivideGrid(worldVariable, x, y, _width, _height, c1, e1, m, e4, _grain, total);
 			DivideGrid(worldVariable, x + _width, y, _width, _height, e1, c2, e2, m, _grain, total);

@@ -7,6 +7,6 @@ public class LumberMill : ResourceHarvestBuilding
 
     void Start()
     {
-        AddJob(JobType.LUMBERJACK);
+        AddJob(JobType.Lumberjack);
     }
 }

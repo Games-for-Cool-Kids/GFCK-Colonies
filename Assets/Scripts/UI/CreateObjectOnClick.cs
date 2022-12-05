@@ -15,7 +15,7 @@ public class CreateObjectOnClick : MonoBehaviour
             var hovered_block = GameManager.Instance.World.GetBlockUnderMouse();
             if (hovered_block != null)
             {
-                var new_object = GameManager.Instance.InstantiateGameObject(ObjectToCreate);
+                var new_object = GameManager.InstantiateGameObject(ObjectToCreate);
                 new_object.PositionOnBlock(hovered_block);
 
                 _createAfterClick = false;

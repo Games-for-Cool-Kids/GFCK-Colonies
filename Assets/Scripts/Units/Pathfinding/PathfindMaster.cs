@@ -14,8 +14,8 @@ namespace Pathfinding
         //Delegates are a variable that points to a function
         public delegate void PathFindingThreadComplete(List<Block> path);
 
-        private List<Pathfinder> currentThreads;
-        private List<Pathfinder> todoThreads;
+        [SerializeField] private List<Pathfinder> currentThreads;
+        [SerializeField] private List<Pathfinder> todoThreads;
 
         private PathFinderCache _cache;
 
@@ -26,7 +26,24 @@ namespace Pathfinding
 
             _cache = new PathFinderCache(GameManager.Instance.World);
         }
-   
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            if (_cache == null)
+            {
+                _cache = new PathFinderCache(GameManager.Instance.World);
+                _cache.GenerateCache();
+            }
+        }
+        private void OnDisable()
+        {
+            if (currentThreads.Count > 0)
+                Debug.LogError("PathfindMaster disabled with unresolved pathfinding requests! Pathfinding will break!");
+            if (todoThreads.Count > 0)
+                Debug.LogError("PathfindMaster disabled while pathfinding threads still running! Pathfinding will break!");
+        }
+
         void Update() 
         {
             int i = 0;

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace DebugGUI
 {
+    [Serializable]
     internal class DebugGUIWindow
     {
         public string Title = "Debug";
@@ -11,10 +12,10 @@ namespace DebugGUI
         public bool Open = false;
         public bool Minimized = false;
 
-        private Rect _rect = new(20, 20, 160, 100);
-        private bool _resizing = false;
+        [SerializeField] public Rect Rect = new(20, 20, 165, 100);
+        [SerializeField] private bool _resizing = false;
 
-        private DebugGUIWindowContent _content;
+        [SerializeField] private DebugGUIWindowContent _content;
 
         public DebugGUIWindow(int id, string title, DebugGUIWindowContent content)
         {
@@ -25,13 +26,13 @@ namespace DebugGUI
 
         public void Draw()
         {
-            _rect = GUILayout.Window(ID,
-                                     _rect,
+            Rect = GUILayout.Window(ID,
+                                     Rect,
                                      DrawInternal,
                                      Title,
                                      WindowStyle(),
-                                     GUILayout.MaxHeight(Screen.height - _rect.y),
-                                     GUILayout.MaxWidth(Screen.width - _rect.x));
+                                     GUILayout.MaxHeight(Screen.height - Rect.y),
+                                     GUILayout.MaxWidth(Screen.width - Rect.x));
         }
 
         private void DrawInternal(int windowId)
@@ -48,7 +49,7 @@ namespace DebugGUI
             }
             else
             {
-                _rect.height = 23;
+                Rect.height = 23;
                 DrawMinimized();
             }
 
@@ -86,7 +87,7 @@ namespace DebugGUI
 
         private void ResizeWindowToMouse()
         {
-            _rect.max = _rect.min + Event.current.mousePosition;
+            Rect.max = Rect.min + Event.current.mousePosition;
             if (Input.GetMouseButtonUp(0))
                 _resizing = false;
         }
@@ -94,8 +95,8 @@ namespace DebugGUI
         private void DrawResizeButton()
         {
             const int btn_size = 8;
-            var btn_rect = new Rect(_rect.width - btn_size - 1,
-                                    _rect.height - btn_size - 1,
+            var btn_rect = new Rect(Rect.width - btn_size - 1,
+                                    Rect.height - btn_size - 1,
                                     btn_size,
                                     btn_size);
 
@@ -113,7 +114,7 @@ namespace DebugGUI
         private void DrawMinMaxButton()
         {
             const int btn_size = 10;
-            var btn_rect = new Rect(_rect.width - 24,
+            var btn_rect = new Rect(Rect.width - 24,
                                     2,
                                     btn_size,
                                     btn_size);
@@ -128,7 +129,7 @@ namespace DebugGUI
         private void DrawCloseButton()
         {
             const int btn_size = 10;
-            var btn_rect = new Rect(_rect.width - btn_size - 2,
+            var btn_rect = new Rect(Rect.width - btn_size - 2,
                                     2,
                                     btn_size,
                                     btn_size);

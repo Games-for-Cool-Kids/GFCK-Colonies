@@ -37,7 +37,7 @@ public class ResourceNode : MonoBehaviour
         Vector3 offset = Camera.main.transform.position - transform.position;
         offset = offset.normalized * 3;
 
-        GameObject newResource = GameManager.Instance.InstantiateGameObject(resourceToDrop);
+        GameObject newResource = GameManager.InstantiateGameObject(resourceToDrop);
         newResource.transform.position = transform.position + offset;
 
         var droppedComponent = newResource.GetComponent<Resource>();
