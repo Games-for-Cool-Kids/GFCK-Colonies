@@ -10,6 +10,8 @@ using UnityEngine;
 // In the future, we can consider making this dynamic; adding/removing input behaviours depending on context.
 public sealed class InputResolver : MonoBehaviour
 {
+    // This list defines the input-execution-order (top to bottom). 
+    // Any input class that is added will maintain this ordering, even when not all classes are active at the same time.
     private List<System.Type> _orderedStepTypes = new()
     {
         typeof(BuildHand),
