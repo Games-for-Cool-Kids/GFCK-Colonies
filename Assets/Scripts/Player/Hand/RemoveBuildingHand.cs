@@ -5,7 +5,7 @@ public class RemoveBuildingHand : InputResolverStep
 {
     public static event EventHandler BuildingRemoved;
 
-    public override bool ResolveInput()
+    public override InputResolver.InputResolution ResolveInput()
     {
         if (Input.GetMouseButtonDown(0))
         {
@@ -18,6 +18,6 @@ public class RemoveBuildingHand : InputResolverStep
             }
         }
 
-        return true;
+        return InputResolver.InputResolution.Block;
     }
 }

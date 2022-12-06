@@ -17,7 +17,7 @@ public class BuildHand : InputResolverStep
     public static event EventHandler StructurePlaced;
     public static event EventHandler BuildCanceled;
 
-    public override bool ResolveInput()
+    public override InputResolver.InputResolution ResolveInput()
     {
         if (Input.GetMouseButtonDown(1)) // right mouse btn
             CancelBuilding();
@@ -25,7 +25,7 @@ public class BuildHand : InputResolverStep
         var hovered_block = GameManager.Instance.World.GetBlockUnderMouse(true);
         if (hovered_block == null
          || !hovered_block.IsBuildable())
-            return false;
+            return InputResolver.InputResolution.Block;
 
         if (_selectedStructure != null)
         {
@@ -37,7 +37,7 @@ public class BuildHand : InputResolverStep
         if (Input.GetMouseButtonDown(0)) // left mouse btn
             PlaceStructure();
 
-        return false;
+        return InputResolver.InputResolution.Block;
     }
 
     private void PlaceStructure()

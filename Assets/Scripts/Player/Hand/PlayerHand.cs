@@ -24,7 +24,7 @@ public class PlayerHand : InputResolverStep
 
     private GameObject _selectedObject;
 
-    public override bool ResolveInput()
+    public override InputResolver.InputResolution ResolveInput()
     {
         switch (currentState)
         {
@@ -53,7 +53,7 @@ public class PlayerHand : InputResolverStep
                 break;
         }
 
-        return true;
+        return InputResolver.InputResolution.Pass;
     }
 
     void DropOffResourceIfAble()

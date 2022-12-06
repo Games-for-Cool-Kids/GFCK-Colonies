@@ -10,6 +10,12 @@ using UnityEngine;
 // In the future, we can consider making this dynamic; adding/removing input behaviours depending on context.
 public sealed class InputResolver : MonoBehaviour
 {
+    public enum InputResolution
+    {
+        Block,
+        Pass
+    }
+
     // This list defines the input-execution-order (top to bottom). 
     // Any input class that is added will maintain this ordering, even when not all classes are active at the same time.
     private List<System.Type> _orderedStepTypes = new()
@@ -63,7 +69,7 @@ public sealed class InputResolver : MonoBehaviour
             if (!step.isActiveAndEnabled) 
                 continue;
 
-            if(!step.ResolveInput())
+            if(step.ResolveInput() == InputResolution.Block)
                 return;
         }
     }
