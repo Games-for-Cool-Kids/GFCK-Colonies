@@ -16,7 +16,6 @@ public class HandController : MonoBehaviour
         REMOVE_BUILDING,
     }
 
-
     void Awake()
     {
         PlayerHand = GameObject.Find(GlobalDefines.playerHandName).GetComponent<PlayerHand>();

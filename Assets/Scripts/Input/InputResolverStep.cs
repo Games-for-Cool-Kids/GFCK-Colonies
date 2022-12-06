@@ -8,9 +8,19 @@ public abstract class InputResolverStep : MonoBehaviour
         Register();
     }
 
+    private void OnDestroy()
+    {
+        Unregister();
+    }
+
     private void Register()
     {
         GameManager.Instance.InputResolver.AddSolveableInputStep(this);
+    }
+
+    private void Unregister()
+    {
+        GameManager.Instance.InputResolver.RemoveSolveableInputStep(this);
     }
 
     // Handle all input in this method.

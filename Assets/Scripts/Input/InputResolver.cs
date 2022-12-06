@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 // How to use this class:
@@ -10,13 +8,13 @@ using UnityEngine;
 
 // Currently, this class assumes a static, ordered list of inputSteps. 
 // In the future, we can consider making this dynamic; adding/removing input behaviours depending on context.
-public class InputResolver : MonoBehaviour
+public sealed class InputResolver : MonoBehaviour
 {
     private List<System.Type> _orderedStepTypes = new()
     {
         typeof(BuildHand),
-        typeof(PlayerHand),
-        typeof(RemoveBuildingHand)
+        typeof(RemoveBuildingHand),
+        typeof(PlayerHand)
     };
 
     private List<InputResolverStep> _steps = new();
@@ -48,14 +46,23 @@ public class InputResolver : MonoBehaviour
         }
     }
 
+    public void RemoveSolveableInputStep(InputResolverStep step)
+    {
+        Debug.Assert(_steps.Contains(step));
+        Debug.Assert(_orderedStepTypes.Contains(step.GetType()));
+
+        _steps.Remove(step);
+    }
+
     public void Update()
     {
         foreach(var step in _steps)
         {
+            if (!step.isActiveAndEnabled) 
+                continue;
+
             if(!step.ResolveInput())
-            {
                 return;
-            }
         }
     }
 }

@@ -25,7 +25,7 @@ public class BuildHand : InputResolverStep
         var hovered_block = GameManager.Instance.World.GetBlockUnderMouse(true);
         if (hovered_block == null
          || !hovered_block.IsBuildable())
-            return true;
+            return false;
 
         if (_selectedStructure != null)
         {
@@ -37,7 +37,7 @@ public class BuildHand : InputResolverStep
         if (Input.GetMouseButtonDown(0)) // left mouse btn
             PlaceStructure();
 
-        return true;
+        return false;
     }
 
     private void PlaceStructure()
