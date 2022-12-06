@@ -20,9 +20,11 @@ public sealed class InputResolver : MonoBehaviour
     // Any input class that is added will maintain this ordering, even when not all classes are active at the same time.
     private List<System.Type> _orderedStepTypes = new()
     {
+        typeof(CreateObjectOnClick),
         typeof(BuildHand),
         typeof(RemoveBuildingHand),
-        typeof(PlayerHand)
+        typeof(PlayerHand),
+        typeof(ShowHoveredBlock)
     };
 
     private List<InputResolverStep> _steps = new();

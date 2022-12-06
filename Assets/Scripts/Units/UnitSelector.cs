@@ -17,6 +17,8 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
 
     void Update()
     {
+        return; // Currently not using this class
+
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             HandleLeftClick();

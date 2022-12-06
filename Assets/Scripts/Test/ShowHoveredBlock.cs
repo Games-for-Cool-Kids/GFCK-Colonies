@@ -1,7 +1,7 @@
 using UnityEngine;
 using World;
 
-public class ShowHoveredBlock : MonoBehaviour
+public class ShowHoveredBlock : InputResolverStep
 {
     private GameWorld _world;
     private GameObject _testCube;
@@ -23,7 +23,7 @@ public class ShowHoveredBlock : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public override InputResolver.InputResolution ResolveInput()
     {
         var block = _world.GetBlockUnderMouse();
 
@@ -34,5 +34,7 @@ public class ShowHoveredBlock : MonoBehaviour
         }
         else
             _testCube.SetActive(false);
+
+        return InputResolver.InputResolution.Pass;
     }
 }

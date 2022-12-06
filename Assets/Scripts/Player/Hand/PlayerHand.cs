@@ -26,17 +26,22 @@ public class PlayerHand : InputResolverStep
 
     public override InputResolver.InputResolution ResolveInput()
     {
+        var inputResolution = InputResolver.InputResolution.Pass;
+
         switch (currentState)
         {
-            case PlayerHandState.IDLE:
+           case PlayerHandState.IDLE:
                 if (Input.GetMouseButtonDown(0))
                 {
-                    HandleObjectClick();
+                    var clicked = HandleObjectClick();
+                    if (clicked) inputResolution = InputResolver.InputResolution.Block;
                 }
                 break;
 
             case PlayerHandState.GRABBING:
                 Debug.Assert(_selectedObject != null);
+
+                inputResolution = InputResolver.InputResolution.Block;
 
                 // TODO: Physics forces should be applied in FixedUpdate instead of Update.
                 DragSelectedObject();
@@ -53,7 +58,7 @@ public class PlayerHand : InputResolverStep
                 break;
         }
 
-        return InputResolver.InputResolution.Pass;
+        return inputResolution;
     }
 
     void DropOffResourceIfAble()
@@ -74,13 +79,14 @@ public class PlayerHand : InputResolverStep
         }
     }
 
-    private void HandleObjectClick()
+    // TODO Alternatively, could return the clicked object
+    private bool HandleObjectClick()
     {
         Debug.Assert(_selectedObject == null); // No object should be selected
 
         Collider clickedCollider = CameraUtil.CastMouseRayFromCamera().collider;
         if (clickedCollider == null)
-            return;
+            return false;
 
 
         if (clickedCollider.CompareTag(GlobalDefines.draggableObjectTag)
@@ -91,7 +97,7 @@ public class PlayerHand : InputResolverStep
 
             GrabSelectedObject(clickedCollider.gameObject);
 
-            return;
+            return true;
         }
         
         if (clickedCollider.CompareTag(GlobalDefines.resourceNodeTag)) // Clickable resource node.
@@ -100,8 +106,10 @@ public class PlayerHand : InputResolverStep
 
             clickedCollider.gameObject.GetComponent<ResourceNode>().SpawnResource();
 
-            return;
+            return true;
         }
+
+        return false;
     }
 
     private void GrabSelectedObject(GameObject clickedObject)
