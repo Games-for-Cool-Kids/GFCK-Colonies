@@ -5,7 +5,8 @@ public class PlayerCamera : MonoBehaviour
 {
     public float moveSpeed = 10.0f;
     public float hoverHeight = 25.0f;
-    
+    public bool hover = true;
+
     private Transform _blockFocusPoint;
 
     private bool _isEnabled = false;
@@ -14,14 +15,16 @@ public class PlayerCamera : MonoBehaviour
     {
         GameManager.Instance.World.WorldGenerationDone += EnableCamera;
 
-        _blockFocusPoint = transform.Find("BlockFocusPoint");
-        _blockFocusPoint.Translate(Vector3.up * 200, Space.World); // Set high enough to be above the world.
+        if (hover)
+        {
+            _blockFocusPoint = transform.Find("BlockFocusPoint");
+            _blockFocusPoint.Translate(Vector3.up * 200, Space.World); // Set high enough to be above the world.
+        }
     }
 
     void Update()
     {
         if (!_isEnabled) return;
-
 
         Move();
     }
@@ -39,7 +42,10 @@ public class PlayerCamera : MonoBehaviour
         Vector3 move = direction * moveSpeed * Time.deltaTime;
         transform.Translate(move, Space.World);
 
-        HoverWorld();
+        if (hover)
+        {
+            HoverWorld();
+        }
     }
 
     private void HoverWorld()
