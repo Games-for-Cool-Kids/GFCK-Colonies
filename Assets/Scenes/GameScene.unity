@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.22592282, g: 0.25248116, b: 0.35803103, a: 1}
+  m_IndirectSpecularColor: {r: 0.22592264, g: 0.25248092, b: 0.35803068, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -163,9 +163,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 805b458192f6bef49ab06db30d6fc187, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Show: 1
   DebugSkin: {fileID: 11400000, guid: 0a8a7968456efd541b58ad9b8208cbec, type: 2}
   DeliveryArrowTex: {fileID: 6192944022281365145, guid: 2d701de8fffb24943b03ac971fdbe6f2, type: 3}
   PickupArrowTex: {fileID: 6192944022281365145, guid: 0516dbdd86e11a54795b2bc4e221edb6, type: 3}
+  _windows: []
+  _mainDebugWindow:
+    Title: 
+    Open: 0
+    Minimized: 0
+    Rect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    _resizing: 0
 --- !u!4 &447764814
 Transform:
   m_ObjectHideFlags: 0
@@ -422,9 +435,10 @@ GameObject:
   - component: {fileID: 1621376599}
   - component: {fileID: 1621376598}
   - component: {fileID: 1621376600}
+  - component: {fileID: 1621376601}
   m_Layer: 0
   m_Name: EventSystem
-  m_TagString: Untagged
+  m_TagString: EventSystem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -489,6 +503,18 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
+--- !u!114 &1621376601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1621376596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7657861b195d03a47a6caa02feaefb0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &652615226608237011
 PrefabInstance:
   m_ObjectHideFlags: 0

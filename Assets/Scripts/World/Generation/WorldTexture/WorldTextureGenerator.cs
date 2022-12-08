@@ -46,7 +46,7 @@ public class WorldTextureGenerator : MonoBehaviour
     {
         SetSeed();
 
-        // TODO Not a great solution.. This needs to be handled automatically. Awake()?
+        // TODO Not a great solution.. This needs to be handled automatically for new steps. Awake()?
         ResourcesTreesStep.RegenerateNoiseMap(TextureSize);
         ResourcesStoneStep.RegenerateNoiseMap(TextureSize);
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerHand : MonoBehaviour
+public class PlayerHand : InputResolverStep
 {
     public enum PlayerHandState
     {
@@ -24,25 +24,24 @@ public class PlayerHand : MonoBehaviour
 
     private GameObject _selectedObject;
 
-
-    void Update()
+    public override InputResolver.InputResolution ResolveInput()
     {
-        HandleInput();
-    }
+        var inputResolution = InputResolver.InputResolution.Pass;
 
-    private void HandleInput()
-    {
         switch (currentState)
         {
-            case PlayerHandState.IDLE:
+           case PlayerHandState.IDLE:
                 if (Input.GetMouseButtonDown(0))
                 {
-                    HandleObjectClick();
+                    var clicked = HandleObjectClick();
+                    if (clicked) inputResolution = InputResolver.InputResolution.Block;
                 }
                 break;
 
             case PlayerHandState.GRABBING:
                 Debug.Assert(_selectedObject != null);
+
+                inputResolution = InputResolver.InputResolution.Block;
 
                 // TODO: Physics forces should be applied in FixedUpdate instead of Update.
                 DragSelectedObject();
@@ -58,6 +57,8 @@ public class PlayerHand : MonoBehaviour
             default:
                 break;
         }
+
+        return inputResolution;
     }
 
     void DropOffResourceIfAble()
@@ -78,13 +79,14 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
-    private void HandleObjectClick()
+    // TODO Alternatively, could return the clicked object
+    private bool HandleObjectClick()
     {
         Debug.Assert(_selectedObject == null); // No object should be selected
 
         Collider clickedCollider = CameraUtil.CastMouseRayFromCamera().collider;
         if (clickedCollider == null)
-            return;
+            return false;
 
 
         if (clickedCollider.CompareTag(GlobalDefines.draggableObjectTag)
@@ -95,7 +97,7 @@ public class PlayerHand : MonoBehaviour
 
             GrabSelectedObject(clickedCollider.gameObject);
 
-            return;
+            return true;
         }
         
         if (clickedCollider.CompareTag(GlobalDefines.resourceNodeTag)) // Clickable resource node.
@@ -104,8 +106,10 @@ public class PlayerHand : MonoBehaviour
 
             clickedCollider.gameObject.GetComponent<ResourceNode>().SpawnResource();
 
-            return;
+            return true;
         }
+
+        return false;
     }
 
     private void GrabSelectedObject(GameObject clickedObject)

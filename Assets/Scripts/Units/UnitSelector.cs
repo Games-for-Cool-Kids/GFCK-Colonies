@@ -17,21 +17,24 @@ public class UnitSelector : MonoBehaviourSingleton<UnitSelector>
 
     void Update()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            HandleLeftClick();
-        }
-        if (Mouse.current.leftButton.isPressed)
-        {
-            UpdateSelectionArea();
-        }
-        else if (Mouse.current.leftButton.wasReleasedThisFrame)
-        {
-            ClearSelectedUnits();
-            SelectUnitsInSelectionArea();
-            _unitSelectionArea.gameObject.SetActive(false);
-        }
+       // Currently not using this class
+
+        //if (Mouse.current.leftButton.wasPressedThisFrame)
+        //{
+        //    HandleLeftClick();
+        //}
+        //if (Mouse.current.leftButton.isPressed)
+        //{
+        //    UpdateSelectionArea();
+        //}
+        //else if (Mouse.current.leftButton.wasReleasedThisFrame)
+        //{
+        //    ClearSelectedUnits();
+        //    SelectUnitsInSelectionArea();
+        //    _unitSelectionArea.gameObject.SetActive(false);
+        //}
     }
+
     void OnDisable()
     {
         if(_unitSelectionArea != null) // Can be called at game quit, when component is destroyed.

@@ -6,6 +6,7 @@ public class GlobalDefines
     static public string resourceTag = "Resource";
     static public string mainCameraTag = "MainCamera";
     static public string buildingTag = "Building";
+    static public string eventSystemTag = "EventSystem";
 
     // Layers
     static public string ignoreRayCastLayerName = "Ignore Raycast";

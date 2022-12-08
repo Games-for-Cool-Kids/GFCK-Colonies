@@ -1,13 +1,13 @@
 using UnityEngine;
 using World;
 
-public class CreateObjectOnClick : MonoBehaviour
+public class CreateObjectOnClick : InputResolverStep
 {
     public GameObject ObjectToCreate;
 
     private bool _createAfterClick = false;
 
-    void Update()
+    public override InputResolver.InputResolution ResolveInput()
     {
         if(_createAfterClick
         && Input.GetMouseButtonDown(0))
@@ -20,7 +20,11 @@ public class CreateObjectOnClick : MonoBehaviour
 
                 _createAfterClick = false;
             }
+
+            return InputResolver.InputResolution.Block;
         }
+
+        return InputResolver.InputResolution.Pass;
     }
 
     public void CreateOnNextClick()

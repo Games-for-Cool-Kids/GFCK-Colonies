@@ -135,7 +135,6 @@ GameObject:
   - component: {fileID: 171576680}
   - component: {fileID: 171576679}
   - component: {fileID: 171576682}
-  - component: {fileID: 171576683}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -224,19 +223,6 @@ MonoBehaviour:
   moveSpeed: 40
   hoverHeight: 25
   hover: 0
---- !u!114 &171576683
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 171576678}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78dd965ed19e67f44a3ca9bcb00d22cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MoveSpeed: 30
 --- !u!1 &1349993967
 GameObject:
   m_ObjectHideFlags: 0

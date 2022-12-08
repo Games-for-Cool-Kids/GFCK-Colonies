@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     public PlayerCamera PlayerCamera { get; private set; }
     public HandController HandController { get; private set; }
 
+    public InputResolver InputResolver { get; private set; }
+
     public GameWorld World { get; private set; }
 
     public delegate void GameObjectEvent(GameObject gameObject);
@@ -33,6 +35,10 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         if (handController == null)
             Debug.LogWarning("HandController not found.");
 
+        var eventSystem = GameObject.FindGameObjectWithTag(GlobalDefines.eventSystemTag);
+        Debug.Assert(eventSystem);
+        InputResolver = eventSystem.GetComponent<InputResolver>();
+        Debug.Assert(InputResolver);
 
         // Store world.
         var worldObject = GameObject.Find(GlobalDefines.worldName);

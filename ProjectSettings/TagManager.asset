@@ -8,6 +8,8 @@ TagManager:
   - ResourceNode
   - Resource
   - Building
+  - Unit
+  - EventSystem
   layers:
   - Default
   - TransparentFX
