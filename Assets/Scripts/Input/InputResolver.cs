@@ -4,13 +4,13 @@ using UnityEngine;
 // How to use this class:
 // 1. For your class-that-needs-to-handle-input: Inherit from InputResolverStep
 // 2. Implement InputResolverStep::ResolveInput() to handle all your input
-// 3. Add your class to InputResolver::_orderedStepTypes (prioritized from top to bottom)
+// 3. Add your typeof(YourClassName) to InputResolver::_orderedStepTypes (prioritized from top to bottom)
 
 // Currently, this class assumes a static, ordered list of inputSteps. 
 // In the future, we can consider making this dynamic; adding/removing input behaviours depending on context.
 public sealed class InputResolver : MonoBehaviour
 {
-    public enum InputResolution
+    public enum InputResolution : short
     {
         Block,
         Pass
@@ -68,6 +68,7 @@ public sealed class InputResolver : MonoBehaviour
     {
         foreach(var step in _steps)
         {
+            // TODO Preferably, we don't have this check. It would be nicer if the InputResolverSteps (un)register as they (de)activate.
             if (!step.isActiveAndEnabled) 
                 continue;
 
