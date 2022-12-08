@@ -3,12 +3,12 @@ using UnityEngine;
 
 public abstract class InputResolverStep : MonoBehaviour
 {
-    private void Awake()
+    private void OnEnable()
     {
         Register();
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         Unregister();
     }

@@ -68,10 +68,6 @@ public sealed class InputResolver : MonoBehaviour
     {
         foreach(var step in _steps)
         {
-            // TODO Preferably, we don't have this check. It would be nicer if the InputResolverSteps (un)register as they (de)activate.
-            if (!step.isActiveAndEnabled) 
-                continue;
-
             if(step.ResolveInput() == InputResolution.Block)
                 return;
         }
